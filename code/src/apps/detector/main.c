@@ -1,0 +1,23 @@
+/**
+ * @brief       : 
+ *
+ * @file        : main.c
+ * @author      : gang.cheng
+ * @version     : v0.0.1
+ * @date        : 2015/8/10
+ *
+ * Change Logs  :
+ *
+ * Date        Version      Author      Notes
+ * 2015/8/10    v0.0.1      gang.cheng    first version
+ */
+
+#include "FreeRTOS.h"
+#include "task.h"
+
+
+int main(void)
+{
+    
+    return 0;
+}
