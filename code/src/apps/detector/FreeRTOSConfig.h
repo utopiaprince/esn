@@ -70,7 +70,7 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
-#include <msp430x44x.h>
+#include <msp430.h>
 
 /*
 Two interrupt examples are provided -
@@ -117,15 +117,19 @@ occurs.
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			1
 #define configUSE_TICK_HOOK			0
-#define configCPU_CLOCK_HZ			( ( unsigned long ) 7995392 ) /* Clock setup from main.c in the demo application. */
-#define configTICK_RATE_HZ			( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES		( 4 )
+#define configCPU_CLOCK_HZ			( ( unsigned long ) 8000000 ) /* Clock setup from main.c in the demo application. */
+#define configTICK_RATE_HZ			( ( TickType_t ) 100 )
+#define configMAX_PRIORITIES		( 8 )
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 50 )
 #define configTOTAL_HEAP_SIZE		( ( size_t ) ( 1700 ) )
 #define configMAX_TASK_NAME_LEN		( 8 )
 #define configUSE_TRACE_FACILITY	0
 #define configUSE_16_BIT_TICKS		1
 #define configIDLE_SHOULD_YIELD		1
+
+/* start soft-timers */
+#define configUSE_TIMERS            1
+#define configTIMER_TASK_PRIORITY   (configMAX_PRIORITIES-1)
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 		0

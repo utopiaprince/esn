@@ -15,9 +15,18 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "esn_detect.h"
+#include "esn_active.h"
+
 
 int main(void)
 {
     
+    esn_detect_init();
+
+
+    vTaskStartScheduler();
+
+    while(1);
     return 0;
 }
