@@ -3,6 +3,8 @@
 *.ko
 *.obj
 *.elf
+*.d43
+*.r43
 
 # Precompiled Headers
 *.gch
@@ -30,3 +32,7 @@
 
 # Debug files
 *.dSYM/
+
+# ignore folders
+/code/src/projects/settings
+/code/src/projects/Debug

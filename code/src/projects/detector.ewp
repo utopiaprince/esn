@@ -318,9 +318,12 @@
         <option>
           <name>newCCIncludePaths</name>
           <state>$PROJ_DIR$\..\</state>
+          <state>$PROJ_DIR$\..\common\lib\</state>
           <state>$PROJ_DIR$\..\sys_arch\inc\</state>
           <state>$PROJ_DIR$\..\apps\detector\</state>
           <state>$PROJ_DIR$\..\platform\msp430f5419\port\</state>
+          <state>$PROJ_DIR$\..\platform\msp430f5419\init\</state>
+          <state>$PROJ_DIR$\..\platform\msp430f5419\drivers\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -581,7 +584,7 @@
         </option>
         <option>
           <name>OutputFile</name>
-          <state></state>
+          <state>$FILE_BNAME$.r43</state>
         </option>
         <option>
           <name>AMultibyteSupport</name>
@@ -609,7 +612,7 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\apps\detector\</state>
         </option>
       </data>
     </settings>
@@ -1961,6 +1964,36 @@
   </group>
   <group>
     <name>common</name>
+    <group>
+      <name>lib</name>
+      <group>
+        <name>inc</name>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\data_type_def.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\debug.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\lib.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\mlist.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\printf.h</name>
+        </file>
+      </group>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\debug.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\mlist.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\printf.c</name>
+      </file>
+    </group>
   </group>
   <group>
     <name>platform</name>
@@ -1968,17 +2001,44 @@
       <name>msp430f5419</name>
       <group>
         <name>drivers</name>
+        <group>
+          <name>inc</name>
+          <file>
+            <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\drivers.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\uart.h</name>
+          </file>
+        </group>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\uart.c</name>
+        </file>
       </group>
       <group>
         <name>init</name>
       </group>
       <group>
         <name>port</name>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\port.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\portasm.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\portext.s43</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\portmacro.h</name>
+        </file>
       </group>
     </group>
   </group>
   <group>
     <name>stack</name>
+    <file>
+      <name>$PROJ_DIR$\..\stack\stack.c</name>
+    </file>
   </group>
   <group>
     <name>sys_arch</name>
@@ -2018,27 +2078,24 @@
         <name>$PROJ_DIR$\..\sys_arch\inc\timers.h</name>
       </file>
     </group>
-    <group>
-      <name>src</name>
-      <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\croutine.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\event_groups.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\list.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\queue.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\tasks.c</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\timers.c</name>
-      </file>
-    </group>
+    <file>
+      <name>$PROJ_DIR$\..\sys_arch\src\croutine.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\sys_arch\src\event_groups.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\sys_arch\src\list.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\sys_arch\src\queue.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\sys_arch\src\tasks.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\sys_arch\src\timers.c</name>
+    </file>
   </group>
 </project>
 
