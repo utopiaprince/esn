@@ -15,8 +15,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "esn_detect.h"
-#include "esn_active.h"
+#include "esn.h"
 
 
 int main(void)

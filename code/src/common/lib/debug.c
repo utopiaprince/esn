@@ -16,6 +16,7 @@
 #include <drivers.h>
 
 #include <FreeRTOS.h>
+#include <semphr.h>
 
 #define DEBUG_PREFIX_LEN                (128u)      // log日志的前缀
 #define DEBUG_BUF_SQQ_LEN               (1024u)

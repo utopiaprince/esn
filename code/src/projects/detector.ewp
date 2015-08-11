@@ -613,6 +613,7 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$\..\apps\detector\</state>
+          <state>$PROJ_DIR$\..\platform\msp430f5419\port\</state>
         </option>
       </data>
     </settings>
@@ -1958,6 +1959,30 @@
   </configuration>
   <group>
     <name>apps</name>
+    <group>
+      <name>inc</name>
+      <file>
+        <name>$PROJ_DIR$\..\apps\detector\esn.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\apps\detector\esn_active.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\apps\detector\esn_detect.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\apps\detector\esn_frames.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\apps\detector\FreeRTOSConfig.h</name>
+      </file>
+    </group>
+    <file>
+      <name>$PROJ_DIR$\..\apps\detector\esn_active.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\apps\detector\esn_detect.c</name>
+    </file>
     <file>
       <name>$PROJ_DIR$\..\apps\detector\main.c</name>
     </file>
@@ -2016,14 +2041,23 @@
       </group>
       <group>
         <name>init</name>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\init\bsp.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\init\bsp.h</name>
+        </file>
       </group>
       <group>
         <name>port</name>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\port\port.c</name>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\data_model.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\port\portasm.h</name>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\heap_1.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\port.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\msp430f5419\port\portext.s43</name>
@@ -2055,6 +2089,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\sys_arch\inc\list.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\mpu_wrappers.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\sys_arch\inc\portable.h</name>

@@ -11,6 +11,8 @@
 #ifndef __ESN_H__
 #define __ESN_H__
 
+#include "data_type_def.h"
+
 #include "esn_active.h"
 #include "esn_detect.h"
 #include "esn_frames.h"

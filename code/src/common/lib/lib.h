@@ -18,11 +18,14 @@
 #ifndef __LIB_H
 #define __LIB_H
 
-//#include <list.h>
-//#include <sqqueue.h>
-//#include <debug.h>
-//#include <printf.h>
-//#include <serial.h>
+#include "data_type_def.h"
+#include <mlist.h>
+#include <debug.h>
+#include <printf.h>
 
+
+
+//#include <sqqueue.h>
+//#include <serial.h>
 #endif
 /** @} */

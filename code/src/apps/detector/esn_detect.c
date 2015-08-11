@@ -10,6 +10,7 @@
  */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "esn.h"
 
 void esn_detect_task(void *param)
 {

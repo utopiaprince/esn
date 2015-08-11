@@ -11,6 +11,10 @@
 #ifndef __ESN_DETECT_H__
 #define __ESN_DETECT_H__
 
+#ifndef __DATA_TYPE_DEF_H__
+#error "include data_type_def.h must appear in source file before include esn_detect.h"
+#endif
+
 /**
  * @brief init esn detect task
  * @return

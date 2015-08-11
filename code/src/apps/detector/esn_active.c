@@ -22,7 +22,7 @@ void esn_active_task(void *param)
     }
 }
 
-bool_t esn_detect_init(void)
+bool_t esn_active_init(void)
 {
     xTaskCreate(esn_active_task,
                 "esn active task",

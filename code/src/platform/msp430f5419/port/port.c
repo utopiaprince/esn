@@ -72,7 +72,7 @@
 #include "task.h"
 
 /*-----------------------------------------------------------
- * Implementation of functions defined in portable.h for the MSP430 port.
+ * Implementation of functions defined in portable.h for the MSP430X port.
  *----------------------------------------------------------*/
 
 /* Constants required for hardware setup.  The tick ISR runs off the ACLK,
@@ -113,56 +113,77 @@ void vPortSetupTimerInterrupt( void );
  */
 StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters )
 {
+uint16_t *pusTopOfStack;
+uint32_t *pulTopOfStack;
+
 	/*
 		Place a few bytes of known values on the bottom of the stack.
 		This is just useful for debugging and can be included if required.
-
+	
 		*pxTopOfStack = ( StackType_t ) 0x1111;
 		pxTopOfStack--;
 		*pxTopOfStack = ( StackType_t ) 0x2222;
 		pxTopOfStack--;
 		*pxTopOfStack = ( StackType_t ) 0x3333;
-		pxTopOfStack--;
 	*/
 
-	/* The msp430 automatically pushes the PC then SR onto the stack before
-	executing an ISR.  We want the stack to look just as if this has happened
-	so place a pointer to the start of the task on the stack first - followed
-	by the flags we want the task to use when it starts up. */
-	*pxTopOfStack = ( StackType_t ) pxCode;
-	pxTopOfStack--;
-	*pxTopOfStack = portFLAGS_INT_ENABLED;
-	pxTopOfStack--;
+	/* StackType_t is either 16 bits or 32 bits depending on the data model.
+	Some stacked items do not change size depending on the data model so have
+	to be explicitly cast to the correct size so this function will work
+	whichever data model is being used. */
+	if( sizeof( StackType_t ) == sizeof( uint16_t ) )
+	{
+		/* Make room for a 20 bit value stored as a 32 bit value. */
+		pusTopOfStack = ( uint16_t * ) pxTopOfStack;
+		pusTopOfStack--;
+		pulTopOfStack = ( uint32_t * ) pusTopOfStack;
+	}
+	else
+	{
+		pulTopOfStack = ( uint32_t * ) pxTopOfStack;
+	}
+	*pulTopOfStack = ( uint32_t ) pxCode;
+	
+	pusTopOfStack = ( uint16_t * ) pulTopOfStack;
+	pusTopOfStack--;
+	*pusTopOfStack = portFLAGS_INT_ENABLED;
+	pusTopOfStack -= ( sizeof( StackType_t ) / 2 );
+	
+	/* From here on the size of stacked items depends on the memory model. */
+	pxTopOfStack = ( StackType_t * ) pusTopOfStack;
 
 	/* Next the general purpose registers. */
-	*pxTopOfStack = ( StackType_t ) 0x4444;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0x5555;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0x6666;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0x7777;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0x8888;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0x9999;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0xaaaa;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0xbbbb;
-	pxTopOfStack--;	
-	
-	/* When the task starts is will expect to find the function parameter in
-	R15. */
-	*pxTopOfStack = ( StackType_t ) pvParameters;
-	pxTopOfStack--;
-	
-	*pxTopOfStack = ( StackType_t ) 0xdddd;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0xeeee;
-	pxTopOfStack--;
-	*pxTopOfStack = ( StackType_t ) 0xffff;
-	pxTopOfStack--;
+	#ifdef PRELOAD_REGISTER_VALUES
+		*pxTopOfStack = ( StackType_t ) 0xffff;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0xeeee;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0xdddd;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) pvParameters;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0xbbbb;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0xaaaa;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0x9999;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0x8888;
+		pxTopOfStack--;	
+		*pxTopOfStack = ( StackType_t ) 0x5555;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0x6666;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0x5555;
+		pxTopOfStack--;
+		*pxTopOfStack = ( StackType_t ) 0x4444;
+		pxTopOfStack--;
+	#else
+		pxTopOfStack -= 3;
+		*pxTopOfStack = ( StackType_t ) pvParameters;
+		pxTopOfStack -= 9;
+	#endif
+
 
 	/* A variable is used to keep track of the critical section nesting.
 	This variable has to be stored as part of the task context and is
@@ -183,33 +204,21 @@ void vPortEndScheduler( void )
 /*-----------------------------------------------------------*/
 
 /*
- * Hardware initialisation to generate the RTOS tick.  This uses timer 0
- * but could alternatively use the watchdog timer or timer 1.
+ * Hardware initialisation to generate the RTOS tick.
  */
 void vPortSetupTimerInterrupt( void )
 {
-	/* Ensure the timer is stopped. */
-	TACTL = 0;
-
-	/* Run the timer of the ACLK. */
-	TACTL = TASSEL_1;
-
-	/* Clear everything to start with. */
-	TACTL |= TACLR;
-
-	/* Set the compare match value according to the tick rate we want. */
-	TACCR0 = portACLK_FREQUENCY_HZ / configTICK_RATE_HZ;
-
-	/* Enable the interrupts. */
-	TACCTL0 = CCIE;
-
-	/* Start up clean. */
-	TACTL |= TACLR;
-
-	/* Up mode. */
-	TACTL |= MC_1;
+	vApplicationSetupTimerInterrupt();
 }
 /*-----------------------------------------------------------*/
 
+#pragma vector=configTICK_VECTOR
+__interrupt __raw void vTickISREntry( void )
+{
+extern void vPortTickISR( void );
+
+	__bic_SR_register_on_exit( SCG1 + SCG0 + OSCOFF + CPUOFF );
+	vPortTickISR();
+}
 
 	
