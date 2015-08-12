@@ -114,47 +114,47 @@ occurs.
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
 
-#define configUSE_PREEMPTION		    1
-#define configUSE_IDLE_HOOK			    1
-#define configUSE_TICK_HOOK			    0
-#define configCPU_CLOCK_HZ			    ( ( unsigned long ) 8000000 ) /* Clock setup from main.c in the demo application. */
-#define configTICK_RATE_HZ			    ( ( TickType_t ) 100 )
-#define configMAX_PRIORITIES		    ( 8 )
-#define configTOTAL_HEAP_SIZE		    ( ( size_t ) ( 8000 ) )
-#define configMAX_TASK_NAME_LEN		    ( 8 )
-#define configUSE_TRACE_FACILITY	    0
-#define configUSE_16_BIT_TICKS		    0
-#define configIDLE_SHOULD_YIELD		    1
-#define configUSE_MALLOC_FAILED_HOOK	1
+#define configUSE_PREEMPTION                1
+#define configUSE_IDLE_HOOK                 1
+#define configUSE_TICK_HOOK                 0
+#define configCPU_CLOCK_HZ                  ((unsigned long)8000000) /* Clock setup from main.c in the demo application. */
+#define configTICK_RATE_HZ                  ((TickType_t)100)
+#define configMAX_PRIORITIES                (8)
+#define configTOTAL_HEAP_SIZE               ((size_t)(8000))
+#define configMAX_TASK_NAME_LEN             (8)
+#define configUSE_TRACE_FACILITY            0
+#define configUSE_16_BIT_TICKS              0
+#define configIDLE_SHOULD_YIELD             1
+#define configUSE_MALLOC_FAILED_HOOK        1
 
-#define configQUEUE_REGISTRY_SIZE       1
+#define configQUEUE_REGISTRY_SIZE           1
 
 #if __DATA_MODEL__ == __DATA_MODEL_SMALL__
-	#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 110 )
+#define configMINIMAL_STACK_SIZE            ((unsigned short)110)
 #else
-	#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 80 )
+#define configMINIMAL_STACK_SIZE            ((unsigned short)80)
 #endif
 
 /* start soft-timers */
-#define configUSE_TIMERS            1
-#define configTIMER_TASK_PRIORITY   (configMAX_PRIORITIES-1)
-#define configTIMER_QUEUE_LENGTH    5   //*< 定时器数量
-#define configTIMER_TASK_STACK_DEPTH    300
+#define configUSE_TIMERS                    1
+#define configTIMER_TASK_PRIORITY           (configMAX_PRIORITIES-1)
+#define configTIMER_QUEUE_LENGTH            5   //*< 定时器数量
+#define configTIMER_TASK_STACK_DEPTH        300
 
 /* Co-routine definitions. */
-#define configUSE_CO_ROUTINES 		0
-#define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
+#define configUSE_CO_ROUTINES               0
+#define configMAX_CO_ROUTINE_PRIORITIES     ( 2 )
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
 
-#define INCLUDE_vTaskPrioritySet			0
-#define INCLUDE_uxTaskPriorityGet			0
-#define INCLUDE_vTaskDelete					1
-#define INCLUDE_vTaskCleanUpResources		0
-#define INCLUDE_vTaskSuspend				1
-#define INCLUDE_vTaskDelayUntil				1
-#define INCLUDE_vTaskDelay					1
+#define INCLUDE_vTaskPrioritySet            0
+#define INCLUDE_uxTaskPriorityGet           0
+#define INCLUDE_vTaskDelete                 0
+#define INCLUDE_vTaskCleanUpResources       0
+#define INCLUDE_vTaskSuspend                1
+#define INCLUDE_vTaskDelayUntil             1
+#define INCLUDE_vTaskDelay                  1
 #define INCLUDE_uxTaskGetStackHighWaterMark 0
 
 /* The MSP430X port uses a callback function to configure its tick interrupt.
@@ -163,7 +163,7 @@ configTICK_VECTOR must also be set in FreeRTOSConfig.h to the correct
 interrupt vector for the chosen tick interrupt source.  This implementation of
 vApplicationSetupTimerInterrupt() generates the tick from timer A0, so in this
 case configTICK__VECTOR is set to TIMER0_A0_VECTOR. */
-#define configTICK_VECTOR				TIMER0_A0_VECTOR
+#define configTICK_VECTOR               TIMER0_A0_VECTOR
 
 
 #endif /* FREERTOS_CONFIG_H */

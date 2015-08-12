@@ -130,6 +130,11 @@ typedef struct
     pbuf_t *pbuf;
 } prim_args_t;
 
+typedef struct
+{
+    portBASE_TYPE event;
+    sbuf_t *sbuf;
+} mbuf_t;
 
 #endif
 

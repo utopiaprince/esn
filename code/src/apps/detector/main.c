@@ -1,5 +1,5 @@
 /**
- * @brief       : 
+ * @brief       :
  *
  * @file        : main.c
  * @author      : gang.cheng
@@ -13,21 +13,22 @@
  */
 #include "lib.h"
 #include "bsp.h"
-#include "osel_arch.h" 
+#include "osel_arch.h"
 #include "esn.h"
 #include "stack.h"
 
-
 int main(void)
 {
-    bsp_init();
-    
-    esn_detect_init();
-    esn_active_init();
-    
-    stack_init();
+	bsp_init();
+	debug_init(DBG_LEVEL_TRACE | DBG_LEVEL_TRACE | DBG_LEVEL_WARNING |
+	           DBG_LEVEL_ERROR);
 
-    vTaskStartScheduler();
+	esn_detect_init();
+	esn_active_init();
 
-    return 0;
+	stack_init();
+
+	vTaskStartScheduler();
+
+	return 0;
 }

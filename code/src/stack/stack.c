@@ -1,5 +1,5 @@
 /**
- * @brief       : 
+ * @brief       :
  *
  * @file        : stack.c
  * @author      : gang.cheng
@@ -15,16 +15,16 @@
 #include <lib.h>
 #include "stack.h"
 
-//#include <mac.h>
+#include "mac.h"
 //#include <nwk.h>
 //#include <app.h>
 //#include <hal_board.h>
 
 void stack_init(void)
 {
-    pbuf_init();
-    bool_t res2 = sbuf_init();
-    DBG_ASSERT(res2 != FALSE __DBG_LINE);
+	pbuf_init();
+	bool_t res2 = sbuf_init();
+	DBG_ASSERT(res2 != FALSE __DBG_LINE);
 
-//    mac_init();
+	mac_init();
 }
