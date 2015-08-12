@@ -11,6 +11,6 @@
 #ifndef __ESN_ACTIVE_H__
 #define __ESN_ACTIVE_H__
 
-
+bool_t esn_active_init(void);
 
 #endif

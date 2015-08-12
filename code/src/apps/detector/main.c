@@ -11,21 +11,23 @@
  * Date        Version      Author      Notes
  * 2015/8/10    v0.0.1      gang.cheng    first version
  */
-
-#include "FreeRTOS.h"
-#include "task.h"
-
+#include "lib.h"
+#include "bsp.h"
+#include "osel_arch.h" 
 #include "esn.h"
+#include "stack.h"
 
 
 int main(void)
 {
+    bsp_init();
     
     esn_detect_init();
-
+    esn_active_init();
+    
+    stack_init();
 
     vTaskStartScheduler();
 
-    while(1);
     return 0;
 }

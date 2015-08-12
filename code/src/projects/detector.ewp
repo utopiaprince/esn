@@ -105,7 +105,7 @@
         </option>
         <option>
           <name>GStackSize2</name>
-          <state>500</state>
+          <state>1000</state>
         </option>
         <option>
           <name>GHeapSize2</name>
@@ -319,11 +319,14 @@
           <name>newCCIncludePaths</name>
           <state>$PROJ_DIR$\..\</state>
           <state>$PROJ_DIR$\..\common\lib\</state>
+          <state>$PROJ_DIR$\..\sys_arch\</state>
           <state>$PROJ_DIR$\..\sys_arch\inc\</state>
           <state>$PROJ_DIR$\..\apps\detector\</state>
           <state>$PROJ_DIR$\..\platform\msp430f5419\port\</state>
           <state>$PROJ_DIR$\..\platform\msp430f5419\init\</state>
           <state>$PROJ_DIR$\..\platform\msp430f5419\drivers\</state>
+          <state>$PROJ_DIR$\..\stack\</state>
+          <state>$PROJ_DIR$\..\stack\common\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2070,6 +2073,27 @@
   </group>
   <group>
     <name>stack</name>
+    <group>
+      <name>common</name>
+      <group>
+        <name>inc</name>
+        <file>
+          <name>$PROJ_DIR$\..\stack\common\pbuf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\common\prim.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\common\sbuf.h</name>
+        </file>
+      </group>
+      <file>
+        <name>$PROJ_DIR$\..\stack\common\pbuf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\stack\common\sbuf.c</name>
+      </file>
+    </group>
     <file>
       <name>$PROJ_DIR$\..\stack\stack.c</name>
     </file>
@@ -2115,23 +2139,29 @@
         <name>$PROJ_DIR$\..\sys_arch\inc\timers.h</name>
       </file>
     </group>
+    <group>
+      <name>src</name>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\croutine.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\event_groups.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\list.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\queue.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\tasks.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\timers.c</name>
+      </file>
+    </group>
     <file>
-      <name>$PROJ_DIR$\..\sys_arch\src\croutine.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\sys_arch\src\event_groups.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\sys_arch\src\list.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\sys_arch\src\queue.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\sys_arch\src\tasks.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\sys_arch\src\timers.c</name>
+      <name>$PROJ_DIR$\..\sys_arch\osel_arch.h</name>
     </file>
   </group>
 </project>

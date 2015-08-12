@@ -4,6 +4,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+
+void bsp_init(void)
+{
+    ;
+}
+
 /* The MSP430X port uses this callback function to configure its tick interrupt.
 This allows the application to choose the tick interrupt source.
 configTICK_VECTOR must also be set in FreeRTOSConfig.h to the correct

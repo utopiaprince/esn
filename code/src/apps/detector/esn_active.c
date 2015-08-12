@@ -26,7 +26,7 @@ bool_t esn_active_init(void)
 {
     xTaskCreate(esn_active_task,
                 "esn active task",
-                1000,
+                500,
                 NULL,
                 ESN_ACTIVE_PRIORITY,
                 NULL);

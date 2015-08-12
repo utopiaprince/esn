@@ -24,10 +24,10 @@ void esn_detect_task(void *param)
 bool_t esn_detect_init(void)
 {
     xTaskCreate(esn_detect_task,
-                "esn test task",
-                1000,
+                "esn detect task",
+                500,
                 NULL,
-                configMAX_PRIORITIES,
+                ESN_DETECT_PRIORITY,
                 NULL);
 
     return TRUE;

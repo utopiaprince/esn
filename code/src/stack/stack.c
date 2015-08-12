@@ -13,11 +13,8 @@
  */
 
 #include <lib.h>
-//#include <prim.h>
-//#include <pbuf.h>
-//#include <sbuf.h>
+#include "stack.h"
 
-//#include <stack.h>
 //#include <mac.h>
 //#include <nwk.h>
 //#include <app.h>
@@ -25,10 +22,9 @@
 
 void stack_init(void)
 {
-//    bool_t res1 = pbuf_init();
-//    DBG_ASSERT(res1 != FALSE __DBG_LINE);
-//    bool_t res2 = sbuf_init();
-//    DBG_ASSERT(res2 != FALSE __DBG_LINE);
+    pbuf_init();
+    bool_t res2 = sbuf_init();
+    DBG_ASSERT(res2 != FALSE __DBG_LINE);
 
 //    mac_init();
 }
