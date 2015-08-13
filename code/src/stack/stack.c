@@ -13,9 +13,10 @@
  */
 
 #include <lib.h>
+#include "osel_arch.h"
+
 #include "stack.h"
 
-#include "mac.h"
 //#include <nwk.h>
 //#include <app.h>
 //#include <hal_board.h>

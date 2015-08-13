@@ -11,26 +11,16 @@
 #ifndef __MAC_H__
 #define __MAC_H__
 
-
-
-
-
-
-
-
-
-
-
 /**
  * @brief send sbuf to mac queue
  *  
- * @param[in] mbuf pointer to store data buf
+ * @param[in] event pointer to store data buf
  *
  * @return has sent data to queue?
  *	- FALSE the queue is full
  *	- TRUE	has sent data to queue 
  */
-bool_t mac_queue_send(mbuf_t *mbuf);
+bool_t mac_queue_send(osel_event_t *event);
 
 /**
  * @brief mac task and queue init

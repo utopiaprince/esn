@@ -164,7 +164,7 @@
         <debug>1</debug>
         <option>
           <name>CCDefines</name>
-          <state></state>
+          <state>NODE_TYPE_DETECTOR</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -327,6 +327,7 @@
           <state>$PROJ_DIR$\..\platform\msp430f5419\drivers\</state>
           <state>$PROJ_DIR$\..\stack\</state>
           <state>$PROJ_DIR$\..\stack\common\</state>
+          <state>$PROJ_DIR$\..\stack\custom\mac\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2092,6 +2093,24 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\stack\common\sbuf.c</name>
+      </file>
+    </group>
+    <group>
+      <name>custom</name>
+      <group>
+        <name>mac</name>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac.c</name>
+        </file>
+      </group>
+    </group>
+    <group>
+      <name>module</name>
+      <file>
+        <name>$PROJ_DIR$\..\stack\module\m_tran.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\stack\module\m_tran.h</name>
       </file>
     </group>
     <file>

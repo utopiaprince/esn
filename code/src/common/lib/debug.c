@@ -15,8 +15,7 @@
 #include <debug.h>
 #include <drivers.h>
 
-#include <FreeRTOS.h>
-#include <semphr.h>
+#include "osel_arch.h"
 
 #define DEBUG_PREFIX_LEN                (128u)      // log日志的前缀
 #define DEBUG_BUF_SQQ_LEN               (1024u)
@@ -83,7 +82,8 @@ void debug_log(uint8_t dbg_lev, const char *fn, uint16_t line, ...)
     uint8_t data_len = strlen((char_t *)dbg_prefix_buf);
     for(uint8_t i=0;i<data_len;i++)
     {
-        uart_send(DEBUG_PRINTF_ID, dbg_prefix_buf[i]);
+        //@todo: 后期打开串口打印接口
+//        uart_send(DEBUG_PRINTF_ID, dbg_prefix_buf[i]);
     }
     xSemaphoreGive(debug_mutex);
 }

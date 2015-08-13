@@ -4,7 +4,7 @@
 #include "sbuf.h"
 #include "pbuf.h"
 #include "prim.h"
-//#include "mac.h"
+#include "mac.h"
 
 void stack_init(void);
 

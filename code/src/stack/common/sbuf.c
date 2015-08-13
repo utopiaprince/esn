@@ -12,8 +12,9 @@
  * 2015/5/7    v0.0.1      gang.cheng    first version
  */
 #include "lib.h"
-#include <sbuf.h>
 #include "osel_arch.h"
+
+#include <sbuf.h>
 
 /**
  *sbuf链表中空余和已使用sbuf个数的结构体定义

@@ -129,6 +129,8 @@ occurs.
 
 #define configQUEUE_REGISTRY_SIZE           1
 
+#define configUSE_MUTEXES                   1   //*< 打开互斥量使能
+
 #if __DATA_MODEL__ == __DATA_MODEL_SMALL__
 #define configMINIMAL_STACK_SIZE            ((unsigned short)110)
 #else
