@@ -21,11 +21,11 @@ xQueueHandle mac_queue = NULL;
 
 static void mac_task(void *p)
 {
-    mbuf_t *mbuf = NULL;
+    mbuf_t mbuf;
     while (1)
     {
         xQueueReceive(mac_queue,        //*< the handle of received queue
-                      mbuf,             //*< pointer to data received
+                      &mbuf,             //*< pointer to data received
                       portMAX_DELAY);   //*< time out
 
     }
