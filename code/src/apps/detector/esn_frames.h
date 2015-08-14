@@ -54,6 +54,16 @@ typedef struct
     uint8_t           seq;
 } esn_frames_head_t;
 
+typedef struct
+{
+    uint32_t distance;
+} esn_distance_payload_t;
+
+typedef struct
+{
+    int32_t temperature;
+} esn_temp_payload_t;
+
 #pragma pack()
 
 #endif

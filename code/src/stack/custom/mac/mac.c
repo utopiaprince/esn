@@ -29,11 +29,19 @@ bool_t mac_status = FALSE;  //*< 表示当前网络是否已经在网
 
 static void mac_task(void *p)
 {
+<<<<<<< HEAD
     osel_event_t *event = NULL;
     while (1)
     {
         xQueueReceive(mac_queue,        //*< the handle of received queue
                       event,            //*< pointer to data received
+=======
+    mbuf_t mbuf;
+    while (1)
+    {
+        xQueueReceive(mac_queue,        //*< the handle of received queue
+                      &mbuf,             //*< pointer to data received
+>>>>>>> origin/master
                       portMAX_DELAY);   //*< time out
 
     }
