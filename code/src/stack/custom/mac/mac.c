@@ -24,25 +24,21 @@
 DBG_THIS_MODULE("mac")
 
 xQueueHandle mac_queue = NULL;
+xSemaphoreHandle mac_sent = NULL;
 
 bool_t mac_status = FALSE;  //*< 表示当前网络是否已经在网
 
 static void mac_task(void *p)
 {
-<<<<<<< HEAD
-    osel_event_t *event = NULL;
+    osel_event_t event;
     while (1)
     {
         xQueueReceive(mac_queue,        //*< the handle of received queue
-                      event,            //*< pointer to data received
-=======
-    mbuf_t mbuf;
-    while (1)
-    {
-        xQueueReceive(mac_queue,        //*< the handle of received queue
-                      &mbuf,             //*< pointer to data received
->>>>>>> origin/master
+                      &event,            //*< pointer to data received
                       portMAX_DELAY);   //*< time out
+
+
+
 
     }
 }
@@ -61,6 +57,32 @@ bool_t mac_queue_send(osel_event_t *event)
     return TRUE;
 }
 
+/**
+ * @brief get send flag wait for sec
+ * @param  sec time of secends wait for send flag
+ * @return
+ *  - TRUE has sent ok
+ *  - FALSE sent failed
+ */
+bool_t mac_sent_get(uint16_t sec)
+{
+    portBASE_TYPE res;
+    res = xSemaphoreTake(mac_sent, (sec*configTICK_RATE_HZ));
+
+    if(res == pdPASS)
+    {
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+bool_t mac_sent_set(void)
+{
+    xSemaphoreGive(mac_sent);
+}
 
 void mac_init(void)
 {
@@ -81,7 +103,14 @@ void mac_init(void)
     {
         DBG_LOG(DBG_LEVEL_ERROR, "mac_queue init failed\r\n");
     }
-    
+
+    mac_sent = xSemaphoreCreateBinary();
+    if (mac_sent == NULL)
+    {
+        DBG_LOG(DBG_LEVEL_ERROR, "mac_set init failed\r\n");
+
+    }
+
 #ifdef NODE_TYPE_GATEWAY
     mac_status = TRUE;
 #endif

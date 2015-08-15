@@ -14,6 +14,142 @@
 static QueueHandle_t esn_active_queue = NULL;
 static TimerHandle_t esn_cycle_timer = NULL;
 
+static uint8_t data_seq = 0;
+
+static bool_t distance_data_trigger_flag = FALSE;
+static bool_t temp_data_trigger_flag = TRUE;
+
+static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
+                            const void *const payload,
+                            uint8_t len)
+{
+    uint8_t data_send_cnt = ESN_SEND_WAIT_CNT;
+    if (esn_frm_hd->frames_ctrl.alarm == ALARM_N)
+    {
+        data_send_cnt = 1;
+    }
+
+    for (uint8_t i = 0; i < data_send_cnt; i++)
+    {
+        // @todo send data to mac task
+
+
+        //@note wait for mac send data ok semphore
+        if (mac_sent_get(ESN_SENT_WAIT_TIME))
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+/**
+ * @brief
+ */
+static void esn_timeout_handle(void)
+{
+    esn_frames_head_t esn_frames_head;
+
+    if (distance_data_trigger_flag)
+    {
+        distance_data_trigger_flag = FALSE;
+    }
+    else
+    {
+        //@note send distance_data
+        esn_frames_head.frames_ctrl.frame_type = DATATYPE_DISTANCE;
+        esn_frames_head.frames_ctrl.alarm      = ALARM_N;
+        esn_frames_head.frames_ctrl.reserved   = 0;
+        esn_frames_head.seq = data_seq++;
+        //@todo: need get distance sensor data
+        esn_distance_payload_t esn_distance_pd;
+        esn_distance_pd.distance = sensor_distance_get();
+
+        esn_data_send(&esn_frames_head,
+                      &esn_distance_pd,
+                      sizeof(esn_distance_payload_t));
+    }
+
+    if (temp_data_trigger_flag)
+    {
+        temp_data_trigger_flag = FALSE;
+    }
+    else
+    {
+        esn_frames_head.frames_ctrl.frame_type = DATATYPE_TEMPERATURE;
+        esn_frames_head.frames_ctrl.alarm      = ALARM_N;
+        esn_frames_head.frames_ctrl.reserved   = 0;
+        esn_frames_head.seq = data_seq++;
+
+        esn_temp_payload_t esn_temp_pd;
+        esn_temp_pd.temperature = sensor_temp_get();
+
+        esn_data_send(&esn_frames_head,
+                      &esn_temp_pd,
+                      sizeof(esn_temp_payload_t));
+    }
+}
+
+static void esn_vibration_handle(void)
+{
+    esn_frames_head_t esn_frames_head;
+
+    esn_frames_head.frames_ctrl.frame_type = DATATYPE_VIBRATION;
+    esn_frames_head.frames_ctrl.alarm      = ALARM_T;
+    esn_frames_head.frames_ctrl.reserved   = 0;
+    esn_frames_head.seq = data_seq++;
+
+    esn_data_send(&esn_frames_head,
+                  NULL,
+                  0);
+
+
+    //@todo start carma data stream
+    //...
+}
+
+static void esn_distance_handle(void)
+{
+    esn_frames_head_t esn_frames_head;
+
+    esn_frames_head.frames_ctrl.frame_type = DATATYPE_DISTANCE;
+    esn_frames_head.frames_ctrl.alarm      = ALARM_T;
+    esn_frames_head.frames_ctrl.reserved   = 0;
+    esn_frames_head.seq = data_seq++;
+
+    distance_data_trigger_flag = TRUE;
+
+    esn_distance_payload_t esn_distance_pd;
+    esn_distance_pd.distance = sensor_distance_get();
+
+    esn_data_send(&esn_frames_head,
+                  &esn_distance_pd,
+                  sizeof(esn_distance_payload_t));
+
+
+    //@todo start carma data stream
+    //...
+}
+
+static void esn_temp_handle(void)
+{
+    esn_frames_head_t esn_frames_head;
+
+    esn_frames_head.frames_ctrl.frame_type = DATATYPE_TEMPERATURE;
+    esn_frames_head.frames_ctrl.alarm      = ALARM_T;
+    esn_frames_head.frames_ctrl.reserved   = 0;
+    esn_frames_head.seq = data_seq++;
+
+    temp_data_trigger_flag = TRUE;
+
+    esn_temp_payload_t esn_temp_pd;
+    esn_temp_pd.temperature = sensor_temp_get();
+
+    esn_data_send(&esn_frames_head,
+                  &esn_temp_pd,
+                  sizeof(esn_temp_payload_t));
+}
 
 void esn_active_task(void *param)
 {
@@ -23,6 +159,8 @@ void esn_active_task(void *param)
         xQueueReceive(esn_active_queue,
                       &esn_msg,
                       portMAX_DELAY);
+
+        //@todo: judge mac is online
 
         switch (esn_msg.event)
         {

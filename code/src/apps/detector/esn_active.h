@@ -27,6 +27,8 @@ typedef enum
 
 #define ESN_TIMER_CYCLE			(10*60ul)
 
+#define ESN_SENT_WAIT_TIME		(10)	// the secends wait for data sent ok
+#define ESN_SEND_WAIT_CNT		(3)		// the cnt resend for data sent failed
 bool_t esn_active_init(void);
 
 #endif
