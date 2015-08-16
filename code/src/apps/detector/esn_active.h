@@ -17,6 +17,8 @@ typedef enum
 	ESN_VIBRATION_EVENT = 0x01,
 	ESN_DISTANCE_EVENT  = 0x02,
 	ESN_TEMP_EVENT      = 0x03,
+	ESN_UART_EVENT		= 0x04,
+	ESN_CONFIG_EVENT	= 0x05,
 } esn_event_enum_t;
 
 typedef enum

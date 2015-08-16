@@ -10,6 +10,8 @@
  */
 #include "osel_arch.h"
 #include "esn.h"
+#include "mac.h"
+#include "module.h"
 
 static QueueHandle_t esn_active_queue = NULL;
 static TimerHandle_t esn_cycle_timer = NULL;
@@ -24,22 +26,55 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
                             uint8_t len)
 {
     uint8_t data_send_cnt = ESN_SEND_WAIT_CNT;
-    if (esn_frm_hd->frames_ctrl.alarm == ALARM_N)
-    {
+    if (esn_frm_hd->frames_ctrl.alarm == ALARM_N) {
         data_send_cnt = 1;
     }
 
+    sbuf_t *sbuf = sbuf_alloc(__SLINE1);
+    if (sbuf == NULL)
+    {
+        DBG_LOG(DBG_LEVEL_ERROR, "sbuf alloc failed\n");
+        return FALSE;
+    }
+
+    pbuf_t *pbuf = pbuf_alloc((sizeof(esn_frames_head_t) + len) __PLINE1);
+    if (pbuf == NULL)
+    {
+        DBG_LOG(DBG_LEVEL_ERROR, "pbuf alloc failed\n");
+        sbuf_free(&sbuf __SLINE2);
+        return FALSE;
+    }
+
+    sbuf->orig_layer    = APP_LAYER;
+    sbuf->up_down_link  = DOWN_LINK;
+    sbuf->primargs.pbuf = pbuf;
+
+    osel_memcpy(pbuf->data_p, esn_frm_hd, sizeof(esn_frames_head_t));
+    pbuf->data_len += sizeof(esn_frames_head_t);
+    osel_memcpy(pbuf->data_p, payload, len);
+    pbuf->data_len += len;
+
+    pbuf->attri.need_ack = ALARM_N;
+
+    osel_event_t msg;
+    msg.event = M_PRIM_DATA_REQ_EVENT;
+    msg.param = sbuf;
+
     for (uint8_t i = 0; i < data_send_cnt; i++)
     {
-        // @todo send data to mac task
+        if (!mac_queue_send(&msg)) {
+            continue;
+        }
 
-
-        //@note wait for mac send data ok semphore
-        if (mac_sent_get(ESN_SENT_WAIT_TIME))
-        {
+        if (mac_sent_get(ESN_SENT_WAIT_TIME)) { //@note wait for mac send data ok semphore
             return TRUE;
         }
+
+        vTaskDelay(configTICK_RATE_HZ * random());  //@todo random delay time
     }
+
+    pbuf_free(&pbuf __PLINE2);
+    sbuf_free(&sbuf __SLINE2);
 
     return FALSE;
 }
@@ -160,28 +195,41 @@ void esn_active_task(void *param)
                       &esn_msg,
                       portMAX_DELAY);
 
-        //@todo: judge mac is online
-
-        switch (esn_msg.event)
+        if (mac_online_get() != ON_LINE)
         {
-        case ESN_TIMEOUT_EVENT:
-            esn_timeout_handle();
-            break;
+            DBG_LOG(DBG_LEVEL_WARNING, "mac offline, data lost\r\n");
+            mac_online_start();
+        }
+        else
+        {
+            DBG_LOG(DBG_LEVEL_WARNING, "mac online, data event\r\n");
+            switch (esn_msg.event)
+            {
+            case ESN_TIMEOUT_EVENT:
+                esn_timeout_handle();
+                break;
 
-        case ESN_VIBRATION_EVENT:
-            esn_vibration_handle();
-            break;
+            case ESN_VIBRATION_EVENT:
+                esn_vibration_handle();
+                break;
 
-        case ESN_DISTANCE_EVENT:
-            esn_distance_handle();
-            break;
+            case ESN_DISTANCE_EVENT:
+                esn_distance_handle();
+                break;
 
-        case ESN_TEMP_EVENT:
-            esn_temp_handle();
-            break;
+            case ESN_TEMP_EVENT:
+                esn_temp_handle();
+                break;
 
-        default:
-            break;
+            case ESN_UART_EVENT:
+                break;
+
+            case ESN_CONFIG_EVENT:
+                break;
+
+            default:
+                break;
+            }
         }
     }
 }
@@ -209,7 +257,7 @@ void esn_cycle_timeout_cb( TimerHandle_t pxTimer )
 
     esn_msg_t esn_msg;
     esn_msg.event = ESN_TIMEOUT_EVENT;
-    esn_msg.param = 0;
+    esn_msg.param = NULL;
     esn_active_queue_send(&esn_msg);
 }
 
