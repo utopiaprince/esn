@@ -15,10 +15,20 @@
 #define osel_memcmp             memcmp
 #define osel_mem_alloc          pvPortMalloc
 
+typedef enum
+{
+	MSG_LOW_PRIO,
+	MSG_HIGH_PRIO,
+} osel_eblock_prio_t;
+
+typedef portBASE_TYPE osel_signal_t;
+
+typedef void *		osel_param_t;
+
 typedef struct
 {
-    portBASE_TYPE event;
-    void *param;
+    osel_signal_t event;
+    osel_param_t param;
 } osel_event_t;
 
 

@@ -16,9 +16,6 @@
 #ifndef __M_TRAN_H
 #define __M_TRAN_H
 
-#include <pbuf.h>
-#include <sbuf.h>
-
 #define M_TRAN_DGB_EN           (0u)
 
 /* 需注册的回调函数类型 */
@@ -153,6 +150,12 @@ void m_tran_sleep(void);
  *@return: 可以发送则返回TRUE， 反之为FALSE
  */
 bool_t m_tran_can_send(void);
+
+/**
+ * @brief used for mac module
+ * @param pmsg msg pointer to tran module event
+ */
+void m_tran_event_handler(const osel_event_t *const pmsg);
 
 #endif
 

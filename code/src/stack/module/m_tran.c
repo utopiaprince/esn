@@ -18,7 +18,11 @@
 #include "sbuf.h"
 #include "pbuf.h"
 
+#include "module.h"
 #include "m_tran.h"
+#include "mac.h"
+
+DBG_THIS_MODULE("m_tran")
 
 /* 以下宏定义为临时定义，调试完毕需从PIB通过接口获取 */
 #define  BE_INIT                1
@@ -37,14 +41,14 @@
 #endif
 
 #if DATA_RATE == 100u
-#define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(80+2)) + 100u)
+#define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(80+2)) + 1000u)
 /* 100K速率，50*(8*4)=1600 增加160的抖动时间（经验值）*/
 #define  BE_TO_US(be)           ((be)*1760u)
 #define  MS_FOR_ACK             (7u)
 #endif
 
 #if DATA_RATE == 10u
-#define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(800+2)) + 50u)
+#define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(800+2)) + 1000u)
 /* 10K速率，500*(8*4)=1600 增加160的抖动时间（经验值）*/
 #define  BE_TO_US(be)           ((be)*16160)
 #define  BE_TO_MS(be)           ((be)*16)
@@ -114,7 +118,11 @@ bool_t tran_rx_sfd_get(void)
 /*the function uses to send message to mac itself for calling back*/
 static void tran_cb_send_msg(osel_signal_t sig, osel_eblock_prio_t prio)
 {
-    osel_post(sig, (osel_param_t)NULL, prio);
+    osel_event_t msg;
+    msg.event = sig;
+    msg.param = NULL;
+
+    mac_queue_send(&msg);
 }
 
 /*call back for receiving Successfully*/
@@ -949,13 +957,13 @@ static void tran_deal_ack_timeout_event(void)
 }
 
 /*list all event which need to handler*/
-static void m_tran_event_handler(const osel_event_t *const pmsg)
+void m_tran_event_handler(const osel_event_t *const pmsg)
 {
     DBG_ASSERT(pmsg != NULL __DBG_LINE);
 
     if (pmsg != NULL)
     {
-        switch (pmsg->sig)
+        switch (pmsg->event)
         {
         case M_TRAN_RESEND_TIMEOUT_EVENT:
             tran_resend_event();
@@ -1021,14 +1029,6 @@ void m_tran_cfg(const tran_cfg_t *const tran_cb_reg)
 void m_tran_init(void)
 {
     /* 模块的处理函数与消息的绑定 */
-    module_bind_event(m_tran_event_handler, M_TRAN_RESEND_TIMEOUT_EVENT);
-    module_bind_event(m_tran_event_handler, M_TRAN_CSMA_TIMEOUT_EVENT);
-    module_bind_event(m_tran_event_handler, M_TRAN_RXOK_EVENT);
-    module_bind_event(m_tran_event_handler, M_TRAN_RXOVR_EVENT);
-    module_bind_event(m_tran_event_handler, M_TRAN_TXOK_EVENT);
-    module_bind_event(m_tran_event_handler, M_TRAN_TX_ERROR_EVENT);
-    module_bind_event(m_tran_event_handler, M_TRAN_TXUND_EVENT);
-    module_bind_event(m_tran_event_handler, M_TRAN_ACK_TIMEOUT_EVENT);
 
     /* 注册各种中断回调函数 */
     hal_rf_reg_int(HAL_RF_RXOK_INT, rx_ok_cb);
