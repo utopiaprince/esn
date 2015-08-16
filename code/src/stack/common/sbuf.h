@@ -42,9 +42,7 @@ typedef enum _orig_layer_t
 {
     PHY_LAYER = 0,
     MAC_LAYER,
-    NWK_LAYER,
     APP_LAYER,
-    APPS_LAYER,
 } orig_layer_t;
 
 typedef enum _up_down_link_t_
@@ -61,11 +59,8 @@ typedef struct _sbuf_t
     list_head_t     list;
     orig_layer_t    orig_layer;        //转发不能改变原始归属层
     up_down_link_t  up_down_link;
-    prim_type_t     primtype;
     prim_args_t     primargs;
     bool_t          used;
-    uint16_t        slot_seq;          // 发送时隙时使用的时隙序列号
-    uint8_t         handle;            // 标识
 #if SBUF_DBG_EN > 0
     uint16_t        alloc_line;
     uint16_t        free_line;

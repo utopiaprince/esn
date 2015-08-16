@@ -52,12 +52,9 @@
 
 #endif
 
-
-
 typedef struct __send_times_t
 {
     uint8_t app_send_times;
-    uint8_t nwk_send_times;
     uint8_t mac_send_times;
 } send_times_t;
 

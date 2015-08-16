@@ -15,6 +15,9 @@
 #include "sbuf.h"
 #include "prim.h"
 
+#include "module.h"
+#include "m_tran.h"
+
 #ifdef NODE_TYPE_DETECTOR
 #ifdef NODE_TYPE_GATEWAY
 #error "NODE_TYPE_DETECTOR and NODE_TYPE_GATEWAY must define ONE"
@@ -23,31 +26,42 @@
 
 DBG_THIS_MODULE("mac")
 
-xQueueHandle mac_queue = NULL;
-xSemaphoreHandle mac_sent = NULL;
+static xQueueHandle mac_queue = NULL;
+static xSemaphoreHandle mac_sent = NULL;
+
 
 bool_t mac_status = FALSE;  //*< 表示当前网络是否已经在网
 
 static void mac_task(void *p)
 {
-    osel_event_t event;
+    osel_event_t msg;
     while (1)
     {
         xQueueReceive(mac_queue,        //*< the handle of received queue
-                      &event,            //*< pointer to data received
+                      &msg,            //*< pointer to data received
                       portMAX_DELAY);   //*< time out
 
+        switch (msg.event & MAC_MODUEL_ENUM_MASK)
+        {
+        case TRAN_MODULE:
+            m_tran_event_handler(&msg);
+            break;
 
+        case PRIM_MODULE:
+            m_prim_event_handler(&msg);
+            break;
 
-
+        default:
+            break;
+        }
     }
 }
 
-bool_t mac_queue_send(osel_event_t *event)
+bool_t mac_queue_send(osel_event_t *msg)
 {
     portBASE_TYPE res = pdTRUE;
 
-    res = xQueueSendToBack(mac_queue, event, 0); //*< send wait for 10s max
+    res = xQueueSendToBack(mac_queue, msg, (10 * configTICK_RATE_HZ)); //*< send wait for 10s max
     if (res == errQUEUE_FULL)
     {
         DBG_LOG(DBG_LEVEL_ERROR, "mac queue is full\r\n");
@@ -67,9 +81,9 @@ bool_t mac_queue_send(osel_event_t *event)
 bool_t mac_sent_get(uint16_t sec)
 {
     portBASE_TYPE res;
-    res = xSemaphoreTake(mac_sent, (sec*configTICK_RATE_HZ));
+    res = xSemaphoreTake(mac_sent, (sec * configTICK_RATE_HZ));
 
-    if(res == pdPASS)
+    if (res == pdPASS)
     {
         return TRUE;
     }
@@ -83,6 +97,7 @@ bool_t mac_sent_set(void)
 {
     xSemaphoreGive(mac_sent);
 }
+
 
 void mac_init(void)
 {
@@ -113,6 +128,10 @@ void mac_init(void)
 
 #ifdef NODE_TYPE_GATEWAY
     mac_status = TRUE;
+#endif
+
+#ifdef NODE_TYPE_DETECTOR
+    mac_online_start();
 #endif
 }
 

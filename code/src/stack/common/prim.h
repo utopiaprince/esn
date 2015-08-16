@@ -18,27 +18,6 @@
 #include <pbuf.h>
 #include <sbuf.h>
 
-typedef enum
-{
-    A2N_DATA_REQUEST = 1,
-    N2A_DATA_CONFIRM,
-    N2A_DATA_INDICATION,
-    N2A_HEARTBEAT,
-    N2A_DATA_RESEND,
-    N2N_HB_REQUEST,
-
-    N2M_DATA_REQUEST,
-    N2M_DATA_RESEND,
-    M2N_DATA_CONFIRM,
-    M2N_DATA_INDICATION,
-    M2N_DATA_RESEND,
-    M2M_DATA_RESEND,
-
-    M2M_ASSOC_REQUETS,
-    M2N_ASSOC_CONFIRM,
-    M2N_UNASSOC_INDICATION,
-} prim_type_t;
-
 typedef struct _a2n_data_request_
 {
     uint64_t dst_addr;
