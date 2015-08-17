@@ -29,9 +29,6 @@ DBG_THIS_MODULE("mac")
 static xQueueHandle mac_queue = NULL;
 static xSemaphoreHandle mac_sent = NULL;
 
-
-bool_t mac_status = FALSE;  //*< 表示当前网络是否已经在网
-
 static void mac_task(void *p)
 {
     osel_event_t msg;
@@ -126,13 +123,17 @@ void mac_init(void)
 
     }
 
-#ifdef NODE_TYPE_GATEWAY
-    mac_status = TRUE;
-#endif
+    m_prim_init();
+    m_tran_init();
+    
+    m_recv_init();
 
-#ifdef NODE_TYPE_DETECTOR
-    mac_online_start();
-#endif
+
+    
+
+
+
+
 }
 
 

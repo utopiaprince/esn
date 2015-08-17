@@ -14,9 +14,13 @@
 #include "module.h"
 #include "mac.h"
 
+#include "mac_ctrl.h"
 #include "mac_prim.h"
 
-static mac_line_enum_t mac_line_flag = OFF_LINE;
+
+static mac_line_enum_t mac_line_flag = ON_LINE;
+
+#ifdef NODE_TYPE_DETECTOR
 static TimerHandle_t mac_line_cycle_timer = NULL;
 
 mac_line_enum_t mac_online_get(void)
@@ -43,12 +47,14 @@ bool_t mac_online_start(void)
 	mac_queue_send(&msg);
 }
 
-void esn_cycle_timeout_cb( TimerHandle_t pxTimer )
+static void mac_line_cycle_timeout_cb( TimerHandle_t pxTimer )
 {
-    configASSERT( pxTimer );
+	configASSERT( pxTimer );
 
-    mac_online_start();
+	mac_online_start();
 }
+
+#endif
 
 
 static void mac_prim_line_handle(void)
@@ -56,15 +62,14 @@ static void mac_prim_line_handle(void)
 	switch (mac_line_flag)
 	{
 	case OFF_LINE:
-		if(xTimerStart(mac_line_cycle_timer, 0) != pdPASS)
+	//@todo if time restart ,what will happend???
+		if (xTimerStart(mac_line_cycle_timer, 0) != pdPASS)
 		{
-			DBG_LOG(DBG_LEVEL_ERROR,"mac line cycle timer restart failed\r\n");
+			DBG_LOG(DBG_LEVEL_ERROR, "mac line cycle timer restart failed\r\n");
+			return;
 		}
 
-		//@todo send assoc request
-		// ...
-
-
+		mac_ctrl_assoc_req_start();
 		break;
 
 	case ON_LINE:
@@ -101,6 +106,7 @@ void m_prim_event_handler(const osel_event_t *const pmsg)
 
 void m_prim_init(void)
 {
+#ifdef NODE_TYPE_DETECTOR
 	mac_online_set(OFF_LINE);
 
 	mac_line_cycle_timer =
@@ -117,4 +123,5 @@ void m_prim_init(void)
 	{
 		mac_prim_line_handle();
 	}
+#endif
 }

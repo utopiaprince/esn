@@ -222,9 +222,11 @@ void esn_active_task(void *param)
                 break;
 
             case ESN_UART_EVENT:
+                //@todo
                 break;
 
             case ESN_CONFIG_EVENT:
+                //@todo
                 break;
 
             default:
