@@ -31,15 +31,6 @@ DBG_THIS_MODULE("m_tran")
 
 #define  PRE_SYNC_CODE_LEN      (7u)
 
-#if DATA_RATE == 250u
-/* 250K:32us/B; 4M:2us/B; 50us处理时延 */
-#define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(32+2)) + 50)
-/* 250K速率，20*(8*4)=640 增加160的抖动时间（经验值）*/
-#define  BE_TO_US(be)           ((be)*800u)
-/* 250K速率，等待ACK的时间 */
-#define  MS_FOR_ACK             (3.5)
-#endif
-
 #if DATA_RATE == 100u
 #define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(80+2)) + 1000u)
 /* 100K速率，50*(8*4)=1600 增加160的抖动时间（经验值）*/
@@ -49,10 +40,19 @@ DBG_THIS_MODULE("m_tran")
 
 #if DATA_RATE == 10u
 #define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(800+2)) + 1000u)
-/* 10K速率，500*(8*4)=1600 增加160的抖动时间（经验值）*/
+/* 10K速率，500*(8*4)=16000 增加160的抖动时间（经验值）*/
 #define  BE_TO_US(be)           ((be)*16160)
 #define  BE_TO_MS(be)           ((be)*16)
 #define  MS_FOR_ACK             (30u)
+#endif
+
+#if DATA_RATE == 5u
+#define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(1600+2)) + 1000u)
+/* 5K速率，1000*(8*4)=32000 增加160的抖动时间（经验值）*/
+#define  BE_TO_US(be)           ((be)*32160)
+#define  BE_TO_MS(be)           ((be)*32)
+#define  MS_FOR_ACK             (60u)
+
 #endif
 
 typedef struct _tran_state_t
