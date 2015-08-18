@@ -38,6 +38,8 @@ typedef enum
 	MAC_ASSOC_STATUS_LIN  = 0x02,
 } mac_assoc_status_enum_t;
 
+#define MAC_CTRL_LEN		(1u)
+
 typedef struct
 {
 	uint8_t  frame_type	 : 2,

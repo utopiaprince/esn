@@ -14,7 +14,8 @@
 typedef enum
 {
 	OFF_LINE   = 0x00,
-	ON_LINE    = 0x01,
+	START_LINE = 0x01,
+	ON_LINE    = 0x02,
 } mac_line_enum_t;
 
 #define MAC_LINE_TIMER_CYCLE		(10)

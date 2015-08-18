@@ -26,6 +26,7 @@
 
 DBG_THIS_MODULE("mac")
 
+uint8_t mac_seq = 0;
 static xQueueHandle mac_queue = NULL;
 static xSemaphoreHandle mac_sent = NULL;
 

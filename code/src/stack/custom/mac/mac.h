@@ -11,6 +11,9 @@
 #ifndef __MAC_H__
 #define __MAC_H__
 
+
+extern uint8_t mac_seq;
+
 /**
  * @brief send sbuf to mac queue
  *  
