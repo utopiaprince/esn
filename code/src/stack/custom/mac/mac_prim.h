@@ -18,11 +18,13 @@ typedef enum
 	ON_LINE    = 0x02,
 } mac_line_enum_t;
 
+extern TimerHandle_t mac_line_cycle_timer;
+
 #define MAC_LINE_TIMER_CYCLE		(10)
 
-bool_t mac_online_get(void);
+mac_line_enum_t mac_online_get(void);
 
-bool_t mac_online_set(bool_t flag);
+bool_t mac_online_set(mac_line_enum_t flag);
 
 bool_t mac_online_start(void);
 

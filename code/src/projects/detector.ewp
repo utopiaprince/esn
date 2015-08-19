@@ -328,6 +328,8 @@
           <state>$PROJ_DIR$\..\stack\</state>
           <state>$PROJ_DIR$\..\stack\common\</state>
           <state>$PROJ_DIR$\..\stack\custom\mac\</state>
+          <state>$PROJ_DIR$\..\stack\custom\phy\</state>
+          <state>$PROJ_DIR$\..\stack\module\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2004,6 +2006,9 @@
           <name>$PROJ_DIR$\..\common\lib\debug.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\common\lib\hal_timer.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\common\lib\lib.h</name>
         </file>
         <file>
@@ -2012,15 +2017,24 @@
         <file>
           <name>$PROJ_DIR$\..\common\lib\printf.h</name>
         </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\random.h</name>
+        </file>
       </group>
       <file>
         <name>$PROJ_DIR$\..\common\lib\debug.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\hal_timer.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\common\lib\mlist.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\common\lib\printf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\random.c</name>
       </file>
     </group>
   </group>
@@ -2102,6 +2116,48 @@
         <file>
           <name>$PROJ_DIR$\..\stack\custom\mac\mac.c</name>
         </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_ctrl.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_ctrl.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_frames.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_prim.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_prim.h</name>
+        </file>
+      </group>
+      <group>
+        <name>phy</name>
+        <group>
+          <name>inc</name>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\phy\phy_cca.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\phy\phy_packet.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\phy\phy_state.h</name>
+          </file>
+        </group>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\phy\phy_cca.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\phy\phy_packet.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\phy\phy_state.c</name>
+        </file>
       </group>
     </group>
     <group>
@@ -2111,6 +2167,9 @@
       </file>
       <file>
         <name>$PROJ_DIR$\..\stack\module\m_tran.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\stack\module\module.h</name>
       </file>
     </group>
     <file>

@@ -69,6 +69,19 @@ bool_t mac_queue_send(osel_event_t *msg)
     return TRUE;
 }
 
+bool_t mac_queue_send_from_isr(osel_event_t *msg)
+{
+    portBASE_TYPE res = pdTRUE;
+
+    res = xQueueSendToBackFromISR(mac_queue, msg, 0); //*< send wait for 10s max
+    if (res == errQUEUE_FULL)
+    {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
 /**
  * @brief get send flag wait for sec
  * @param  sec time of secends wait for send flag

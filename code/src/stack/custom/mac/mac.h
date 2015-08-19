@@ -26,8 +26,24 @@ extern uint8_t mac_seq;
 bool_t mac_queue_send(osel_event_t *msg);
 
 /**
+ * @brief send sbuf to mac queue from ISR
+ *  
+ * @param[in] msg pointer to store data buf
+ *
+ * @return has sent data to queue?
+ *	- FALSE the queue is full
+ *	- TRUE	has sent data to queue 
+ */
+bool_t mac_queue_send_from_isr(osel_event_t *msg);
+
+/**
  * @brief mac task and queue init
  */
 void mac_init(void);
+
+/**
+ * @brief 获取当前发送是否完成
+ */
+bool_t mac_sent_get(uint16_t sec);
 
 #endif

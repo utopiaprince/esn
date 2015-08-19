@@ -18,6 +18,12 @@
 
 #define M_TRAN_DGB_EN           (0u)
 
+#define TDMA_SEND_MODE                  (0u)    // 数据不需要退避发送
+#define CSMA_SEND_MODE                  (1u)    // 数据退避发送
+#define TRAN_RESEND_TIMES		        (0u)	// 传输模块重传间隔基准时间，ms
+
+#define RF_INT_DEAL_FLOW                (0u)
+
 /* 需注册的回调函数类型 */
 typedef bool_t (*tran_frm_parse_cb_t)(pbuf_t *const pbuf);
 typedef void (*tran_tx_finish_cb_t)(sbuf_t *const sbuf, bool_t result);
