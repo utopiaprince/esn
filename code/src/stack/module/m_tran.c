@@ -21,8 +21,13 @@
 #include "module.h"
 #include "m_tran.h"
 #include "mac.h"
+     
+#include "hal_timer.h"
 
-DBG_THIS_MODULE("m_tran")
+#include "phy_cca.h"
+#include "phy_packet.h"
+#include "phy_state.h"
+
 
 /* 以下宏定义为临时定义，调试完毕需从PIB通过接口获取 */
 #define  BE_INIT                1
@@ -30,6 +35,10 @@ DBG_THIS_MODULE("m_tran")
 #define  MAX_CSMA_BACKOFFS      3
 
 #define  PRE_SYNC_CODE_LEN      (7u)
+
+#ifndef DATA_RATE
+#define DATA_RATE   (5u)
+#endif
 
 #if DATA_RATE == 100u
 #define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(80+2)) + 1000u)
@@ -122,7 +131,7 @@ static void tran_cb_send_msg(osel_signal_t sig, osel_eblock_prio_t prio)
     msg.event = sig;
     msg.param = NULL;
 
-    mac_queue_send(&msg);
+    mac_queue_send_from_isr(&msg);
 }
 
 /*call back for receiving Successfully*/
@@ -221,13 +230,7 @@ static void ack_timeout_cb(void *arg)
 }
 
 
-/*create a random number between min and max*/
-static uint8_t random(uint8_t min, uint8_t max)         //添加stdlib.h 头文件
-{
-    DBG_ASSERT(max >= min __DBG_LINE);
-    srand(TA0R);
-    return (min + rand() % (max - min + 1));
-}
+
 
 /*judge whether the channel is idle */
 static bool_t channel_is_idle(void)
@@ -482,7 +485,8 @@ bool_t m_tran_can_send(void)
 static void resend_timeout_cb(void *p)
 {
     resend_timer = NULL;
-    osel_post(M_TRAN_RESEND_TIMEOUT_EVENT, NULL, OSEL_EVENT_PRIO_LOW);
+    
+    tran_cb_send_msg(M_TRAN_RESEND_TIMEOUT_EVENT, MSG_LOW_PRIO);
 }
 
 static void tran_send_intra(void)
@@ -764,7 +768,7 @@ static void tran_deal_rxok_event(void)
                     m_tran_tracker.tx_success_ack++;
 #endif
                     DBG_ASSERT(tran_state.cb.tx_finish != NULL __DBG_LINE);
-                    tran_state.cb.tx_finish(sbuf_tmp, SUCCESS);
+                    tran_state.cb.tx_finish(sbuf_tmp, TRUE);
                 }
                 else
                 {
@@ -808,7 +812,6 @@ static void tran_deal_txok_event(void)
     if (hal_rf_txfifo_underflow())
     {
         tx_und_cb(0);
-        DBG_PRINT_INFO(0x47);
         return;
     }
 #endif
@@ -828,7 +831,7 @@ static void tran_deal_txok_event(void)
 
                 phy_set_state(PHY_SLEEP_STATE);
                 DBG_ASSERT(tran_state.cb.tx_finish != NULL __DBG_LINE);
-                tran_state.cb.tx_finish(sbuf_tmp, SUCCESS);
+                tran_state.cb.tx_finish(sbuf_tmp, TRUE);
 #if M_TRAN_DGB_EN > 0
                 m_tran_tracker.tx_success_without_ack++;
 #endif
@@ -1031,12 +1034,13 @@ void m_tran_init(void)
     /* 模块的处理函数与消息的绑定 */
 
     /* 注册各种中断回调函数 */
-    hal_rf_reg_int(HAL_RF_RXOK_INT, rx_ok_cb);
-    hal_rf_reg_int(HAL_RF_TXOK_INT, tx_ok_cb);
-
-    /* 使能各种中断 */
-    hal_rf_cfg_int(HAL_RF_RXOK_INT, HAL_INT_ENABLE);
-    hal_rf_cfg_int(HAL_RF_TXOK_INT, HAL_INT_ENABLE);
+    //@todo 注册中断
+//    hal_rf_reg_int(HAL_RF_RXOK_INT, rx_ok_cb);
+//    hal_rf_reg_int(HAL_RF_TXOK_INT, tx_ok_cb);
+//
+//    /* 使能各种中断 */
+//    hal_rf_cfg_int(HAL_RF_RXOK_INT, HAL_INT_ENABLE);
+//    hal_rf_cfg_int(HAL_RF_TXOK_INT, HAL_INT_ENABLE);
 
 #if RF_INT_DEAL_FLOW > 0u
     hal_rf_reg_int(HAL_RF_TXUND_INT, tx_und_cb);

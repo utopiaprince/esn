@@ -14,14 +14,19 @@
 #include "module.h"
 #include "mac.h"
 
+#include "sbuf.h"
+#include "pbuf.h"
+
+#include "mac_frames.h"
 #include "mac_ctrl.h"
 #include "mac_prim.h"
 
+DBG_THIS_MODULE("mac_prim")
 
 static mac_line_enum_t mac_line_flag = ON_LINE;
 
 #ifdef NODE_TYPE_DETECTOR
-static TimerHandle_t mac_line_cycle_timer = NULL;
+TimerHandle_t mac_line_cycle_timer = NULL;
 
 mac_line_enum_t mac_online_get(void)
 {
@@ -47,7 +52,11 @@ bool_t mac_online_start(void)
 		msg.param = NULL;
 
 		mac_queue_send(&msg);
+        
+        return TRUE;
 	}
+    
+    return FALSE;
 }
 
 static void mac_line_cycle_timeout_cb( TimerHandle_t pxTimer )

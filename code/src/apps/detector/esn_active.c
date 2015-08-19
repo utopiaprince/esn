@@ -9,9 +9,16 @@
  * 2015-08-10  v0.0.1  gang.cheng    first version
  */
 #include "osel_arch.h"
+     
+#include "sbuf.h"
+#include "pbuf.h"
+
 #include "esn.h"
 #include "mac.h"
+#include "mac_prim.h"
 #include "module.h"
+     
+DBG_THIS_MODULE("esn_active")
 
 static QueueHandle_t esn_active_queue = NULL;
 static TimerHandle_t esn_cycle_timer = NULL;
@@ -66,11 +73,11 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
             continue;
         }
 
-        if (mac_sent_get(ESN_SENT_WAIT_TIME)) { //@note wait for mac send data ok semphore
+        if (mac_sent_get(ESN_SEND_WAIT_TIME)) { //@note wait for mac send data ok semphore
             return TRUE;
         }
 
-        vTaskDelay(configTICK_RATE_HZ * random());  //@todo random delay time
+        vTaskDelay(configTICK_RATE_HZ * random(ESN_SEND_BACKOFF_MIN, ESN_SEND_BACKOFF_MAX)); 
     }
 
     pbuf_free(&pbuf __PLINE2);
@@ -252,9 +259,6 @@ bool_t esn_active_queue_send(esn_msg_t *esn_msg)
 
 void esn_cycle_timeout_cb( TimerHandle_t pxTimer )
 {
-    int32_t lArrayIndex;
-    const int32_t xMaxExpiryCountBeforeStopping = 10;
-
     configASSERT( pxTimer );
 
     esn_msg_t esn_msg;

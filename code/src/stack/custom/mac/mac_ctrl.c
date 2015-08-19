@@ -1,11 +1,16 @@
 #include "osel_arch.h"
 #include "lib.h"
-#include "module.h"
 
+#include "pbuf.h"
+#include "sbuf.h"
+
+#include "m_tran.h"
+#include "module.h"
 #include "phy_packet.h"
 
 #include "mac.h"
 #include "mac_frames.h"
+#include "mac_prim.h"
 #include "mac_ctrl.h"
 
 DBG_THIS_MODULE("mac_ctrl")
@@ -32,7 +37,7 @@ void mac_ctrl_assoc_req_start(uint16_t dst_addr)
 	if (sbuf == NULL)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "sbuf alloc failed\n");
-		return FALSE;
+		return;
 	}
 
 	pbuf_t *pbuf = pbuf_alloc((sizeof(mac_frames_hd_t) +
@@ -43,7 +48,7 @@ void mac_ctrl_assoc_req_start(uint16_t dst_addr)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "pbuf alloc failed\n");
 		sbuf_free(&sbuf __SLINE2);
-		return FALSE;
+		return;
 	}
 
 	sbuf->orig_layer    = MAC_LAYER;
@@ -77,7 +82,7 @@ void mac_ctrl_assoc_req_handle(sbuf_t *sbuf)
 	pbuf_t *pbuf = sbuf->primargs.pbuf;
 	if (pbuf == NULL)
 	{
-		DBG_LOG("pbuf is NULL\r\n");
+		DBG_LOG(DBG_LEVEL_ERROR, "pbuf is NULL\r\n");
 	}
 
 	mac_assoc_req_t mac_assoc_req;
@@ -87,7 +92,7 @@ void mac_ctrl_assoc_req_handle(sbuf_t *sbuf)
 	//
 
 	uint16_t dst_addr = 0x0000;
-	memcpy((void *)&dst_addr, mac_assoc_req.licenses, sizeof(uint16_t));
+	memcpy((void *)&dst_addr, mac_assoc_req.license_info, sizeof(uint16_t));
 
 	mac_ctrl_assoc_resp_start(dst_addr, MAC_ASSOC_STATUS_OK);
 }
@@ -114,7 +119,7 @@ void mac_ctrl_assoc_resp_start(uint16_t dst_addr, mac_assoc_status_enum_t status
 	if (sbuf == NULL)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "sbuf alloc failed\n");
-		return FALSE;
+		return;
 	}
 
 	pbuf_t *pbuf = pbuf_alloc((sizeof(mac_frames_hd_t) +
@@ -125,7 +130,7 @@ void mac_ctrl_assoc_resp_start(uint16_t dst_addr, mac_assoc_status_enum_t status
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "pbuf alloc failed\n");
 		sbuf_free(&sbuf __SLINE2);
-		return FALSE;
+		return;
 	}
 
 	sbuf->orig_layer    = MAC_LAYER;
@@ -156,7 +161,7 @@ void mac_ctrl_assoc_resp_handle(sbuf_t *sbuf)
 	pbuf_t *pbuf = sbuf->primargs.pbuf;
 	if (pbuf == NULL)
 	{
-		DBG_LOG("pbuf is NULL\r\n");
+		DBG_LOG(DBG_LEVEL_ERROR, "pbuf is NULL\r\n");
 	}
 
 	mac_assoc_resp_t mac_assoc_resp;

@@ -5,6 +5,7 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+#include "timers.h"
 
 #define hal_int_state_t         char
 #define HAL_ENTER_CRITICAL(s)   s=0;taskENTER_CRITICAL()
