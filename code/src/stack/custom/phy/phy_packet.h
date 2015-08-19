@@ -1,15 +1,24 @@
 /**
- * @brief       : this
+ * @brief       : 
+ *
  * @file        : phy_packet.h
- * @version     : v0.0.1
  * @author      : gang.cheng
- * @date        : 2015-08-18
- * change logs  :
- * Date       Version     Author        Note
- * 2015-08-18  v0.0.1  gang.cheng    first version
+ * @version     : v0.0.1
+ * @date        : 2015/5/7
+ *
+ * Change Logs  :
+ *
+ * Date        Version      Author      Notes
+ * 2015/5/7    v0.0.1      gang.cheng    first version
  */
 #ifndef __PHY_PACKET_H__
 #define __PHY_PACKET_H__
+
+#include <data_type_def.h>
+#include <pbuf.h>
+
+#define PKT_LEN_MAX 		(64)	// 协议中最大帧长，包括物理头
+#define PKT_LEN_MIN         (6u)    // 协议中最小帧长
 
 #define PHY_HEAD_SIZE       3u  //物理帧帧头长度
 #define PHY_LEN_FEILD_SIZE  1u  //物理帧长度域帧头长度
