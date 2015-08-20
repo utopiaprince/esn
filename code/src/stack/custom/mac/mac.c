@@ -26,6 +26,9 @@
 
 DBG_THIS_MODULE("mac")
 
+uint16_t mac_short_addr = 0x0101;
+uint64_t mac_long_addr  = 0xaabbccddeeff0101;
+
 uint8_t mac_seq = 0;
 static xQueueHandle mac_queue = NULL;
 static xSemaphoreHandle mac_sent = NULL;
