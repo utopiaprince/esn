@@ -14,10 +14,23 @@
 
 void mac_ctrl_assoc_req_start(uint16_t dst_addr);
 
-void mac_ctrl_assoc_req_handle(sbuf_t *sbuf);
+/**
+ * @brief host received request
+ * @param pbuf 
+ */
+void mac_ctrl_assoc_req_handle(pbuf_t *pbuf);
 
+/**
+ * @brief from host to detector
+ * @param dst_addr
+ * @param status
+ */
 void mac_ctrl_assoc_resp_start(uint16_t dst_addr, mac_assoc_status_enum_t status);
 
-void mac_ctrl_assoc_resp_handle(sbuf_t *sbuf);
+/**
+ * @brief detector received response
+ * @param pbuf [description]
+ */
+void mac_ctrl_assoc_resp_handle(pbuf_t *pbuf);
 
 #endif

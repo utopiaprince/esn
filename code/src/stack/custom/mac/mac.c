@@ -57,9 +57,7 @@ static void mac_task(void *p)
 
 bool_t mac_queue_send(osel_event_t *msg)
 {
-    portBASE_TYPE res = pdTRUE;
-
-    res = xQueueSendToBack(mac_queue, msg, (10 * configTICK_RATE_HZ)); //*< send wait for 10s max
+    portBASE_TYPE res = xQueueSendToBack(mac_queue, msg, (10 * configTICK_RATE_HZ)); //*< send wait for 10s max
     if (res == errQUEUE_FULL)
     {
         DBG_LOG(DBG_LEVEL_ERROR, "mac queue is full\r\n");
@@ -71,9 +69,7 @@ bool_t mac_queue_send(osel_event_t *msg)
 
 bool_t mac_queue_send_from_isr(osel_event_t *msg)
 {
-    portBASE_TYPE res = pdTRUE;
-
-    res = xQueueSendToBackFromISR(mac_queue, msg, 0); //*< send wait for 10s max
+    portBASE_TYPE res = xQueueSendToBackFromISR(mac_queue, msg, 0); //*< send wait for 10s max
     if (res == errQUEUE_FULL)
     {
         return FALSE;

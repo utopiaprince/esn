@@ -18,6 +18,7 @@ DBG_THIS_MODULE("mac_ctrl")
 static void mac_assoc_req_tx(sbuf_t *sbuf, uint8_t res)
 {
 	pbuf_t *pbuf = sbuf->primargs.pbuf;
+
 	if (pbuf != NULL)
 	{
 		pbuf_free(&pbuf __PLINE2);
@@ -77,9 +78,8 @@ void mac_ctrl_assoc_req_start(uint16_t dst_addr)
 /**
  * @brief recevied assoc req
  */
-void mac_ctrl_assoc_req_handle(sbuf_t *sbuf)
+void mac_ctrl_assoc_req_handle(pbuf_t *pbuf)
 {
-	pbuf_t *pbuf = sbuf->primargs.pbuf;
 	if (pbuf == NULL)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "pbuf is NULL\r\n");
@@ -156,9 +156,8 @@ void mac_ctrl_assoc_resp_start(uint16_t dst_addr, mac_assoc_status_enum_t status
 	m_tran_send(sbuf, mac_assoc_resp_tx, 3);
 }
 
-void mac_ctrl_assoc_resp_handle(sbuf_t *sbuf)
+void mac_ctrl_assoc_resp_handle(pbuf_t *pbuf)
 {
-	pbuf_t *pbuf = sbuf->primargs.pbuf;
 	if (pbuf == NULL)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "pbuf is NULL\r\n");
@@ -167,7 +166,7 @@ void mac_ctrl_assoc_resp_handle(sbuf_t *sbuf)
 	mac_assoc_resp_t mac_assoc_resp;
 	mac_frm_assoc_resp_get(pbuf, &mac_assoc_resp);
 
-	if(mac_assoc_resp.status == MAC_ASSOC_STATUS_OK)
+	if (mac_assoc_resp.status == MAC_ASSOC_STATUS_OK)
 	{
 		mac_online_set(ON_LINE);
 		xTimerStop(mac_line_cycle_timer, 0);
@@ -175,4 +174,26 @@ void mac_ctrl_assoc_resp_handle(sbuf_t *sbuf)
 }
 
 
+void mac_ctrl_parse(pbuf_t *pbuf)
+{
+	uint8_t ctrl_frm_type = *(pbuf->data_p);
+	pbuf->data_p += sizeof(uint8_t);
 
+	switch (ctrl_frm_type)
+	{
+	case MAC_CTRL_ASSOC_REQ:
+#ifdef NODE_TYPE_GATEWAY
+		mac_ctrl_assoc_req_handle(pbuf);
+#endif
+		break;
+
+	case MAC_CTRL_ASSOC_RESP:
+#ifdef NODE_TYPE_DETECTOR
+		mac_ctrl_assoc_resp_handle(pbuf);
+#endif
+		break;
+
+	default:
+		break;
+	}
+}
