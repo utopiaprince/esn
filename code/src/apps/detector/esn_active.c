@@ -193,7 +193,7 @@ static void esn_temp_handle(void)
                   sizeof(esn_temp_payload_t));
 }
 
-void esn_active_task(void *param)
+static void esn_active_task(void *param)
 {
     esn_msg_t esn_msg;
     while (1)
