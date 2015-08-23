@@ -9,7 +9,7 @@
  * 2015-08-10  v0.0.1  gang.cheng    first version
  */
 #include "osel_arch.h"
-     
+
 #include "sbuf.h"
 #include "pbuf.h"
 
@@ -17,7 +17,7 @@
 #include "mac.h"
 #include "mac_prim.h"
 #include "module.h"
-     
+
 DBG_THIS_MODULE("esn_active")
 
 static QueueHandle_t esn_active_queue = NULL;
@@ -77,7 +77,7 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
             return TRUE;
         }
 
-        vTaskDelay(configTICK_RATE_HZ * random(ESN_SEND_BACKOFF_MIN, ESN_SEND_BACKOFF_MAX)); 
+        vTaskDelay(configTICK_RATE_HZ * random(ESN_SEND_BACKOFF_MIN, ESN_SEND_BACKOFF_MAX));
     }
 
     pbuf_free(&pbuf __PLINE2);
@@ -232,8 +232,11 @@ static void esn_active_task(void *param)
                 //@todo
                 break;
 
-            case ESN_CONFIG_EVENT:
+            case ESN_SSN_EVENT:
                 //@todo
+                sbuf_t *sbuf = (sbuf_t *)(esn_msg.param);
+                pbuf_free(&(sbuf->primargs.pbuf) __PLINE2 );
+                sbuf_free(&sbuf __SLINE2 );
                 break;
 
             default:

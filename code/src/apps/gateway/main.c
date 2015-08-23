@@ -25,7 +25,7 @@ int main(void)
 	debug_init(DBG_LEVEL_TRACE | DBG_LEVEL_INFO | DBG_LEVEL_WARNING |
 	           DBG_LEVEL_ERROR);
 
-	esn_handle_init();
+	esn_active_init();
 
 	stack_init();
 

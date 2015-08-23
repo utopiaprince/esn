@@ -1,5 +1,5 @@
 /**
- * @brief       : 
+ * @brief       :
  *
  * @file        : prim.h
  * @author      : gang.cheng
@@ -17,6 +17,13 @@
 
 #include <pbuf.h>
 #include <sbuf.h>
+
+typedef struct
+{
+    uint32_t event;
+    void *param;
+} esn_msg_t;
+
 
 typedef struct _a2n_data_request_
 {

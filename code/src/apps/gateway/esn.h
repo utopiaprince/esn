@@ -13,11 +13,9 @@
 
 #include "data_type_def.h"
 
-#include "esn_handle.h"
+#include "esn_active.h"
 #include "esn_frames.h"
 
-#define ESN_HANDLE_PRIORITY		2
-
-
+#define ESN_ACTIVE_PRIORITY		2
 
 #endif

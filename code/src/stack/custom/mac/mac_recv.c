@@ -168,7 +168,12 @@ static void mac_data_frame_parse(pbuf_t *pbuf)
 	sbuf->primargs.pbuf = pbuf;
 
 	//@todo send data to app
-	//...
+#include "esn_active.h"
+	esn_msg_t esn_msg;
+	esn_msg.param = sbuf;
+	esn_msg.event = ESN_SSN_EVENT;
+
+	esn_active_queue_send(&esn_msg);
 }
 
 static bool_t mac_frame_parse(pbuf_t *pbuf)

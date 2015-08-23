@@ -21,12 +21,6 @@ typedef enum
 	ESN_CONFIG_EVENT	= 0x05,
 } esn_event_enum_t;
 
-typedef struct
-{
-    uint32_t event;
-    int32_t  param;
-} esn_msg_t;
-
 #define ESN_TIMER_CYCLE			(10*60ul)
 
 #define ESN_SEND_WAIT_TIME		(10)	// the secends wait for data sent ok
