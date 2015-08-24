@@ -21,7 +21,7 @@ static void esn_active_task(void *param)
 		switch (esn_msg.event)
 		{
 		case ESN_SSN_EVENT:
-		//@todo recevied new ssn data
+			//@todo recevied new ssn data
 			break;
 
 		default:

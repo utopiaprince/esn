@@ -60,62 +60,27 @@ static bool_t mac_addr_filter(uint8_t frm_type, void *dst_addr, uint8_t addr_mod
 
 static bool_t mac_frame_head_info_parse(pbuf_t *pbuf)
 {
-	pbuf->data_p = pbuf->head + PHY_HEAD_SIZE;
-	memcpy(&(mac_frm_head_info.frm_ctrl), pbuf->data_p, MAC_HEAD_CTRL_SIZE);
-	pbuf->data_p += MAC_HEAD_CTRL_SIZE;
+	mac_frm_hd_get(pbuf, &mac_frm_head_info);
 
-	mac_frm_head_info.mac_seq = *pbuf->data_p;
-	pbuf->data_p += MAC_HEAD_SEQ_SIZE;
-
-	if (mac_frm_head_info.frm_ctrl.des_addr_mode == MAC_ADDR_MODE_LONG)
-	{
-		memcpy((uint8_t *)&mac_frm_head_info.addr_info.dst_addr,
-		       pbuf->data_p, MAC_ADDR_LONG_SIZE);
-		pbuf->data_p += MAC_ADDR_LONG_SIZE;
-	}
-	else if (mac_frm_head_info.frm_ctrl.des_addr_mode == MAC_ADDR_MODE_SHORT)
-	{
-		memcpy((uint8_t *)&mac_frm_head_info.addr_info.dst_addr,
-		       pbuf->data_p, MAC_ADDR_SHORT_SIZE);
-		pbuf->data_p += MAC_ADDR_SHORT_SIZE;
-	}
-
-	if (mac_frm_head_info.frm_ctrl.src_addr_mode == MAC_ADDR_MODE_LONG)
-	{
-		memcpy((uint8_t *)&mac_frm_head_info.addr_info.src_addr,
-		       pbuf->data_p, MAC_ADDR_LONG_SIZE);
-		pbuf->data_p += MAC_ADDR_LONG_SIZE;
-	}
-	else if (mac_frm_head_info.frm_ctrl.src_addr_mode == MAC_ADDR_MODE_SHORT)
-	{
-		memcpy((uint8_t *)&mac_frm_head_info.addr_info.src_addr,
-		       pbuf->data_p, MAC_ADDR_SHORT_SIZE);
-		pbuf->data_p += MAC_ADDR_SHORT_SIZE;
-	}
-
-	if (!mac_addr_filter(mac_frm_head_info.frm_ctrl.frm_type,
+	if (!mac_addr_filter(mac_frm_head_info.frames_ctrl.frm_type,
 	                     (void *) & (mac_frm_head_info.addr_info.dst_addr),
-	                     mac_frm_head_info.frm_ctrl.des_addr_mode))
+	                     mac_frm_head_info.frames_ctrl.des_addr_mode))
 	{
 		return FALSE;
 	}
-	// mac head size
-	mac_frm_head_info.mhr_size = (pbuf->data_p - pbuf->head) - PHY_HEAD_SIZE;
-	// fill pbuf attri
-	pbuf->attri.need_ack    = mac_frm_head_info.frm_ctrl.ack_req;
+
+	pbuf->attri.need_ack    = mac_frm_head_info.frames_ctrl.ack_req;
 	pbuf->attri.seq         = mac_frm_head_info.mac_seq;
 	pbuf->attri.src_id      = mac_frm_head_info.addr_info.src_addr;
-	if (mac_frm_head_info.frm_ctrl.frm_type == MAC_FRAMES_TYPE_ACK)
+	if (mac_frm_head_info.frames_ctrl.frm_type == MAC_FRAMES_TYPE_ACK)
 	{
 		pbuf->attri.is_ack = TRUE;
-		pbuf->data_p += 1;
 	}
 	else
 	{
 		pbuf->attri.is_ack = FALSE;
 	}
 
-	pbuf->data_p = pbuf->head + pbuf->data_len - PHY_FCS_SIZE;
 	return TRUE;
 }
 
@@ -182,9 +147,7 @@ static bool_t mac_frame_parse(pbuf_t *pbuf)
 	{
 		return FALSE;
 	}
-
-	pbuf->data_p = pbuf->head + PHY_HEAD_SIZE + mac_frm_head_info.mhr_size;
-
+	
 	switch (mac_frm_head_info.frm_ctrl.frm_type)
 	{
 	case MAC_FRAMES_TYPE_DATA:
@@ -208,12 +171,16 @@ static bool_t mac_frame_parse(pbuf_t *pbuf)
 	return TRUE;
 }
 
-
 static void mac_tx_finish_tmp(sbuf_t *sbuf, bool_t result)
 {
 	DBG_ASSERT(sbuf != NULL __DBG_LINE);
 	pbuf_free(&(sbuf->primargs.pbuf) __PLINE2 );
 	sbuf_free(&sbuf __SLINE2 );
+
+	if (result)
+	{
+		mac_sent_set();
+	}
 }
 
 static void mac_send_ack(uint8_t seqno)

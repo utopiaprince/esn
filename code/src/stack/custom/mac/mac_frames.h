@@ -82,9 +82,9 @@ int8_t mac_frm_hd_get(pbuf_t *pbuf, mac_frames_hd_t *mac_frm_hd);
 int8_t mac_frm_hd_fill(pbuf_t *pbuf, mac_frames_hd_t *mac_frm_hd);
 
 
-int8_t mac_frm_data_get(pbuf_t *pbuf, void *datap, uint8_t *len);
+int8_t mac_frm_data_get(pbuf_t *pbuf, void *datap);
 
-int8_t mac_frm_data_fill(pbuf_t *pbuf, void *datap, uint8_t *len);
+int8_t mac_frm_data_fill(pbuf_t *pbuf, void *datap, uint8_t len);
 
 
 int8_t mac_frm_assoc_req_get(pbuf_t *pbuf, mac_assoc_req_t *assoc_req);

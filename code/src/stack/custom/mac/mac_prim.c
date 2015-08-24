@@ -52,11 +52,11 @@ bool_t mac_online_start(void)
 		msg.param = NULL;
 
 		mac_queue_send(&msg);
-        
-        return TRUE;
+
+		return TRUE;
 	}
-    
-    return FALSE;
+
+	return FALSE;
 }
 
 static void mac_line_cycle_timeout_cb( TimerHandle_t pxTimer )
@@ -109,6 +109,43 @@ static void mac_prim_line_handle(void)
 	}
 }
 
+static void mac_data_txok_cb(sbuf_t *sbuf, bool_t result)
+{
+	DBG_ASSERT(sbuf != NULL __DBG_LINE);
+	pbuf_free(&(sbuf->primargs.pbuf) __PLINE2 );
+	sbuf_free(&sbuf __SLINE2 );
+}
+
+static void mac_prim_data_handle(sbuf_t *sbuf)
+{
+	sbuf_t *new_sbuf = sbuf_alloc(__SLINE1);
+	if (new_sbuf == NULL)
+	{
+		DBG_LOG(DBG_LEVEL_ERROR, "sbuf alloc failed\n");
+		return;
+	}
+
+	uint8_t data_len = sbuf->primargs.pbuf->data_len;
+
+	pbuf_t *new_pbuf = pbuf_alloc((PHY_HEAD_SIZE + MAC_HEAD_CTRL_SIZE +
+	                               MAC_HEAD_SEQ_SIZE + MAC_ADDR_SHORT_SIZE * 2
+	                               + data_len) __PLINE1);
+	if (new_pbuf == NULL)
+	{
+		DBG_LOG(DBG_LEVEL_ERROR, "pbuf alloc failed\n");
+		sbuf_free(&new_sbuf __SLINE2);
+		return;
+	}
+
+	new_sbuf->orig_layer    = MAC_LAYER;
+	new_sbuf->up_down_link  = DOWN_LINK;
+	new_sbuf->primargs.pbuf = new_pbuf;
+
+	mac_frm_data_fill(new_pbuf, sbuf->primargs.pbuf->head, data_len);
+
+	m_tran_send(new_sbuf, mac_data_txok_cb, 3);
+}
+
 void m_prim_event_handler(const osel_event_t *const pmsg)
 {
 	DBG_ASSERT(NULL != pmsg __DBG_LINE);
@@ -118,7 +155,7 @@ void m_prim_event_handler(const osel_event_t *const pmsg)
 		switch (pmsg->event)
 		{
 		case M_PRIM_DATA_REQ_EVENT:
-			//@todo add code for data request
+			mac_prim_data_handle((sbuf_t *)(pmsg->param));
 			break;
 
 		case M_PRIM_LINK_REQ_EVENT:
