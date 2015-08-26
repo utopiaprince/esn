@@ -91,8 +91,24 @@ int8_t mac_frm_hd_fill(pbuf_t *pbuf, mac_frames_hd_t *mac_frm_hd)
 	}
 
 	uint8_t len = pbuf->data_p - datap;
-
 	pbuf->data_len += len;
+
+	pbuf->attri.seq 	  = mac_frm_hd->seq;
+	pbuf->attri.send_mode = CSMA_SEND_MODE;
+	pbuf->attri.need_ack  = mac_frm_hd->frames_ctrl.ack_request;
+	if(mac_frm_hd.frames_ctrl.frame_type == MAC_FRAMES_TYPE_ACK)
+	{
+		pbuf->attri.is_ack = TRUE;
+	}
+	
+	if (MAC_ADDR_MODE_NONE == mac_frm_hd.frames_ctrl.dst_mode)
+	{
+		pbuf->attri.dst_id = MAC_BROADCAST_ADDR;
+	}
+	else
+	{
+		pbuf->attri.dst_id = (uint16_t)mac_frm_hd.dst_addr;
+	}
 
 	return len;
 }
@@ -104,7 +120,7 @@ int8_t mac_frm_data_get(pbuf_t *pbuf, void *datap)
 		return -1;
 	}
 
-	if(datap == NULL)
+	if (datap == NULL)
 	{
 		return -1;
 	}
@@ -119,12 +135,12 @@ int8_t mac_frm_data_get(pbuf_t *pbuf, void *datap)
 
 int8_t mac_frm_data_fill(pbuf_t *pbuf, void *datap, uint8_t len)
 {
-	if(pbuf == NULL)
+	if (pbuf == NULL)
 	{
 		return -1;
 	}
 
-	if(datap == NULL)
+	if (datap == NULL)
 	{
 		return -1;
 	}
@@ -211,7 +227,5 @@ int8_t mac_frm_assoc_resp_fill(pbuf_t *pbuf, mac_assoc_resp_t *assoc_resp)
 
 	return len;
 }
-
-
 
 

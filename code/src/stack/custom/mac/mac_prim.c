@@ -24,6 +24,7 @@
 DBG_THIS_MODULE("mac_prim")
 
 static mac_line_enum_t mac_line_flag = ON_LINE;
+static uint16_t coord_addr = 0;
 
 #ifdef NODE_TYPE_DETECTOR
 TimerHandle_t mac_line_cycle_timer = NULL;
@@ -78,7 +79,7 @@ static void mac_prim_line_handle(void)
 	switch (mac_line_flag)
 	{
 	case OFF_LINE:
-		//@todo if time restart ,what will happend???
+		//@note if time restart ,what will happend???
 		if (xTimerStart(mac_line_cycle_timer, 0) != pdPASS)
 		{
 			DBG_LOG(DBG_LEVEL_ERROR, "mac line cycle timer restart failed\r\n");
@@ -114,6 +115,11 @@ static void mac_data_txok_cb(sbuf_t *sbuf, bool_t result)
 	DBG_ASSERT(sbuf != NULL __DBG_LINE);
 	pbuf_free(&(sbuf->primargs.pbuf) __PLINE2 );
 	sbuf_free(&sbuf __SLINE2 );
+
+	if (result)
+	{
+		mac_sent_set();
+	}
 }
 
 static void mac_prim_data_handle(sbuf_t *sbuf)
@@ -141,8 +147,20 @@ static void mac_prim_data_handle(sbuf_t *sbuf)
 	new_sbuf->up_down_link  = DOWN_LINK;
 	new_sbuf->primargs.pbuf = new_pbuf;
 
-	mac_frm_data_fill(new_pbuf, sbuf->primargs.pbuf->head, data_len);
+	mac_frames_hd_t mac_frm_hd;
+	mac_frm_hd.frames_ctrl.frame_type  = MAC_FRAMES_TYPE_DATA;
+	mac_frm_hd.frames_ctrl.ack_request = pbuf->attri.need_ack;
+	mac_frm_hd.frames_ctrl.dst_mode    = MAC_ADDR_MODE_SHORT;
+	mac_frm_hd.frames_ctrl.src_mode    = MAC_ADDR_MODE_SHORT;
+	mac_frm_hd.frames_ctrl.reserved    = 0x00;
+	mac_frm_hd.seq                     = mac_seq++;
+	mac_frm_hd.dst_addr                = coord_addr;
+	mac_frm_hd.src_addr                = 0x0101;	//@todo get NUI from FLASH
 
+	mac_frm_hd_fill(new_pbuf, &mac_frm_hd);
+	mac_frm_data_fill(new_pbuf, sbuf->primargs.pbuf->head, data_len);
+	new_pbuf->attri.need_ack = pbuf->attri.need_ack;
+	
 	m_tran_send(new_sbuf, mac_data_txok_cb, 3);
 }
 

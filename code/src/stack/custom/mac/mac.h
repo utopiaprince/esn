@@ -48,4 +48,6 @@ void mac_init(void);
  */
 bool_t mac_sent_get(uint16_t sec);
 
+bool_t mac_sent_set(void);
+
 #endif

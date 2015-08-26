@@ -11,6 +11,7 @@
 #ifndef __MAC_RECV_H__
 #define __MAC_RECV_H__
 
+extern mac_frames_hd_t mac_frm_head_info;
 
 void mac_recv_init(void);
 

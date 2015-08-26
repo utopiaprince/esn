@@ -61,7 +61,7 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
     osel_memcpy(pbuf->data_p, payload, len);
     pbuf->data_len += len;
 
-    pbuf->attri.need_ack = ALARM_N;
+    pbuf->attri.need_ack = esn_frm_hd->frames_ctrl.alarm;
 
     osel_event_t msg;
     msg.event = M_PRIM_DATA_REQ_EVENT;

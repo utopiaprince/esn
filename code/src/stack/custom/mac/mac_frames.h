@@ -96,5 +96,4 @@ int8_t mac_frm_assoc_resp_get(pbuf_t *pbuf, mac_assoc_resp_t *assoc_resp);
 
 int8_t mac_frm_assoc_resp_fill(pbuf_t *pbuf, mac_assoc_resp_t *assoc_resp);
 
-
 #endif
