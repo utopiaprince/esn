@@ -98,10 +98,10 @@ static void esn_camra_handle(void)
     uint8_t sub_num = 1;
 
     esn_frames_head_t esn_frames_head;
-    esn_frames_head.frames_ctrl.frame_type = DATATYPE_PICTURE;
+    esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
     esn_frames_head.frames_ctrl.alarm      = ALARM_N;
-    esn_frames_head.frames_ctrl.reserved   = 0;
-    esn_frames_head.nums = nums;
+    esn_frames_head.frames_ctrl.data_type  = DATATYPE_PICTURE;
+    esn_frames_head.nums                   = nums;
 
     while (len > CAMRA_PAYLOAD_SUB_SIZE) {
         esn_frames_head.seq = data_seq++;
@@ -136,9 +136,9 @@ static void esn_timeout_handle(void)
         distance_data_trigger_flag = FALSE;
     } else {
         //@note send distance_data
-        esn_frames_head.frames_ctrl.frame_type = DATATYPE_DISTANCE;
+        esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
         esn_frames_head.frames_ctrl.alarm      = ALARM_N;
-        esn_frames_head.frames_ctrl.reserved   = 0;
+        esn_frames_head.frames_ctrl.data_type  = DATATYPE_DISTANCE;
         esn_frames_head.seq = data_seq++;
         esn_frames_head.nums = 1;
         esn_frames_head.sub_num = 1;
@@ -155,9 +155,9 @@ static void esn_timeout_handle(void)
     if (temp_data_trigger_flag) {
         temp_data_trigger_flag = FALSE;
     } else {
-        esn_frames_head.frames_ctrl.frame_type = DATATYPE_TEMPERATURE;
+        esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
         esn_frames_head.frames_ctrl.alarm      = ALARM_N;
-        esn_frames_head.frames_ctrl.reserved   = 0;
+        esn_frames_head.frames_ctrl.data_type  = DATATYPE_TEMPERATURE;
         esn_frames_head.seq = data_seq++;
         esn_frames_head.nums = 1;
         esn_frames_head.sub_num = 1;
@@ -175,9 +175,9 @@ static void esn_vibration_handle(void)
 {
     esn_frames_head_t esn_frames_head;
 
-    esn_frames_head.frames_ctrl.frame_type = DATATYPE_VIBRATION;
+    esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
     esn_frames_head.frames_ctrl.alarm      = ALARM_T;
-    esn_frames_head.frames_ctrl.reserved   = 0;
+    esn_frames_head.frames_ctrl.data_type  = DATATYPE_VIBRATION;
     esn_frames_head.seq = data_seq++;
     esn_frames_head.nums = 1;
     esn_frames_head.sub_num = 1;
@@ -196,9 +196,9 @@ static void esn_distance_handle(void)
 {
     esn_frames_head_t esn_frames_head;
 
-    esn_frames_head.frames_ctrl.frame_type = DATATYPE_DISTANCE;
+    esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
     esn_frames_head.frames_ctrl.alarm      = ALARM_T;
-    esn_frames_head.frames_ctrl.reserved   = 0;
+    esn_frames_head.frames_ctrl.data_type  = DATATYPE_DISTANCE;
     esn_frames_head.seq = data_seq++;
     esn_frames_head.nums = 1;
     esn_frames_head.sub_num = 1;
@@ -218,9 +218,9 @@ static void esn_temp_handle(void)
 {
     esn_frames_head_t esn_frames_head;
 
-    esn_frames_head.frames_ctrl.frame_type = DATATYPE_TEMPERATURE;
+    esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
     esn_frames_head.frames_ctrl.alarm      = ALARM_T;
-    esn_frames_head.frames_ctrl.reserved   = 0;
+    esn_frames_head.frames_ctrl.frame_type = DATATYPE_TEMPERATURE;
     esn_frames_head.seq = data_seq++;
     esn_frames_head.nums = 1;
     esn_frames_head.sub_num = 1;

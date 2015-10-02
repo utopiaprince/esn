@@ -45,13 +45,15 @@ typedef struct
 {
     uint8_t frame_type  : 2,
             alarm       : 1,
-            reserved    : 5;
+            data_type   : 5;
 } esn_frames_ctrl_t;
 
 typedef struct
 {
     esn_frames_ctrl_t frames_ctrl;
     uint8_t           seq;
+    uint8_t           nums;
+    uint8_t           sub_num;
 } esn_frames_head_t;
 
 typedef struct
