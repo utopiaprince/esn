@@ -27,6 +27,7 @@ static uint8_t data_seq = 0;
 
 static bool_t distance_data_trigger_flag = FALSE;
 static bool_t temp_data_trigger_flag = TRUE;
+static uint8_t carma_data[1028];
 
 static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
                             const void *const payload,
@@ -38,15 +39,13 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
     }
 
     sbuf_t *sbuf = sbuf_alloc(__SLINE1);
-    if (sbuf == NULL)
-    {
+    if (sbuf == NULL) {
         DBG_LOG(DBG_LEVEL_ERROR, "sbuf alloc failed\n");
         return FALSE;
     }
 
     pbuf_t *pbuf = pbuf_alloc((sizeof(esn_frames_head_t) + len) __PLINE1);
-    if (pbuf == NULL)
-    {
+    if (pbuf == NULL) {
         DBG_LOG(DBG_LEVEL_ERROR, "pbuf alloc failed\n");
         sbuf_free(&sbuf __SLINE2);
         return FALSE;
@@ -67,8 +66,7 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
     msg.event = M_PRIM_DATA_REQ_EVENT;
     msg.param = sbuf;
 
-    for (uint8_t i = 0; i < data_send_cnt; i++)
-    {
+    for (uint8_t i = 0; i < data_send_cnt; i++) {
         if (!mac_queue_send(&msg)) {
             continue;
         }
@@ -86,6 +84,47 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
     return FALSE;
 }
 
+static void esn_camra_handle(void)
+{
+    memset(carma_data, 0x00, sizeof(carma_data));
+
+    uint16_t len = camra_data_get(carma);
+    if (len == 0) {
+        return;
+    }
+
+    uint16_t offset = 0;
+    uint8_t nums = (len - 1) / CAMRA_PAYLOAD_SUB_SIZE + 1;
+    uint8_t sub_num = 1;
+
+    esn_frames_head_t esn_frames_head;
+    esn_frames_head.frames_ctrl.frame_type = DATATYPE_PICTURE;
+    esn_frames_head.frames_ctrl.alarm      = ALARM_N;
+    esn_frames_head.frames_ctrl.reserved   = 0;
+    esn_frames_head.nums = nums;
+
+    while (len > CAMRA_PAYLOAD_SUB_SIZE) {
+        esn_frames_head.seq = data_seq++;
+        esn_frames_head.sub_num = sub_num++;
+
+
+        esn_data_send(&esn_frames_head,
+                      carma_data[offset],
+                      CAMRA_PAYLOAD_SUB_SIZE);
+
+        offset += CAMRA_PAYLOAD_SUB_SIZE;
+        len -= CAMRA_PAYLOAD_SUB_SIZE;
+    }
+
+    if (len > 0) {
+        esn_frames_head.seq = data_seq++;
+        esn_frames_head.sub_num = sub_num++;
+
+
+        esn_data_send(&esn_frames_head, carma_data[offset], len);
+    }
+}
+
 /**
  * @brief
  */
@@ -93,36 +132,35 @@ static void esn_timeout_handle(void)
 {
     esn_frames_head_t esn_frames_head;
 
-    if (distance_data_trigger_flag)
-    {
+    if (distance_data_trigger_flag) {
         distance_data_trigger_flag = FALSE;
-    }
-    else
-    {
+    } else {
         //@note send distance_data
         esn_frames_head.frames_ctrl.frame_type = DATATYPE_DISTANCE;
         esn_frames_head.frames_ctrl.alarm      = ALARM_N;
         esn_frames_head.frames_ctrl.reserved   = 0;
         esn_frames_head.seq = data_seq++;
+        esn_frames_head.nums = 1;
+        esn_frames_head.sub_num = 1;
         //@todo: need get distance sensor data
         esn_distance_payload_t esn_distance_pd;
-        esn_distance_pd.distance = sensor_distance_get();
+        esn_distance_pd.x = 0;
+        esn_distance_pd.y = 0;
+        esn_distance_pd.z = 0;
 
-        esn_data_send(&esn_frames_head,
-                      &esn_distance_pd,
+        esn_data_send(&esn_frames_head, &esn_distance_pd,
                       sizeof(esn_distance_payload_t));
     }
 
-    if (temp_data_trigger_flag)
-    {
+    if (temp_data_trigger_flag) {
         temp_data_trigger_flag = FALSE;
-    }
-    else
-    {
+    } else {
         esn_frames_head.frames_ctrl.frame_type = DATATYPE_TEMPERATURE;
         esn_frames_head.frames_ctrl.alarm      = ALARM_N;
         esn_frames_head.frames_ctrl.reserved   = 0;
         esn_frames_head.seq = data_seq++;
+        esn_frames_head.nums = 1;
+        esn_frames_head.sub_num = 1;
 
         esn_temp_payload_t esn_temp_pd;
         esn_temp_pd.temperature = sensor_temp_get();
@@ -141,14 +179,17 @@ static void esn_vibration_handle(void)
     esn_frames_head.frames_ctrl.alarm      = ALARM_T;
     esn_frames_head.frames_ctrl.reserved   = 0;
     esn_frames_head.seq = data_seq++;
+    esn_frames_head.nums = 1;
+    esn_frames_head.sub_num = 1;
 
-    esn_data_send(&esn_frames_head,
-                  NULL,
-                  0);
+    esn_vibration_payload_t esn_vib_pd;
+    //@todo change by realy data
+    esn_vib_pd.time_duty = 0xA5;
+    esn_vib_pd.alx       = 0x20;
 
+    esn_data_send(&esn_frames_head, &esn_vib_pd, sizeof(esn_vib_pd));
 
-    //@todo start carma data stream
-    //...
+    esn_camra_handle();
 }
 
 static void esn_distance_handle(void)
@@ -159,19 +200,18 @@ static void esn_distance_handle(void)
     esn_frames_head.frames_ctrl.alarm      = ALARM_T;
     esn_frames_head.frames_ctrl.reserved   = 0;
     esn_frames_head.seq = data_seq++;
+    esn_frames_head.nums = 1;
+    esn_frames_head.sub_num = 1;
 
     distance_data_trigger_flag = TRUE;
 
     esn_distance_payload_t esn_distance_pd;
     esn_distance_pd.distance = sensor_distance_get();
 
-    esn_data_send(&esn_frames_head,
-                  &esn_distance_pd,
+    esn_data_send(&esn_frames_head, &esn_distance_pd,
                   sizeof(esn_distance_payload_t));
 
-
-    //@todo start carma data stream
-    //...
+    esn_camra_handle();
 }
 
 static void esn_temp_handle(void)
@@ -182,36 +222,32 @@ static void esn_temp_handle(void)
     esn_frames_head.frames_ctrl.alarm      = ALARM_T;
     esn_frames_head.frames_ctrl.reserved   = 0;
     esn_frames_head.seq = data_seq++;
+    esn_frames_head.nums = 1;
+    esn_frames_head.sub_num = 1;
 
     temp_data_trigger_flag = TRUE;
 
     esn_temp_payload_t esn_temp_pd;
     esn_temp_pd.temperature = sensor_temp_get();
 
-    esn_data_send(&esn_frames_head,
-                  &esn_temp_pd,
+    esn_data_send(&esn_frames_head, &esn_temp_pd,
                   sizeof(esn_temp_payload_t));
 }
 
 static void esn_active_task(void *param)
 {
     esn_msg_t esn_msg;
-    while (1)
-    {
+    while (1) {
         xQueueReceive(esn_active_queue,
                       &esn_msg,
                       portMAX_DELAY);
 
-        if (mac_online_get() != ON_LINE)
-        {
+        if (mac_online_get() != ON_LINE) {
             DBG_LOG(DBG_LEVEL_WARNING, "mac offline, data lost\r\n");
             mac_online_start();
-        }
-        else
-        {
+        } else {
             DBG_LOG(DBG_LEVEL_WARNING, "mac online, data event\r\n");
-            switch (esn_msg.event)
-            {
+            switch (esn_msg.event) {
             case ESN_TIMEOUT_EVENT:
                 esn_timeout_handle();
                 break;
@@ -233,7 +269,6 @@ static void esn_active_task(void *param)
                 break;
 
             case ESN_SSN_EVENT:
-                //@todo
                 sbuf_t *sbuf = (sbuf_t *)(esn_msg.param);
                 pbuf_free(&(sbuf->primargs.pbuf) __PLINE2 );
                 sbuf_free(&sbuf __SLINE2 );
@@ -251,8 +286,7 @@ bool_t esn_active_queue_send(esn_msg_t *esn_msg)
     portBASE_TYPE res = pdTRUE;
 
     res = xQueueSendToBack(esn_active_queue, esn_msg, 0);
-    if (res == errQUEUE_FULL)
-    {
+    if (res == errQUEUE_FULL) {
         DBG_LOG(DBG_LEVEL_ERROR, "esn active queue is full\r\n");
         return FALSE;
     }
@@ -280,14 +314,12 @@ bool_t esn_active_init(void)
                       NULL,
                       ESN_ACTIVE_PRIORITY,
                       NULL);
-    if (res != pdTRUE)
-    {
+    if (res != pdTRUE) {
         DBG_LOG(DBG_LEVEL_ERROR, "esn active task init failed\r\n");
     }
 
     esn_active_queue = xQueueCreate(10, sizeof(esn_msg_t));
-    if (esn_active_queue == NULL)
-    {
+    if (esn_active_queue == NULL) {
         DBG_LOG(DBG_LEVEL_ERROR, "esn_active_queue init failed\r\n");
     }
 
@@ -296,14 +328,10 @@ bool_t esn_active_init(void)
                                    pdTRUE,
                                    NULL,
                                    esn_cycle_timeout_cb);
-    if (esn_cycle_timer == NULL)
-    {
+    if (esn_cycle_timer == NULL) {
         DBG_LOG(DBG_LEVEL_ERROR, "esn cycle timer create failed\r\n");
-    }
-    else
-    {
-        if (xTimerStart(esn_cycle_timer , 0) != pdPASS)
-        {
+    } else {
+        if (xTimerStart(esn_cycle_timer , 0) != pdPASS) {
             DBG_LOG(DBG_LEVEL_ERROR, "esn cycle timer start failed\r\n");
         }
     }

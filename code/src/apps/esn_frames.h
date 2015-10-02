@@ -56,7 +56,15 @@ typedef struct
 
 typedef struct
 {
-    uint32_t distance;
+    uint8_t time_duty;
+    uint8_t alx;
+} esn_vibration_payload_t;
+
+typedef struct
+{
+    uint16_t x;
+    uint16_t y;
+    uint16_t z;
 } esn_distance_payload_t;
 
 typedef struct
@@ -65,5 +73,8 @@ typedef struct
 } esn_temp_payload_t;
 
 #pragma pack()
+
+
+#define CAMRA_PAYLOAD_SUB_SIZE  (0x20)
 
 #endif
