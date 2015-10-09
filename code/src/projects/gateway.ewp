@@ -50,15 +50,15 @@
         </option>
         <option>
           <name>RTDescription</name>
-          <state></state>
+          <state>Use the normal configuration of the C/EC++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
         </option>
         <option>
           <name>RTConfigPath</name>
-          <state>xxx.h</state>
+          <state>$TOOLKIT_DIR$\LIB\DLIB\dl430xsfn.h</state>
         </option>
         <option>
           <name>RTLibraryPath</name>
-          <state>xxx.r43</state>
+          <state>$TOOLKIT_DIR$\LIB\DLIB\dl430xsfn.r43</state>
         </option>
         <option>
           <name>Input variant</name>
@@ -67,7 +67,7 @@
         </option>
         <option>
           <name>Input description</name>
-          <state></state>
+          <state>Automatic choice of formatter.</state>
         </option>
         <option>
           <name>Output variant</name>
@@ -76,7 +76,7 @@
         </option>
         <option>
           <name>Output description</name>
-          <state></state>
+          <state>Automatic choice of formatter.</state>
         </option>
         <option>
           <name>GRuntimeLibSelectSlave</name>
@@ -97,7 +97,7 @@
         </option>
         <option>
           <name>OGChipSelectMenu</name>
-          <state>MSP430	Generic MSP430 device</state>
+          <state>MSP430F5419	MSP430F5419</state>
         </option>
         <option>
           <name>GStackHeapOverride</name>
@@ -105,11 +105,11 @@
         </option>
         <option>
           <name>GStackSize2</name>
-          <state>###Uninitialized###</state>
+          <state>160</state>
         </option>
         <option>
           <name>GHeapSize2</name>
-          <state>###Uninitialized###</state>
+          <state>160</state>
         </option>
         <option>
           <name>RadioDataModelType</name>
@@ -117,7 +117,7 @@
         </option>
         <option>
           <name>GHeap20Size</name>
-          <state>###Uninitialized###</state>
+          <state>80</state>
         </option>
         <option>
           <name>GeneralMisraRules98</name>
@@ -277,7 +277,7 @@
         </option>
         <option>
           <name>OutputFile</name>
-          <state></state>
+          <state>$FILE_BNAME$.r43</state>
         </option>
         <option>
           <name>CCLibConfigHeader</name>
@@ -317,7 +317,20 @@
         </option>
         <option>
           <name>newCCIncludePaths</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\</state>
+          <state>$PROJ_DIR$\..\common\lib\</state>
+          <state>$PROJ_DIR$\..\sys_arch\</state>
+          <state>$PROJ_DIR$\..\sys_arch\inc\</state>
+          <state>$PROJ_DIR$\..\apps\gateway\</state>
+          <state>$PROJ_DIR$\..\apps\</state>
+          <state>$PROJ_DIR$\..\platform\msp430f5419\port\</state>
+          <state>$PROJ_DIR$\..\platform\msp430f5419\init\</state>
+          <state>$PROJ_DIR$\..\platform\msp430f5419\drivers\</state>
+          <state>$PROJ_DIR$\..\stack\</state>
+          <state>$PROJ_DIR$\..\stack\common\</state>
+          <state>$PROJ_DIR$\..\stack\custom\mac\</state>
+          <state>$PROJ_DIR$\..\stack\custom\phy\</state>
+          <state>$PROJ_DIR$\..\stack\module\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -578,7 +591,7 @@
         </option>
         <option>
           <name>OutputFile</name>
-          <state></state>
+          <state>$FILE_BNAME$.r43</state>
         </option>
         <option>
           <name>AMultibyteSupport</name>
@@ -1946,6 +1959,297 @@
       <data/>
     </settings>
   </configuration>
+  <group>
+    <name>apps</name>
+    <group>
+      <name>inc</name>
+      <file>
+        <name>$PROJ_DIR$\..\apps\gateway\esn.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\apps\gateway\esn_active.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\apps\gateway\esn_restruct.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\apps\gateway\FreeRTOSConfig.h</name>
+      </file>
+    </group>
+    <file>
+      <name>$PROJ_DIR$\..\apps\gateway\esn_active.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\apps\esn_frames.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\apps\gateway\main.c</name>
+    </file>
+  </group>
+  <group>
+    <name>common</name>
+    <group>
+      <name>lib</name>
+      <group>
+        <name>inc</name>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\data_type_def.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\debug.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\hal_timer.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\lib.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\mlist.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\printf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\common\lib\random.h</name>
+        </file>
+      </group>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\debug.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\hal_timer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\mlist.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\printf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\random.c</name>
+      </file>
+    </group>
+  </group>
+  <group>
+    <name>platform</name>
+    <group>
+      <name>msp430f5419</name>
+      <group>
+        <name>drivers</name>
+        <group>
+          <name>inc</name>
+          <file>
+            <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\drivers.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\uart.h</name>
+          </file>
+        </group>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\uart.c</name>
+        </file>
+      </group>
+      <group>
+        <name>init</name>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\init\bsp.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\init\bsp.h</name>
+        </file>
+      </group>
+      <group>
+        <name>port</name>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\data_model.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\heap_1.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\port.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\portext.s43</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\msp430f5419\port\portmacro.h</name>
+        </file>
+      </group>
+    </group>
+  </group>
+  <group>
+    <name>stack</name>
+    <group>
+      <name>common</name>
+      <group>
+        <name>inc</name>
+        <file>
+          <name>$PROJ_DIR$\..\stack\common\pbuf.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\common\prim.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\common\sbuf.h</name>
+        </file>
+      </group>
+      <file>
+        <name>$PROJ_DIR$\..\stack\common\pbuf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\stack\common\sbuf.c</name>
+      </file>
+    </group>
+    <group>
+      <name>custom</name>
+      <group>
+        <name>mac</name>
+        <group>
+          <name>inc</name>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\mac\mac.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\mac\mac_ctrl.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\mac\mac_frames.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\mac\mac_prim.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\mac\mac_recv.h</name>
+          </file>
+        </group>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_ctrl.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_frames.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_prim.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_recv.c</name>
+        </file>
+      </group>
+      <group>
+        <name>phy</name>
+        <group>
+          <name>inc</name>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\phy\phy_cca.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\phy\phy_packet.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\stack\custom\phy\phy_state.h</name>
+          </file>
+        </group>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\phy\phy_cca.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\phy\phy_packet.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\phy\phy_state.c</name>
+        </file>
+      </group>
+    </group>
+    <group>
+      <name>module</name>
+      <file>
+        <name>$PROJ_DIR$\..\stack\module\m_tran.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\stack\module\m_tran.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\stack\module\module.h</name>
+      </file>
+    </group>
+    <file>
+      <name>$PROJ_DIR$\..\stack\stack.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\stack\stack.h</name>
+    </file>
+  </group>
+  <group>
+    <name>sys_arch</name>
+    <group>
+      <name>inc</name>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\croutine.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\event_groups.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\FreeRTOS.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\list.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\mpu_wrappers.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\portable.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\projdefs.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\queue.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\semphr.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\StackMacros.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\task.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\inc\timers.h</name>
+      </file>
+    </group>
+    <group>
+      <name>src</name>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\croutine.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\event_groups.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\list.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\queue.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\tasks.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\sys_arch\src\timers.c</name>
+      </file>
+    </group>
+    <file>
+      <name>$PROJ_DIR$\..\sys_arch\osel_arch.h</name>
+    </file>
+  </group>
 </project>
 
 

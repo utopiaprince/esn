@@ -322,6 +322,7 @@
           <state>$PROJ_DIR$\..\sys_arch\</state>
           <state>$PROJ_DIR$\..\sys_arch\inc\</state>
           <state>$PROJ_DIR$\..\apps\detector\</state>
+          <state>$PROJ_DIR$\..\apps</state>
           <state>$PROJ_DIR$\..\platform\msp430f5419\port\</state>
           <state>$PROJ_DIR$\..\platform\msp430f5419\init\</state>
           <state>$PROJ_DIR$\..\platform\msp430f5419\drivers\</state>
@@ -1977,9 +1978,6 @@
         <name>$PROJ_DIR$\..\apps\detector\esn_detect.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\apps\detector\esn_frames.h</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\apps\detector\FreeRTOSConfig.h</name>
       </file>
     </group>
@@ -1988,6 +1986,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\apps\detector\esn_detect.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\apps\esn_frames.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\apps\detector\main.c</name>

@@ -88,7 +88,7 @@ static void esn_camra_handle(void)
 {
     memset(carma_data, 0x00, sizeof(carma_data));
 
-    uint16_t len = camra_data_get(carma);
+    uint16_t len = camra_data_get(carma_data);
     if (len == 0) {
         return;
     }
@@ -109,7 +109,7 @@ static void esn_camra_handle(void)
 
 
         esn_data_send(&esn_frames_head,
-                      carma_data[offset],
+                      &carma_data[offset],
                       CAMRA_PAYLOAD_SUB_SIZE);
 
         offset += CAMRA_PAYLOAD_SUB_SIZE;
@@ -121,7 +121,7 @@ static void esn_camra_handle(void)
         esn_frames_head.sub_num = sub_num++;
 
 
-        esn_data_send(&esn_frames_head, carma_data[offset], len);
+        esn_data_send(&esn_frames_head, &carma_data[offset], len);
     }
 }
 
@@ -206,7 +206,7 @@ static void esn_distance_handle(void)
     distance_data_trigger_flag = TRUE;
 
     esn_distance_payload_t esn_distance_pd;
-    esn_distance_pd.distance = sensor_distance_get();
+    esn_distance_pd = sensor_distance_get();
 
     esn_data_send(&esn_frames_head, &esn_distance_pd,
                   sizeof(esn_distance_payload_t));
@@ -237,6 +237,7 @@ static void esn_temp_handle(void)
 static void esn_active_task(void *param)
 {
     esn_msg_t esn_msg;
+    sbuf_t *sbuf = NULL;
     while (1) {
         xQueueReceive(esn_active_queue,
                       &esn_msg,
@@ -268,8 +269,8 @@ static void esn_active_task(void *param)
                 //@todo
                 break;
 
-            case ESN_SSN_EVENT:
-                sbuf_t *sbuf = (sbuf_t *)(esn_msg.param);
+            case ESN_CONFIG_EVENT:
+                sbuf = (sbuf_t *)(esn_msg.param);
                 pbuf_free(&(sbuf->primargs.pbuf) __PLINE2 );
                 sbuf_free(&sbuf __SLINE2 );
                 break;

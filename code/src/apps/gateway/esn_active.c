@@ -1,9 +1,18 @@
 #include "osel_arch.h"
 #include "lib.h"
 
+#include "sbuf.h"
 #include "prim.h"
+
+#include "esn.h"
+#include "mac.h"
+#include "mac_prim.h"
+#include "module.h"
+
 #include "esn_frames.h"
 #include "esn_active.h"
+
+
 
 DBG_THIS_MODULE("esn_active")
 
@@ -68,7 +77,7 @@ static void esn_frames_recv_handle(sbuf_t *sbuf)
 		break;
 
 	case DATATYPE_PICTURE:
-		esn_camra_handle(pbuf, esn_frm_hd);
+		esn_camra_handle(pbuf, &esn_frm_hd);
 		break;
 
 	default:
@@ -118,7 +127,7 @@ void esn_active_init(void)
 	                  "esn_active_task",
 	                  500,
 	                  NULL,
-	                  ESN_HANDLE_PRIORITY,
+	                  ESN_ACTIVE_PRIORITY,
 	                  NULL);
 	if (res != pdTRUE) {
 		DBG_LOG(DBG_LEVEL_ERROR, "esn handle task init failed\r\n");
