@@ -18,6 +18,7 @@
 #include "module.h"
 #include "m_tran.h"
 #include "mac_prim.h"
+#include "mac_recv.h"
 
 #ifdef NODE_TYPE_DETECTOR
 #ifdef NODE_TYPE_GATEWAY
@@ -107,6 +108,7 @@ bool_t mac_sent_get(uint16_t sec)
 bool_t mac_sent_set(void)
 {
     xSemaphoreGive(mac_sent);
+    return TRUE;
 }
 
 

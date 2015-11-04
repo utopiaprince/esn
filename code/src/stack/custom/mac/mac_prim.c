@@ -30,6 +30,8 @@ DBG_THIS_MODULE("mac_prim")
 static mac_line_enum_t mac_line_flag = ON_LINE;
 uint16_t coord_addr = 0;
 
+TimerHandle_t mac_line_cycle_timer;
+
 #ifdef NODE_TYPE_DETECTOR
 TimerHandle_t mac_line_cycle_timer = NULL;
 
@@ -80,6 +82,7 @@ static void mac_line_cycle_timeout_cb( TimerHandle_t pxTimer )
 
 static void mac_prim_line_handle(void)
 {
+#ifdef NODE_TYPE_DETECTOR
 	switch (mac_line_flag)
 	{
 	case OFF_LINE:
@@ -112,6 +115,7 @@ static void mac_prim_line_handle(void)
 	default:
 		break;
 	}
+#endif
 }
 
 static void mac_data_txok_cb(sbuf_t *sbuf, bool_t result)
