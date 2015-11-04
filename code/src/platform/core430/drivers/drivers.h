@@ -21,5 +21,6 @@
 #include <msp430.h>
 #include "uart.h"
 #include "lora.h"
+#include "clock.h"
 
 #endif

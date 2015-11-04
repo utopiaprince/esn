@@ -27,12 +27,12 @@
 
 DBG_THIS_MODULE("mac_prim")
 
-static mac_line_enum_t mac_line_flag = ON_LINE;
 uint16_t coord_addr = 0;
 
 TimerHandle_t mac_line_cycle_timer;
 
 #ifdef NODE_TYPE_DETECTOR
+static mac_line_enum_t mac_line_flag = ON_LINE;
 TimerHandle_t mac_line_cycle_timer = NULL;
 
 mac_line_enum_t mac_online_get(void)

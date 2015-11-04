@@ -2250,6 +2250,9 @@
             <name>$PROJ_DIR$\..\platform\core430\drivers\cam.h</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\clock.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\platform\core430\drivers\drivers.h</name>
           </file>
           <file>
@@ -2265,6 +2268,9 @@
             <name>$PROJ_DIR$\..\platform\core430\drivers\wts.h</name>
           </file>
         </group>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\clock.c</name>
+        </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\lora.c</name>
         </file>
