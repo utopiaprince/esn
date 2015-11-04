@@ -10,9 +10,9 @@
     <debug>1</debug>
     <settings>
       <name>General</name>
-      <archiveVersion>11</archiveVersion>
+      <archiveVersion>14</archiveVersion>
       <data>
-        <version>28</version>
+        <version>32</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -54,15 +54,15 @@
         </option>
         <option>
           <name>RTConfigPath</name>
-          <state>$TOOLKIT_DIR$\LIB\DLIB\dl430xsfn.h</state>
+          <state>$TOOLKIT_DIR$\lib\dlib\dl430xlsfn.h</state>
         </option>
         <option>
           <name>RTLibraryPath</name>
-          <state>$TOOLKIT_DIR$\LIB\DLIB\dl430xsfn.r43</state>
+          <state>$TOOLKIT_DIR$\lib\dlib\dl430xlsfn.r43</state>
         </option>
         <option>
           <name>Input variant</name>
-          <version>1</version>
+          <version>2</version>
           <state>0</state>
         </option>
         <option>
@@ -71,7 +71,7 @@
         </option>
         <option>
           <name>Output variant</name>
-          <version>1</version>
+          <version>2</version>
           <state>0</state>
         </option>
         <option>
@@ -97,7 +97,7 @@
         </option>
         <option>
           <name>OGChipSelectMenu</name>
-          <state>MSP430F5419	MSP430F5419</state>
+          <state>MSP430F5438	MSP430F5438</state>
         </option>
         <option>
           <name>GStackHeapOverride</name>
@@ -153,13 +153,77 @@
           <name>NoRwDynamicInit</name>
           <state>0</state>
         </option>
+        <option>
+          <name>GRuntimeLibThreads</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>MathLib</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>RadioCodeModelType</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GEnableMpu</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GESupportMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GELockMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GENMIViolationMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GEAssertMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GEInfoReadMpu</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GEInfoWriteMpu</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GEInfoExecuteMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GEInfoAssertMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GEnableIpe</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GESupportIpe</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GAssertIpe</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GLockIpe</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>ICC430</name>
       <archiveVersion>4</archiveVersion>
       <data>
-        <version>34</version>
+        <version>37</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -459,13 +523,29 @@
           <name>CCOptimizationNoSizeConstraints</name>
           <state>0</state>
         </option>
+        <option>
+          <name>ADefines</name>
+          <state></state>
+        </option>
+        <option>
+          <name>CCGuardCalls</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>OCGuardCallsSlave</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CompilerCodeModel</name>
+          <state>1</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>A430</name>
-      <archiveVersion>4</archiveVersion>
+      <archiveVersion>5</archiveVersion>
       <data>
-        <version>13</version>
+        <version>14</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -619,7 +699,11 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state></state>
+          <state>E:\&#x9879;&#x76ee;&#x6574;&#x7406;\&#x65e0;&#x7eBF;&#x6284;&#x8868;\&#x8F93;&#x7535;&#x7F51;\esn\code\src\apps\gateway</state>
+        </option>
+        <option>
+          <name>ACPUTAG</name>
+          <state>1</state>
         </option>
       </data>
     </settings>
@@ -648,7 +732,7 @@
       <name>XLINK</name>
       <archiveVersion>4</archiveVersion>
       <data>
-        <version>23</version>
+        <version>27</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>1</debug>
         <option>
@@ -711,7 +795,7 @@
         </option>
         <option>
           <name>XIncludes</name>
-          <state>###Uninitialized###</state>
+          <state>$TOOLKIT_DIR$\LIB\</state>
         </option>
         <option>
           <name>ModuleStatus</name>
@@ -928,6 +1012,22 @@
           <version>0</version>
           <state>0</state>
         </option>
+        <option>
+          <name>LinkMathLib</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IlinkThreadsSlave</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>XlinkMPU</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>XlinkIPE</name>
+          <state>1</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -973,7 +1073,7 @@
         </option>
         <option>
           <name>OutputFile</name>
-          <state></state>
+          <state>$PROJ_FNAME$.ulp</state>
         </option>
         <option>
           <name>ULPStatus</name>
@@ -995,9 +1095,9 @@
     <debug>0</debug>
     <settings>
       <name>General</name>
-      <archiveVersion>11</archiveVersion>
+      <archiveVersion>14</archiveVersion>
       <data>
-        <version>28</version>
+        <version>32</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1047,7 +1147,7 @@
         </option>
         <option>
           <name>Input variant</name>
-          <version>1</version>
+          <version>2</version>
           <state>0</state>
         </option>
         <option>
@@ -1056,7 +1156,7 @@
         </option>
         <option>
           <name>Output variant</name>
-          <version>1</version>
+          <version>2</version>
           <state>0</state>
         </option>
         <option>
@@ -1138,13 +1238,77 @@
           <name>NoRwDynamicInit</name>
           <state>0</state>
         </option>
+        <option>
+          <name>GRuntimeLibThreads</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>MathLib</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>RadioCodeModelType</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GEnableMpu</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GESupportMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GELockMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GENMIViolationMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GEAssertMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GEInfoReadMpu</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GEInfoWriteMpu</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GEInfoExecuteMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GEInfoAssertMpu</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GEnableIpe</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GESupportIpe</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GAssertIpe</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GLockIpe</name>
+          <state>0</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>ICC430</name>
       <archiveVersion>4</archiveVersion>
       <data>
-        <version>34</version>
+        <version>37</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1431,13 +1595,29 @@
           <name>CCOptimizationNoSizeConstraints</name>
           <state>0</state>
         </option>
+        <option>
+          <name>ADefines</name>
+          <state>NDEBUG</state>
+        </option>
+        <option>
+          <name>CCGuardCalls</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>OCGuardCallsSlave</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>CompilerCodeModel</name>
+          <state>1</state>
+        </option>
       </data>
     </settings>
     <settings>
       <name>A430</name>
-      <archiveVersion>4</archiveVersion>
+      <archiveVersion>5</archiveVersion>
       <data>
-        <version>13</version>
+        <version>14</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1593,6 +1773,10 @@
           <name>AUserIncludes</name>
           <state></state>
         </option>
+        <option>
+          <name>ACPUTAG</name>
+          <state>1</state>
+        </option>
       </data>
     </settings>
     <settings>
@@ -1620,7 +1804,7 @@
       <name>XLINK</name>
       <archiveVersion>4</archiveVersion>
       <data>
-        <version>23</version>
+        <version>27</version>
         <wantNonLocal>1</wantNonLocal>
         <debug>0</debug>
         <option>
@@ -1683,7 +1867,7 @@
         </option>
         <option>
           <name>XIncludes</name>
-          <state>###Uninitialized###</state>
+          <state>$TOOLKIT_DIR$\LIB\</state>
         </option>
         <option>
           <name>ModuleStatus</name>
@@ -1899,6 +2083,22 @@
           <name>CrcUnitSize</name>
           <version>0</version>
           <state>0</state>
+        </option>
+        <option>
+          <name>LinkMathLib</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>IlinkThreadsSlave</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>XlinkMPU</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>XlinkIPE</name>
+          <state>1</state>
         </option>
       </data>
     </settings>

@@ -20,6 +20,8 @@ void mac_ctrl_assoc_req_start(uint16_t dst_addr);
  */
 void mac_ctrl_assoc_req_handle(pbuf_t *pbuf);
 
+void mac_ctrl_parse(pbuf_t *pbuf);
+
 /**
  * @brief from host to detector
  * @param dst_addr

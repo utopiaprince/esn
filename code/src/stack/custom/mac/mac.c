@@ -17,6 +17,7 @@
 
 #include "module.h"
 #include "m_tran.h"
+#include "mac_prim.h"
 
 #ifdef NODE_TYPE_DETECTOR
 #ifdef NODE_TYPE_GATEWAY
