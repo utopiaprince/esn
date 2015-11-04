@@ -18,5 +18,6 @@
 
 
 #include "uart.h"
+#incluce "lora.h"
 
 #endif

@@ -83,7 +83,7 @@ void debug_log(uint8_t dbg_lev, const char *fn, uint16_t line, ...)
     for(uint8_t i=0;i<data_len;i++)
     {
         //@todo: 后期打开串口打印接口
-//        uart_send(DEBUG_PRINTF_ID, dbg_prefix_buf[i]);
+//        uart_send_char(DEBUG_PRINTF_ID, dbg_prefix_buf[i]);
     }
     xSemaphoreGive(debug_mutex);
 }

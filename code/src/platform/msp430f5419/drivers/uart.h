@@ -26,6 +26,40 @@ typedef enum
     UART_4,                         /**< 串口4 */
 } uart_id_t;
 
-void uart_send(uint8_t id, uint8_t ch);
+typedef void (*uart_interupt_cb_t)(uint8_t id, uint8_t ch);
+
+/**
+ * Initializes the serial communications peripheral and GPIO ports
+ * to communicate with the peripheral device.
+ *
+ * @param  uart_id which uart should be operated
+ * @param  baud_rate uart baud rate min.300 and max.115200
+ */
+void uart_init(uint8_t uart_id, uint32_t baud_rate);
+
+
+/**
+ * register uart id to task
+ *
+ * @param uart_id which uart to be registered
+ * @param task_id which task to be registered
+ */
+void uart_send_char(uint8_t id, uint8_t value);
+
+/**
+ * Send a string by uart
+ *
+ * @param id  which uart should be operated
+ * @param *string Pointer to a string containing the data to be sended
+ * @param length Max value is 255
+ */
+void uart_send_string(uint8_t id, uint8_t *string, uint16_t length);
+
+void uart_recv_enable(uint8_t uart_id);
+
+void uart_recv_disable(uint8_t uart_id);
+
+void uart_int_cb_reg(uart_interupt_cb_t cb);
+
 
 #endif
