@@ -21,9 +21,11 @@
 #include "mac_recv.h"
 
 #ifdef NODE_TYPE_DETECTOR
-#ifdef NODE_TYPE_GATEWAY
+
+#elif NODE_TYPE_GATEWAY
+
+#else
 #error "NODE_TYPE_DETECTOR and NODE_TYPE_GATEWAY must define ONE"
-#endif
 #endif
 
 DBG_THIS_MODULE("mac")

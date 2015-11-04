@@ -16,8 +16,10 @@
 #ifndef __DRIVERS_H__
 #define __DRIVERS_H__
 
+#define SMCLK               8000000
 
+#include <msp430.h>
 #include "uart.h"
-#incluce "lora.h"
+#include "lora.h"
 
 #endif

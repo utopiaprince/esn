@@ -12,8 +12,8 @@
  * 2015/8/10    v0.0.1      gang.cheng    first version
  */
 #include "data_type_def.h"
-#include "uart.h"
-
+#include "drivers.h"
+#include "osel_arch.h"
 
 
 static uart_interupt_cb_t uart_interrupt_cb = NULL;
@@ -178,18 +178,14 @@ static void uart_int_cb_handle(uint8_t id, uint8_t ch)
 #pragma vector = USCI_A0_VECTOR
 __interrupt void uart0_rx_isr(void)
 {
-	OSEL_ISR_ENTRY();
 	uart_int_cb_handle(UART_1, UCA0RXBUF);
-	OSEL_ISR_EXIT();
 	LPM3_EXIT;
 }
 
 #pragma vector = USCI_A3_VECTOR
 __interrupt void uart3_rx_isr(void)
 {
-	OSEL_ISR_ENTRY();
 	uart_int_cb_handle(UART_2, UCA3RXBUF);
-	OSEL_ISR_EXIT();
 	LPM3_EXIT;
 }
 
@@ -198,9 +194,7 @@ __interrupt void uart3_rx_isr(void)
 #pragma vector = USCI_A1_VECTOR
 __interrupt void uart1_rx_isr(void)
 {
-    OSEL_ISR_ENTRY();
     uart_int_cb_handle(UART_3, UCA1RXBUF);
-    OSEL_ISR_EXIT();
     LPM3_EXIT;
 }
 

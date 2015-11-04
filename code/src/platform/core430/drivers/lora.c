@@ -27,6 +27,7 @@
  *            --------------------          -------------------
  */
 
+#include <lib.h>
 #include <drivers.h>
 
 static void lora_gpio_init(void)

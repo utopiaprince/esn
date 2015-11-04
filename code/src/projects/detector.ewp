@@ -58,7 +58,7 @@
         </option>
         <option>
           <name>RTLibraryPath</name>
-          <state>$TOOLKIT_DIR$\LIB\DLIB\dl430xmfn.r43</state>
+          <state>$TOOLKIT_DIR$\lib\dlib\dl430xlmfn.r43</state>
         </option>
         <option>
           <name>Input variant</name>
@@ -387,9 +387,9 @@
           <state>$PROJ_DIR$\..\sys_arch\inc\</state>
           <state>$PROJ_DIR$\..\apps\detector\</state>
           <state>$PROJ_DIR$\..\apps</state>
-          <state>$PROJ_DIR$\..\platform\msp430f5419\port\</state>
-          <state>$PROJ_DIR$\..\platform\msp430f5419\init\</state>
-          <state>$PROJ_DIR$\..\platform\msp430f5419\drivers\</state>
+          <state>$PROJ_DIR$\..\platform\core430\port\</state>
+          <state>$PROJ_DIR$\..\platform\core430\init\</state>
+          <state>$PROJ_DIR$\..\platform\core430\drivers\</state>
           <state>$PROJ_DIR$\..\stack\</state>
           <state>$PROJ_DIR$\..\stack\common\</state>
           <state>$PROJ_DIR$\..\stack\custom\mac\</state>
@@ -2242,47 +2242,65 @@
   <group>
     <name>platform</name>
     <group>
-      <name>msp430f5419</name>
+      <name>detector</name>
       <group>
         <name>drivers</name>
         <group>
           <name>inc</name>
           <file>
-            <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\drivers.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\board.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\uart.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\cam.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\drivers.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\lora.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\sht.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\uart.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\wts.h</name>
           </file>
         </group>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\drivers\uart.c</name>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\lora.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\uart.c</name>
         </file>
       </group>
       <group>
         <name>init</name>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\init\bsp.c</name>
+          <name>$PROJ_DIR$\..\platform\core430\init\bsp.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\init\bsp.h</name>
+          <name>$PROJ_DIR$\..\platform\core430\init\bsp.h</name>
         </file>
       </group>
       <group>
         <name>port</name>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\port\data_model.h</name>
+          <name>$PROJ_DIR$\..\platform\core430\port\data_model.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\port\heap_1.c</name>
+          <name>$PROJ_DIR$\..\platform\core430\port\heap_1.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\port\port.c</name>
+          <name>$PROJ_DIR$\..\platform\core430\port\port.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\port\portext.s43</name>
+          <name>$PROJ_DIR$\..\platform\core430\port\portext.s43</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\msp430f5419\port\portmacro.h</name>
+          <name>$PROJ_DIR$\..\platform\core430\port\portmacro.h</name>
         </file>
       </group>
     </group>
