@@ -11,8 +11,10 @@
 #ifndef __MAC_RECV_H__
 #define __MAC_RECV_H__
 
+#include "mac_frames.h"
+
 extern mac_frames_hd_t mac_frm_head_info;
 
-void mac_recv_init(void);
+void m_recv_init(void);
 
 #endif

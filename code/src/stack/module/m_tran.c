@@ -796,7 +796,8 @@ static void tran_deal_rxok_event(void)
 /*function uses to deal event when RX interrupt come*/
 static void tran_deal_rxovr_event(void)
 {
-    hal_rf_flush_rxfifo();
+    //@todo: ADD code 
+//    hal_rf_flush_rxfifo();
     phy_set_state(PHY_SLEEP_STATE);        //PHY_RX_STATE
 }
 
@@ -809,11 +810,12 @@ static void tran_deal_txok_event(void)
 
     /* 当无法在驱动中断中给出下溢处理判断时，在txok消息处理中判断*/
 #if RF_INT_DEAL_FLOW == 0u
-    if (hal_rf_txfifo_underflow())
-    {
-        tx_und_cb(0);
-        return;
-    }
+    //@todo  add code
+//    if (hal_rf_txfifo_underflow())
+//    {
+//        tx_und_cb(0);
+//        return;
+//    }
 #endif
 
     if (!tran_state.tx_und_happend)

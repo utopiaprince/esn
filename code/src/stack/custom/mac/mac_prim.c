@@ -17,6 +17,10 @@
 #include "sbuf.h"
 #include "pbuf.h"
 
+#include "phy_packet.h"
+
+#include "m_tran.h"
+
 #include "mac_frames.h"
 #include "mac_ctrl.h"
 #include "mac_prim.h"
@@ -24,7 +28,9 @@
 DBG_THIS_MODULE("mac_prim")
 
 static mac_line_enum_t mac_line_flag = ON_LINE;
-static uint16_t coord_addr = 0;
+uint16_t coord_addr = 0;
+
+TimerHandle_t mac_line_cycle_timer;
 
 #ifdef NODE_TYPE_DETECTOR
 TimerHandle_t mac_line_cycle_timer = NULL;
@@ -76,6 +82,7 @@ static void mac_line_cycle_timeout_cb( TimerHandle_t pxTimer )
 
 static void mac_prim_line_handle(void)
 {
+#ifdef NODE_TYPE_DETECTOR
 	switch (mac_line_flag)
 	{
 	case OFF_LINE:
@@ -108,6 +115,7 @@ static void mac_prim_line_handle(void)
 	default:
 		break;
 	}
+#endif
 }
 
 static void mac_data_txok_cb(sbuf_t *sbuf, bool_t result)
@@ -149,7 +157,7 @@ static void mac_prim_data_handle(sbuf_t *sbuf)
 
 	mac_frames_hd_t mac_frm_hd;
 	mac_frm_hd.frames_ctrl.frame_type  = MAC_FRAMES_TYPE_DATA;
-	mac_frm_hd.frames_ctrl.ack_request = pbuf->attri.need_ack;
+	mac_frm_hd.frames_ctrl.ack_request = sbuf->primargs.pbuf->attri.need_ack;
 	mac_frm_hd.frames_ctrl.dst_mode    = MAC_ADDR_MODE_SHORT;
 	mac_frm_hd.frames_ctrl.src_mode    = MAC_ADDR_MODE_SHORT;
 	mac_frm_hd.frames_ctrl.reserved    = 0x00;
@@ -159,7 +167,7 @@ static void mac_prim_data_handle(sbuf_t *sbuf)
 
 	mac_frm_hd_fill(new_pbuf, &mac_frm_hd);
 	mac_frm_data_fill(new_pbuf, sbuf->primargs.pbuf->head, data_len);
-	new_pbuf->attri.need_ack = pbuf->attri.need_ack;
+	new_pbuf->attri.need_ack = mac_frm_hd.frames_ctrl.ack_request;
 	
 	m_tran_send(new_sbuf, mac_data_txok_cb, 3);
 }

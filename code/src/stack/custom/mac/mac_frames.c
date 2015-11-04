@@ -1,5 +1,11 @@
 
 #include "osel_arch.h"
+
+#include "sbuf.h"
+#include "pbuf.h"
+#include "phy_packet.h"
+
+#include "m_tran.h"
 #include "mac_frames.h"
 
 int8_t mac_frm_hd_get(pbuf_t *pbuf, mac_frames_hd_t *mac_frm_hd)
@@ -96,18 +102,18 @@ int8_t mac_frm_hd_fill(pbuf_t *pbuf, mac_frames_hd_t *mac_frm_hd)
 	pbuf->attri.seq 	  = mac_frm_hd->seq;
 	pbuf->attri.send_mode = CSMA_SEND_MODE;
 	pbuf->attri.need_ack  = mac_frm_hd->frames_ctrl.ack_request;
-	if(mac_frm_hd.frames_ctrl.frame_type == MAC_FRAMES_TYPE_ACK)
+	if(mac_frm_hd->frames_ctrl.frame_type == MAC_FRAMES_TYPE_ACK)
 	{
 		pbuf->attri.is_ack = TRUE;
 	}
 	
-	if (MAC_ADDR_MODE_NONE == mac_frm_hd.frames_ctrl.dst_mode)
+	if (MAC_ADDR_MODE_NONE == mac_frm_hd->frames_ctrl.dst_mode)
 	{
 		pbuf->attri.dst_id = MAC_BROADCAST_ADDR;
 	}
 	else
 	{
-		pbuf->attri.dst_id = (uint16_t)mac_frm_hd.dst_addr;
+		pbuf->attri.dst_id = (uint16_t)mac_frm_hd->dst_addr;
 	}
 
 	return len;

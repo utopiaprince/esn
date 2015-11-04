@@ -12,6 +12,7 @@
 #include "mac_frames.h"
 #include "mac_prim.h"
 #include "mac_ctrl.h"
+#include "mac_recv.h"
 
 DBG_THIS_MODULE("mac_ctrl")
 
