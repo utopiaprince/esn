@@ -54,7 +54,7 @@
         </option>
         <option>
           <name>RTConfigPath</name>
-          <state>$TOOLKIT_DIR$\lib\dlib\dl430xlsfn.h</state>
+          <state>$TOOLKIT_DIR$\lib\dlib\dl430xllfn.h</state>
         </option>
         <option>
           <name>RTLibraryPath</name>
@@ -113,7 +113,7 @@
         </option>
         <option>
           <name>RadioDataModelType</name>
-          <state>0</state>
+          <state>2</state>
         </option>
         <option>
           <name>GHeap20Size</name>
@@ -583,7 +583,7 @@
         </option>
         <option>
           <name>ADefines</name>
-          <state></state>
+          <state>USE_LARGE_CODE_MODEL</state>
         </option>
         <option>
           <name>AList</name>
@@ -2285,6 +2285,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\init\bsp.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\init\cstartup.s43</name>
         </file>
       </group>
       <group>
