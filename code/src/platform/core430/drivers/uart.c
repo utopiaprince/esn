@@ -46,40 +46,11 @@ void uart_init(uint8_t uart_id, uint32_t baud_rate)
 		UCA0IE |= UCRXIE;
 		break;
         
-	case UART_2:
-        /* max3221 init */
-#if (NODE_TYPE == NODE_TYPE_HOST)
-        P10SEL &= ~BIT0;
-        P9SEL &= ~BIT7;
-        P10DIR |= BIT0;
-        P9DIR |= BIT7;
-        P10OUT &= ~BIT0;  // Enable EN
-        P9OUT |= BIT7;    // Disable FORCEOFF
-#endif
-        
-        P10SEL |= BIT4 + BIT5;
-		P10DIR |= BIT4;
-		P10DIR &= ~BIT5;
-        
-		UCA3CTL1 = UCSWRST;
-		UCA3CTL0 = UCMODE_0;
-		UCA3CTL1 |= UCSSEL_2;				 /* SMCLK,8M */
-		UCA3BR0 = br0;
-		UCA3BR1 = br1;
-		UCA3MCTL = UCBRF_0 | (fract<<1);
-		UCA3CTL1 &= ~UCSWRST;
-		UCA3IE |= UCRXIE;
-		break;
-        
-    case UART_3:
+	case UART_2:    
         /* Initialize uart 1 IO */
         P5SEL |= BIT6 + BIT7;
-        P5DIR |= BIT6;      // TXD_TO_485
-        P5DIR &= ~BIT7;     // RXD_FROM_485
-        
-        P10SEL &= ~(BIT6 + BIT7);
-        P10DIR |= BIT6 + BIT7;
-        P10OUT &= ~(BIT6+BIT7);
+        P5DIR |= BIT6;      
+        P5DIR &= ~BIT7;     
         
         UCA1CTL1 = UCSWRST;
         UCA1CTL0 = UCMODE_0;
@@ -90,6 +61,38 @@ void uart_init(uint8_t uart_id, uint32_t baud_rate)
         UCA1CTL1 &= ~UCSWRST;
         UCA1IE |= UCRXIE;
         break;
+        
+    case UART_3:        
+        P9SEL |= BIT4 + BIT5;
+		P9DIR |= BIT4;
+		P9DIR &= ~BIT5;
+        
+		UCA2CTL1 = UCSWRST;
+		UCA2CTL0 = UCMODE_0;
+		UCA2CTL1 |= UCSSEL_2;				 /* SMCLK,8M */
+		UCA2BR0 = br0;
+		UCA2BR1 = br1;
+		UCA2MCTL = UCBRF_0 | (fract<<1);
+		UCA2CTL1 &= ~UCSWRST;
+		UCA2IE |= UCRXIE;
+		break;
+        
+    case UART_4:
+        /* Initialize uart 1 IO */
+        P10SEL |= BIT4 + BIT5;
+        P10DIR |= BIT4;      // TXD_TO_485
+        P10DIR &= ~BIT5;     // RXD_FROM_485
+        
+        UCA3CTL1 = UCSWRST;
+        UCA3CTL0 = UCMODE_0;
+        UCA3CTL1 |= UCSSEL_2;                /* SMCLK,8M */
+        UCA3BR0 = br0;
+        UCA3BR1 = br1;
+        UCA3MCTL = UCBRF_0 | (fract << 1);
+        UCA3CTL1 &= ~UCSWRST;
+        UCA3IE |= UCRXIE;
+        break;
+        
 	default:
 		break;
 	}
@@ -105,15 +108,18 @@ void uart_send_char(uint8_t id, uint8_t value)
 	}
 	else if (id == UART_2)
 	{
-		UCA3TXBUF = value;
-		while (UCA3STAT & UCBUSY);
+		UCA1TXBUF = value;
+		while (UCA1STAT & UCBUSY);
 	}
     else if(id == UART_3)
     {
-        P10OUT |= (BIT6+BIT7);
-        UCA1TXBUF = value;
-		while (UCA1STAT & UCBUSY);
-        P10OUT &= ~(BIT6+BIT7);
+        UCA2TXBUF = value;
+		while (UCA2STAT & UCBUSY);
+    }
+    else if(id == UART_4)
+    {
+        UCA3TXBUF = value;
+		while (UCA3STAT & UCBUSY);
     }
 }
 
@@ -139,7 +145,11 @@ void uart_recv_enable(uint8_t uart_id)
     }
     else if (uart_id == UART_3)
     {
-        UCA1IE |= UCRXIE;
+        UCA2IE |= UCRXIE;
+    }
+    else if (uart_id == UART_4)
+    {
+        UCA3IE |= UCRXIE;
     }
 }
 
@@ -155,7 +165,11 @@ void uart_recv_disable(uint8_t uart_id)
     }
     else if (uart_id == UART_3)
     {
-        UCA1IE &= ~UCRXIE;
+        UCA2IE &= ~UCRXIE;
+    }
+    else if (uart_id == UART_3)
+    {
+        UCA3IE &= ~UCRXIE;
     }
 }
 
@@ -176,28 +190,31 @@ static void uart_int_cb_handle(uint8_t id, uint8_t ch)
 }
 
 #pragma vector = USCI_A0_VECTOR
-__interrupt void uart0_rx_isr(void)
+__interrupt void uart1_rx_isr(void)
 {
 	uart_int_cb_handle(UART_1, UCA0RXBUF);
 	LPM3_EXIT;
 }
 
-#pragma vector = USCI_A3_VECTOR
-__interrupt void uart3_rx_isr(void)
+#pragma vector = USCI_A1_VECTOR
+__interrupt void uart2_rx_isr(void)
 {
-	uart_int_cb_handle(UART_2, UCA3RXBUF);
+	uart_int_cb_handle(UART_2, UCA1RXBUF);
 	LPM3_EXIT;
 }
 
-
-// 485
-#pragma vector = USCI_A1_VECTOR
-__interrupt void uart1_rx_isr(void)
+#pragma vector = USCI_A2_VECTOR
+__interrupt void uart3_rx_isr(void)
 {
-    uart_int_cb_handle(UART_3, UCA1RXBUF);
+    uart_int_cb_handle(UART_3, UCA2RXBUF);
     LPM3_EXIT;
 }
 
-
+#pragma vector = USCI_A3_VECTOR
+__interrupt void uart4_rx_isr(void)
+{
+    uart_int_cb_handle(UART_4, UCA3RXBUF);
+    LPM3_EXIT;
+}
 
 

@@ -27,15 +27,14 @@
 #include <lib.h>
 #include <drivers.h>
 
-#define ADXL_CS_EN()            (P3OUT |= BIT0)
-#define ADXL_CS_DIS()           
+#define ADXL_CS_EN()            (P3OUT &= ~BIT0)
+#define ADXL_CS_DIS()           (P3OUT |= BIT0)
 
 bool_t adxl312_reg_read(uint8_t addr, uint8_t *pvalue)
 {
-#if 0
-    uint8_t value;	
+    DBG_ASSERT(pvalue != NULL __DBG_LINE);
 	ADXL_CS_EN();        
-	addr |= RW_BIT;        
+	addr |= RW_BIT; 
 	while(!(UCB0IFG & UCTXIFG));			// Wait for USCI_B0 TX buffer ready
 	UCB0TXBUF = addr;						// Send the header byte
 	while(!(UCB0IFG & UCTXIFG));			// Wait for USCI_B0 TX complete
@@ -47,140 +46,108 @@ bool_t adxl312_reg_read(uint8_t addr, uint8_t *pvalue)
 	while(!(UCB0IFG & UCRXIFG));			// Wait for USCI_B0 RX buffer ready
 	*pvalue = UCB0RXBUF;
 	ADXL_CS_DIS();
-    
-#else
-    ADXL_CS_EN();
-    UCB0I2CSA = ADXL_ADDRESS;
-    UCB0CTL1 |= UCTR;                 // 写模式
-    UCB0CTL1 |= UCTXSTT;              // 发送启动位和写控制字节
 
-    UCB0TXBUF = addr;                   // 发送数据，必须要先填充TXBUF
-    // 等待UCTXIFG=1 与UCTXSTT=0 同时变化 等待一个标志位即可
-    while(!(UCB0IFG & UCTXIFG))
-    {
-        if( UCB0IFG & UCNACKIFG )       // 若无应答 UCNACKIFG=1
-        {
-            ADXL_CS_DIS();
-            return FALSE;
-        }
-    }
-
-    UCB0CTL1 &= ~UCTR;                // 读模式
-    UCB0CTL1 |= UCTXSTT;              // 发送启动位和读控制字节
-
-    while(UCB0CTL1 & UCTXSTT);        // 等待UCTXSTT=0
-    // 若无应答 UCNACKIFG = 1
-
-    UCB0CTL1 |= UCTXSTP;              // 先发送停止位
-
-    while(!(UCB0IFG & UCRXIFG));      // 读取数据，读取数据在发送停止位之后
-    *pvalue = UCB0RXBUF;
-
-    while( UCB0CTL1 & UCTXSTP );
-    ADXL_CS_DIS();
-#endif
-    
     return TRUE;
 }
 
-bool_t adxl312_reg_write(uint8_t addr, uint8_t pvalue)
+bool_t adxl312_reg_write(uint8_t addr, uint8_t value)
 {
     ADXL_CS_EN();
-    UCB0I2CSA = ADXL_ADDRESS;
-    while( UCB0CTL1 & UCTXSTP );
-    UCB0CTL1 |= UCTR;                 // 写模式
-    UCB0CTL1 |= UCTXSTT;              // 发送启动位
-
-    UCB0TXBUF = addr;             // 发送寄存器地址
-    // 等待UCTXIFG=1 与UCTXSTT=0 同时变化 等待一个标志位即可
-    while(!(UCB0IFG & UCTXIFG))
-    {
-        if( UCB0IFG & UCNACKIFG )     // 若无应答 UCNACKIFG=1
-        {
-            ADXL_CS_DIS();
-            return FALSE;
-        }
-    }
-
-    UCB0TXBUF = pvalue;            // 发送寄存器内容
-    while(!(UCB0IFG & UCTXIFG));      // 等待UCTXIFG=1
-
-    UCB0CTL1 |= UCTXSTP;
-    while(UCB0CTL1 & UCTXSTP);        // 等待发送完成
+    
+    addr &= ~RW_BIT;
+    while (!(UCB0IFG & UCTXIFG));           // Wait for USCI_B0 TX buffer ready
+    UCB0TXBUF = addr;                       // Send the header byte
+    while (!(UCB0IFG & UCTXIFG));           // Wait for USCI_B0 TX complete
+    while (!(UCB0IFG & UCRXIFG));           // Wait for USCI_B0 RX buffer ready
+    UCB0IFG &= ~UCRXIFG;
+    while (!(UCB0IFG & UCTXIFG));           // Wait for USCI_B0 TX buffer ready
+    UCB0TXBUF = value;                      // Send the header byte
+    while (!(UCB0IFG & UCTXIFG));           // Wait for USCI_B0 TX complete
+    while (!(UCB0IFG & UCRXIFG));           // Wait for USCI_B0 RX buffer ready
+    UCB0IFG &= ~UCRXIFG;
     
     ADXL_CS_DIS();
     return TRUE;
 }
 
-bool_t adxl345_read_buff(uint8_t reg_add , uint8_t *pregbuf , uint8_t  len)
+bool_t adxl312_read_fifo(uint8_t addr, uint8_t *datap, uint8_t len)
 {
-    UCB1I2CSA = ADXL345_ADDRESS;
-    while( UCB1CTL1 & UCTXSTP );
-    UCB1CTL1 |= UCTR;                 // 写模式
-    UCB1CTL1 |= UCTXSTT;              // 发送启动位和写控制字节
-
-    UCB1TXBUF = reg_add;             // 发送数据
-    // 等待UCTXIFG=1 与UCTXSTT=0 同时变化 等待一个标志位即可
-    while(!(UCB1IFG & UCTXIFG))
-    {
-        if( UCB1IFG & UCNACKIFG )       // 若无应答 UCNACKIFG=1
-        {
-            return I2C_FAIL;
-        }
+    ADXL_CS_EN();
+    
+    addr |= (RW_BIT + MB_BIT);
+    while (!(UCB0IFG & UCTXIFG));     // Wait for USCI_B0 TX buffer ready
+    UCB0TXBUF = addr;           // Send the header byte
+    while (!(UCB0IFG & UCTXIFG));     // Wait for USCI_B0 TX complete
+    while (!(UCB0IFG & UCRXIFG));     // Wait for USCI_B0 RX buffer ready
+    UCB0IFG &= ~UCRXIFG;
+    
+    for (uint8_t i = 0; i < len; i++) {
+        while (!(UCB0IFG & UCTXIFG));     // Wait for USCI_B0 TX buffer ready
+        UCB0TXBUF = 0xFF;                 // Send the header byte
+        while (!(UCB0IFG & UCTXIFG));     // Wait for USCI_B0 TX complete
+        while (!(UCB0IFG & UCRXIFG));     // Wait for USCI_B0 RX buffer ready
+        datap[i] = UCB0RXBUF;
     }
-
-    UCB1CTL1 &= ~UCTR;                // 读模式
-    UCB1CTL1 |= UCTXSTT;              // 发送启动位和读控制字节
-
-    while(UCB1CTL1 & UCTXSTT);        // 等待UCTXSTT=0
-    // 若无应答 UCNACKIFG = 1
-
-    for(uint8_t i = 0; i < (len - 1); i++)
-    {
-        while(!(UCB1IFG & UCRXIFG));    // 读取数据
-        *pregbuf++ = UCB1RXBUF;
-    }
-
-    UCB1CTL1 |= UCTXSTP;              // 在接收最后一个字节之前发送停止位
-
-    while(!(UCB1IFG & UCRXIFG));      // 读取数据
-    *pregbuf = UCB1RXBUF;
-
-    while( UCB1CTL1 & UCTXSTP );
-
-    return I2C_OK;
+    
+    ADXL_CS_DIS();
+    
+    return TRUE;
 }
 
-static void adxl312_iic_lock_init(void)
+bool_t adxl312_write_fifo(uint8_t addr, uint8_t *datap, uint8_t len)
 {
-    //P3.3 作为模拟scl，输出9个信号
-    P3SEL &= ~BIT3;// P3.3置成IO口模式
-	P3DIR |= BIT3; //P3.3做为输出
-    P3OUT |= BIT3;
-    // 主设备模拟SCL，从高到低，输出9次，使得从设备释放SDA
-    for(uint8_t i=0;i<9;i++)
-    {
-        P3OUT |= BIT3;
-        osel_delay(1);
-        P3OUT &= ~BIT3;
-        osel_delay(1);
+    ADXL_CS_EN();
+    
+    addr &= ~RW_BIT;
+    addr |= MB_BIT;
+    while (!(UCB0IFG & UCTXIFG));       // Wait for USCI_B0 TX buffer ready
+    UCB0TXBUF = addr;                   // Send the header byte
+    while (!(UCB0IFG & UCTXIFG));       // Wait for USCI_B0 TX complete
+    while (!(UCB0IFG & UCRXIFG));       // Wait for USCI_B0 RX buffer ready
+    UCB0IFG &= ~UCRXIFG;
+    for (uint8_t i = 0; i < len; i++) {
+        while (!(UCB0IFG & UCTXIFG));   // Wait for USCI_B0 TX buffer ready
+        UCB0TXBUF = datap[i];           // Send the header byte
+        while (!(UCB0IFG & UCTXIFG));   // Wait for USCI_B0 TX complete
+        while (!(UCB0IFG & UCRXIFG));   // Wait for USCI_B0 RX buffer ready
+        UCB0IFG &= ~UCRXIFG;
     }
+    
+    ADXL_CS_DIS();
+    
+    return TRUE;
 }
 
-static void adxl312_iic_init(void)
+//static void adxl312_lock_init(void)
+//{
+//    //P3.3 作为模拟scl，输出9个信号
+//    P3SEL &= ~BIT3;// P3.3置成IO口模式
+//	P3DIR |= BIT3; //P3.3做为输出
+//    P3OUT |= BIT3;
+//    // 主设备模拟SCL，从高到低，输出9次，使得从设备释放SDA
+//    for(uint8_t i=0;i<9;i++)
+//    {
+//        P3OUT |= BIT3;
+//        osel_delay(1);
+//        P3OUT &= ~BIT3;
+//        osel_delay(1);
+//    }
+//}
+
+static void adxl312_spi_init(void)
 {
-    adxl312_iic_lock_init();
+//    adxl312_lock_init();
     
     P3SEL |= BIT1 + BIT2 + BIT3;
     P3DIR |= BIT0 + BIT1 + BIT3;
-    ADXL_CS_EN();
+    ADXL_CS_DIS();
 
     UCB0CTL1 |= UCSWRST;
-    UCB0CTL0 = UCMST + UCMODE_3 + UCSYNC;
+    UCB0CTL0 = UCCKPL + UCMSB + UCMST + UCSYNC;
     UCB0CTL1 = UCSSEL__SMCLK;           // Select SMCLK as clock source
-    UCB0BR0 = 80;
+    UCB0BR0 = 0x08;
     UCB0BR1 = 0x00;                     // fBitClock = fBRCLK/UCBRx = SMCLK = DCO/BR  SCLK = 8M
-    UCB0CTL0 &= ~UCSLA10;               // 7位地址模式
+    
     UCB0CTL1 &= ~UCSWRST;               // Initialize USCI state machine
     UCB0IE &= ~UCRXIE;
 }
@@ -265,7 +232,7 @@ static void adxl312_settings(void)
     //INT_MAC中断映射：任意位设为0发送到INT1位，，设为1发送到INT2位
     //1）DATA_READY[7]   2)SINGLE_TAP[6]  3)DOUBLE_TAP[5]  4)Activity[4]
     //5)inactivity[3]    6)FREE_FALL[2]   7)watermark[1]   8)overrun[0] 
-    adxl312_reg_write(ADXL_REG_INT_MAP,0x40);   
+    adxl312_reg_write(ADXL_REG_INT_MAP,0xBF);
     
     //1）SELF_TEST[7];2)SPI[6]; 3)INT_INVERT[5]：设置为0中断高电平有效，
     // 数据输出格式  高电平触发
@@ -284,18 +251,18 @@ static void adxl312_settings(void)
 
 void adxl_sensor_init(void)
 {
-    adxl312_iic_init();
+    adxl312_spi_init();
     adxl312_port_init();
     adxl312_settings();
 }
 
-bool_t adxl345_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
+bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
 {
-    uint8_t accbuf[ADXL345_DATA_OUT_REG_NUM] = {0};
-    uint8_t ret = I2C_FAIL;               // 读写返回值
+    uint8_t accbuf[6] = {0};
+    bool_t ret = FALSE;               // 读写返回值
     
-    ret = adxl345_read_buff( 0x32 , accbuf , ADXL345_DATA_OUT_REG_NUM );
-    DBG_ASSERT(I2C_OK == ret __DBG_LINE);
+    ret = adxl312_read_fifo( 0x32 , accbuf , ADXL_DATA_OUT_REG_NUM );
+    DBG_ASSERT(TRUE == ret __DBG_LINE);
 
     *pacc_x = (accbuf[1] << 8 ) | accbuf[0];
     *pacc_y = (accbuf[3] << 8 ) | accbuf[2];
@@ -306,7 +273,7 @@ bool_t adxl345_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
     *pacc_y = (fp32_t)( *pacc_y * 3.9);
     *pacc_z = (fp32_t)( *pacc_z * 3.9);
 */
-    return I2C_OK;
+    return TRUE;
 }
 
 

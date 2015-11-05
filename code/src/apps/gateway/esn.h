@@ -15,7 +15,12 @@
 
 #include "esn_active.h"
 #include "esn_frames.h"
+#include "esn_gain.h"
+#include "esn_detect.h"
 
-#define ESN_ACTIVE_PRIORITY		2
+#define ESN_ACTIVE_PRIORITY		4
+#define ESN_GAIN_PRIORITY       3
+#define ESN_DETECT_PRIORITY     2
+
 
 #endif

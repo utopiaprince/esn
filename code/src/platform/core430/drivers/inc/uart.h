@@ -20,10 +20,10 @@
 
 typedef enum 
 {
-    UART_1,                         /**< 串口1 */
-    UART_2,                         /**< 串口2 */
-    UART_3,                         /**< 串口3 */
-    UART_4,                         /**< 串口4 */
+  UART_1,                         /**< 串口1:485 */
+  UART_2,                         /**< 串口2:DBG */
+  UART_3,                         /**< 串口3:TTL */
+  UART_4,                         /**< 串口4:lora */
 } uart_id_t;
 
 typedef void (*uart_interupt_cb_t)(uint8_t id, uint8_t ch);

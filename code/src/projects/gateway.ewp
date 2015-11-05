@@ -58,7 +58,7 @@
         </option>
         <option>
           <name>RTLibraryPath</name>
-          <state>$TOOLKIT_DIR$\lib\dlib\dl430xlsfn.r43</state>
+          <state>$TOOLKIT_DIR$\lib\dlib\dl430xllfn.r43</state>
         </option>
         <option>
           <name>Input variant</name>
@@ -390,6 +390,7 @@
           <state>$PROJ_DIR$\..\platform\core430\port\</state>
           <state>$PROJ_DIR$\..\platform\core430\init\</state>
           <state>$PROJ_DIR$\..\platform\core430\drivers\</state>
+          <state>$PROJ_DIR$\..\platform\core430\drivers\inc</state>
           <state>$PROJ_DIR$\..\stack\</state>
           <state>$PROJ_DIR$\..\stack\common\</state>
           <state>$PROJ_DIR$\..\stack\custom\mac\</state>
@@ -699,7 +700,7 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state>E:\&#x9879;&#x76ee;&#x6574;&#x7406;\&#x65e0;&#x7eBF;&#x6284;&#x8868;\&#x8F93;&#x7535;&#x7F51;\esn\code\src\apps\gateway</state>
+          <state>$PROJ_DIR$\..\apps\gateway\</state>
         </option>
         <option>
           <name>ACPUTAG</name>
@@ -2174,7 +2175,10 @@
         <name>$PROJ_DIR$\..\apps\gateway\esn_active.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\apps\gateway\esn_restruct.c</name>
+        <name>$PROJ_DIR$\..\apps\gateway\esn_detect.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\apps\gateway\esn_gain.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\apps\gateway\FreeRTOSConfig.h</name>
@@ -2184,7 +2188,16 @@
       <name>$PROJ_DIR$\..\apps\gateway\esn_active.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\apps\gateway\esn_detect.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\apps\esn_frames.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\apps\gateway\esn_gain.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\apps\gateway\esn_restruct.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\apps\gateway\main.c</name>
@@ -2244,35 +2257,38 @@
         <group>
           <name>inc</name>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\adxl312.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\adxl312.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\board.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\board.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\cam.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\cam.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\clock.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\clock.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\drivers.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\drivers.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\lora.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\lora.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\sht.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\sht.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\uart.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\uart.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\wts.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\wts.h</name>
           </file>
         </group>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\adxl312.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\cam.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\clock.c</name>

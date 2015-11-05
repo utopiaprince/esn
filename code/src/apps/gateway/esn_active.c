@@ -93,9 +93,7 @@ static void esn_frames_recv_handle(sbuf_t *sbuf)
 static void esn_active_task(void *param)
 {
 	esn_msg_t esn_msg;
-    
-    adxl_sensor_init();
-    
+
 	while (1) {
 		xQueueReceive(esn_active_queue,
 		              &esn_msg,
@@ -128,6 +126,7 @@ bool_t esn_active_queue_send(esn_msg_t *esn_msg)
 void esn_active_init(void)
 {
 	portBASE_TYPE res;
+
 	res = xTaskCreate(esn_active_task,
 	                  "esn_active_task",
 	                  500,

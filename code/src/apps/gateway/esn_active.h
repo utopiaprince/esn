@@ -11,6 +11,8 @@
 #ifndef __ESN_ACTIVE_H__
 #define __ESN_ACTIVE_H__
 
+#include "prim.h"
+
 typedef enum
 {
 	ESN_TIMEOUT_EVENT   = 0x00,

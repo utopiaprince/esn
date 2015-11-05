@@ -18,7 +18,8 @@
 #include "esn_frames.h"
 
 #define ESN_DETECT_PRIORITY		2
-#define ESN_ACTIVE_PRIORITY		3
+
+#define ESN_ACTIVE_PRIORITY		4
 
 
 

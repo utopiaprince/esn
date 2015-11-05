@@ -23,6 +23,7 @@
 #include "lora.h"
 #include "clock.h"
 #include "adxl312.h"
+#include "cam.h"
 
 
 #endif

@@ -24,8 +24,11 @@ int main(void)
 
 	debug_init(DBG_LEVEL_TRACE | DBG_LEVEL_INFO | DBG_LEVEL_WARNING |
 	           DBG_LEVEL_ERROR);
-
+    
+    esn_detect_init();
 	esn_active_init();
+    esn_gain_init();
+    
 	stack_init();
 
 	vTaskStartScheduler();

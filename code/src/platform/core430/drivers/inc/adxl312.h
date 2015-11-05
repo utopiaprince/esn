@@ -14,13 +14,10 @@
 #ifndef __ADXL312_H__
 #define __ADXL312_H__
 
+#define ADXL_DATA_OUT_REG_NUM       (6u)
+
 #define RW_BIT                      (0x80)
 #define MB_BIT                      (0x40)
-
-#define ADXL_ADDRESS			    0x53
-#define ADXL_ADDRESS_W              0xA6 // (ADXL345_ADDRESS << 1) || 0x00
-#define ADXL_ADDRESS_R              0xA7 // (ADXL345_ADDRESS << 1) || 0x01
-
 
 /** ADXL345_ID
 *******************************************************************************/
@@ -159,7 +156,7 @@ void adxl_sensor_init(void);
 
 uint8_t adxl_sensor_getid(void);
 
-bool_t adx_get_xyz(int16_t *x, int16_t *y, int16_t *z);
+bool_t adxl_get_xyz(int16_t *x, int16_t *y, int16_t *z);
 
 
 #endif
