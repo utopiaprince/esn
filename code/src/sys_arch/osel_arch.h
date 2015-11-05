@@ -16,6 +16,8 @@
 #define osel_memcmp             memcmp
 #define osel_mem_alloc          pvPortMalloc
 
+#define osel_delay              vTaskDelay
+
 typedef enum
 {
 	MSG_LOW_PRIO,

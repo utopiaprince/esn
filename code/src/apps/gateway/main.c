@@ -26,7 +26,6 @@ int main(void)
 	           DBG_LEVEL_ERROR);
 
 	esn_active_init();
-
 	stack_init();
 
 	vTaskStartScheduler();

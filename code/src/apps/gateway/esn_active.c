@@ -1,6 +1,8 @@
 #include "osel_arch.h"
 #include "lib.h"
 
+#include <drivers.h>
+
 #include "sbuf.h"
 #include "prim.h"
 
@@ -91,6 +93,9 @@ static void esn_frames_recv_handle(sbuf_t *sbuf)
 static void esn_active_task(void *param)
 {
 	esn_msg_t esn_msg;
+    
+    adxl_sensor_init();
+    
 	while (1) {
 		xQueueReceive(esn_active_queue,
 		              &esn_msg,

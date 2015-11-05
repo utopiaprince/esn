@@ -22,5 +22,7 @@
 #include "uart.h"
 #include "lora.h"
 #include "clock.h"
+#include "adxl312.h"
+
 
 #endif
