@@ -202,7 +202,7 @@ static void adxl312_settings(void)
     //2g=0X20,,,4g=0x40,,,8g=0x80,,,16g=0xff,,,//1.5g=0x18
     adxl312_reg_write(ADXL_REG_THRESH_ACT,0x18);
     
-    //THRESH_INACT:比例因子为62.5mg/LSB   
+    //THRESH_INACT:比例因子为62.5mg/LSB
     //1g=0x10  //2g=0X20,,,4g=0x40,,,8g=0x80,,,16g=0xff
     adxl312_reg_write(ADXL_REG_THRESH_INACT,0x10);
                                                     
@@ -227,12 +227,12 @@ static void adxl312_settings(void)
     // 中断使能   
     //1）DATA_READY[7]   2)SINGLE_TAP[6]  3)DOUBLE_TAP[5]  4)Activity[4]
     //5)inactivity[3]    6)FREE_FALL[2]   7)watermark[1]   8)overrun[0]
-    adxl312_reg_write(ADXL_REG_INT_ENABLE,0xfc); 
+    adxl312_reg_write(ADXL_REG_INT_ENABLE,0x40);  //0xfc
                                                     
     //INT_MAC中断映射：任意位设为0发送到INT1位，，设为1发送到INT2位
     //1）DATA_READY[7]   2)SINGLE_TAP[6]  3)DOUBLE_TAP[5]  4)Activity[4]
     //5)inactivity[3]    6)FREE_FALL[2]   7)watermark[1]   8)overrun[0] 
-    adxl312_reg_write(ADXL_REG_INT_MAP,0xBF);
+    adxl312_reg_write(ADXL_REG_INT_MAP,0x40);
     
     //1）SELF_TEST[7];2)SPI[6]; 3)INT_INVERT[5]：设置为0中断高电平有效，
     // 数据输出格式  高电平触发
@@ -281,6 +281,8 @@ static void adxl_sensor_int_handler(void)
 {
     //*< do something
     //...
+    uint8_t int_source; 
+    adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
 }
 
 #pragma vector = PORT2_VECTOR

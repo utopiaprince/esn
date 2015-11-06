@@ -20,11 +20,14 @@
 
 void esn_detect_task(void *param)
 {
+    int16_t x,y,z;
     adxl_sensor_init();
     uint16_t time_cnt = 0;
     
     while (1) {
         vTaskDelay(20 / portTICK_RATE_MS);
+        adxl_get_xyz(&x, &y, &z);
+        
         //@todo: realy sensor detect
         if (time_cnt++ > 50 * 30) { //*< 30S 采样一次CAM
             time_cnt = 0;
@@ -42,7 +45,7 @@ bool_t esn_detect_init(void)
 {
     xTaskCreate(esn_detect_task,
                 "esn detect task",
-                500,
+                200,
                 NULL,
                 ESN_DETECT_PRIORITY,
                 NULL);

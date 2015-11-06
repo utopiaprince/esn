@@ -130,7 +130,7 @@ void esn_active_init(void)
 
 	res = xTaskCreate(esn_active_task,
 	                  "esn_active_task",
-	                  500,
+	                  300,
 	                  NULL,
 	                  ESN_ACTIVE_PRIORITY,
 	                  NULL);

@@ -20,11 +20,15 @@ DBG_THIS_MODULE("esn_gain")
 
 QueueHandle_t esn_gain_queue = NULL;
 
-static void recv_data_handle(uint8_t *pdata, uint16_t len)
+static void camera_recv_data_handle(uint8_t *pdata, uint16_t len)
 {
 //@todo: SEND data to gprs
 }
 
+static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
+{
+//@todo: SEND data to gprs
+}
 
 static void esn_gain_task(void *param)
 {
@@ -59,7 +63,7 @@ void esn_gain_init(void)
 
     res = xTaskCreate(esn_gain_task,
                       "esn_gain_task",
-                      1000,
+                      300,
                       NULL,
                       ESN_GAIN_PRIORITY,
                       NULL);
@@ -74,9 +78,9 @@ void esn_gain_init(void)
     }
 
 
-    camera_init(CAM_PORT, 115200, esn_gain_queue, recv_data_handle);
+    camera_init(CAM_PORT, 115200, esn_gain_queue, camera_recv_data_handle);
     
-    atmos_sensor_init(ATMO_PORT, 9600, esn_gain_queue, recv_data_handle);
+    atmos_sensor_init(ATMO_PORT, 9600, esn_gain_queue, atmos_recv_data_handle);
 }
 
 
