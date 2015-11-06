@@ -24,6 +24,7 @@
 #include "clock.h"
 #include "adxl312.h"
 #include "cam.h"
+#include "atmosphere.h"
 
 
 #endif

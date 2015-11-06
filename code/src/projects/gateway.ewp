@@ -2288,6 +2288,9 @@
           <name>$PROJ_DIR$\..\platform\core430\drivers\adxl312.c</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\atmosphere.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\cam.c</name>
         </file>
         <file>

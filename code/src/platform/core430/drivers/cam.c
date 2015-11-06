@@ -229,7 +229,6 @@ void camera_init(uint8_t uart_id, uint32_t baud,
 	camera_uart_clear();
 
 	uart_init(uart_id, baud);
-	osel_delay(60);        //*< 延时0.6s
 
 	camer_data_cb = cb;
 	cam_send_queue = queue;

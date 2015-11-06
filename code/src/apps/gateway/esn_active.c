@@ -95,18 +95,19 @@ static void esn_active_task(void *param)
 	esn_msg_t esn_msg;
 
 	while (1) {
-		xQueueReceive(esn_active_queue,
+		if(xQueueReceive(esn_active_queue,
 		              &esn_msg,
-		              portMAX_DELAY);
+		              portMAX_DELAY))
+        {
+            switch (esn_msg.event) {
+            case ESN_SSN_EVENT:
+                esn_frames_recv_handle((sbuf_t *)esn_msg.param);
+                break;
 
-		switch (esn_msg.event) {
-		case ESN_SSN_EVENT:
-			esn_frames_recv_handle((sbuf_t *)esn_msg.param);
-			break;
-
-		default:
-			break;
-		}
+            default:
+                break;
+            }
+        }
 	}
 }
 

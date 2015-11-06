@@ -21,12 +21,20 @@
 void esn_detect_task(void *param)
 {
     adxl_sensor_init();
-
-    osel_delay(100);
-
+    uint16_t time_cnt = 0;
+    
     while (1) {
         vTaskDelay(20 / portTICK_RATE_MS);
         //@todo: realy sensor detect
+        if (time_cnt++ > 50 * 30) { //*< 30S 采样一次CAM
+            time_cnt = 0;
+            esn_msg_t esn_msg;
+            esn_msg.event = GAIN_CAM_START;
+            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+            
+            esn_msg.event = GAIN_ATMO_START;
+            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+        }
     }
 }
 

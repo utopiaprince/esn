@@ -13,6 +13,10 @@
 
 #define GAIN_CAM_START      ((GAIN_CAM<<8) | CAM_CMD_PHONE)
 
+#define GAIN_ATMO_START     ((GAIN_ATMO)<<8 | ATMOS_CMD_START)
+
+extern QueueHandle_t esn_gain_queue;
+
 void esn_gain_init(void);
 
 #endif
