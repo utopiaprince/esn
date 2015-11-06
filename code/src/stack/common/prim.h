@@ -16,8 +16,6 @@
 #define __PRIM_H__
 
 #include <pbuf.h>
-#include <sbuf.h>
-
 typedef struct
 {
     uint32_t event;

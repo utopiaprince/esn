@@ -101,15 +101,15 @@
         </option>
         <option>
           <name>GStackHeapOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GStackSize2</name>
-          <state>160</state>
+          <state>1024</state>
         </option>
         <option>
           <name>GHeapSize2</name>
-          <state>160</state>
+          <state>0</state>
         </option>
         <option>
           <name>RadioDataModelType</name>
@@ -272,7 +272,7 @@
         </option>
         <option>
           <name>CCDiagRemark</name>
-          <state></state>
+          <state>pe177,pa082</state>
         </option>
         <option>
           <name>CCDiagWarning</name>
@@ -776,7 +776,7 @@
         </option>
         <option>
           <name>XList</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>SegmentMap</name>
@@ -788,7 +788,7 @@
         </option>
         <option>
           <name>PageLengthCheck</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>PageLength</name>
@@ -958,7 +958,7 @@
         </option>
         <option>
           <name>ListOutputFormat</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>BufferedTermOutput</name>
@@ -2181,6 +2181,9 @@
         <name>$PROJ_DIR$\..\apps\gateway\esn_gain.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\apps\gateway\esn_package.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\apps\gateway\FreeRTOSConfig.h</name>
       </file>
     </group>
@@ -2195,6 +2198,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\apps\gateway\esn_gain.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\apps\gateway\esn_package.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\apps\gateway\esn_restruct.c</name>
@@ -2272,6 +2278,9 @@
             <name>$PROJ_DIR$\..\platform\core430\drivers\inc\drivers.h</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\gprs.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\platform\core430\drivers\inc\lora.h</name>
           </file>
           <file>
@@ -2295,6 +2304,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\clock.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\gprs.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\lora.c</name>

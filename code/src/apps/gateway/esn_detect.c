@@ -16,26 +16,39 @@
 #include "drivers.h"
 #include "esn.h"
 
-
-
 void esn_detect_task(void *param)
 {
-    int16_t x,y,z;
-    adxl_sensor_init();
+    int16_t x, y, z;
+    //adxl_sensor_init();
     uint16_t time_cnt = 0;
-    
+
     while (1) {
         vTaskDelay(20 / portTICK_RATE_MS);
-        adxl_get_xyz(&x, &y, &z);
-        
+        //adxl_get_xyz(&x, &y, &z);
+
         //@todo: realy sensor detect
-        if (time_cnt++ > 50 * 30) { //*< 30S 采样一次CAM
+        uint8_t time = 2;
+        if (time_cnt++ > 50 * time) { //*< 30S 采样一次CAM
             time_cnt = 0;
             esn_msg_t esn_msg;
             esn_msg.event = GAIN_CAM_START;
-            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-            
+            //xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+
             esn_msg.event = GAIN_ATMO_START;
+            //xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+
+            //@todo: test
+#include "esn_package.h"
+#define GAIN_STOCK_START        ((GAIN_STOCK<<8) | 0)
+#define GAIN_DISTANCE_START     ((GAIN_DISTANCE<<8) | 0)
+#define GAIN_TEMPERATURE_START  ((GAIN_TEMPERATURE<<8) | 0)
+            esn_msg.event = GAIN_STOCK_START;
+            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+
+            esn_msg.event = GAIN_DISTANCE_START;
+            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+
+            esn_msg.event = GAIN_TEMPERATURE_START;
             xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
         }
     }

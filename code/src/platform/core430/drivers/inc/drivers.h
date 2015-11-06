@@ -25,6 +25,6 @@
 #include "adxl312.h"
 #include "cam.h"
 #include "atmosphere.h"
-
+#include "gprs.h"
 
 #endif

@@ -33,7 +33,7 @@
         </option>
         <option>
           <name>GoToEnable</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GoToName</name>
@@ -162,7 +162,7 @@
         </option>
         <option>
           <name>Erase</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>EMUVerifyDownloadP7</name>
@@ -231,7 +231,7 @@
         </option>
         <option>
           <name>UsbComPort</name>
-          <state>COM7</state>
+          <state>COM5</state>
         </option>
         <option>
           <name>FetConnection</name>

@@ -145,13 +145,6 @@ void mac_init(void)
     m_tran_init();
     
     m_recv_init();
-
-
-    
-
-
-
-
 }
 
 
