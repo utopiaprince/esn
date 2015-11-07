@@ -25,8 +25,10 @@
 
 #include <osel_arch.h>
 #include <lib.h>
+#include <math.h>
 #include <drivers.h>
 #include <esn_gain.h>
+
 #define ADXL_CS_EN()            (P3OUT &= ~BIT0)
 #define ADXL_CS_DIS()           (P3OUT |= BIT0)
 
@@ -271,16 +273,20 @@ bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
 
 void adxl_get_triple_angle(int16_t *x, int16_t *y, int16_t *z)
 {
-    uint16_t read_buf[6];
+    uint8_t read_buf[6];
     uint8_t cnt=0;
     fp32_t ax = 0, ay = 0, az = 0;
     fp32_t ax2 = 0, ay2 = 0, az2 = 0;
     fp32_t angx, angy, angz;
+    uint8_t int_source;
+    
 
 #define AVERAGE_CNT     (10)
     for (uint8_t i = 0; i < AVERAGE_CNT; i++)
     {
-        if ((adxl312_reg_read(ADXL_REG_INT_SOURCE) & ADXL_DATA_READY) == ADXL_DATA_READY)
+        adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
+
+        if ((int_source & ADXL_DATA_READY) == ADXL_DATA_READY)
         {
             cnt++;
             adxl312_read_fifo(ADXL_REG_DATAX0, read_buf, ADXL_DATA_OUT_REG_NUM);
