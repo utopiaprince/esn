@@ -158,6 +158,12 @@ uint8_t adxl_sensor_getid(void);
 
 bool_t adxl_get_xyz(int16_t *x, int16_t *y, int16_t *z);
 
-
+/**
+ * @brief if call this function, it cost 100ms;
+ * @param x [description]
+ * @param y [description]
+ * @param z [description]
+ */
+void adxl_get_triple_angle(int16_t *x, int16_t *y, int16_t *z);
 #endif
 

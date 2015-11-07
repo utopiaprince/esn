@@ -243,7 +243,7 @@ static void adxl312_settings(void)
 void adxl_sensor_init(void)
 {
     adxl312_spi_init();
-    
+
     adxl312_settings();
 
     adxl312_port_init();
@@ -267,6 +267,48 @@ bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
         *pacc_z = (fp32_t)( *pacc_z * 3.9);
     */
     return TRUE;
+}
+
+void adxl_get_triple_angle(int16_t *x, int16_t *y, int16_t *z)
+{
+    uint16_t read_buf[6];
+    uint8_t cnt=0;
+    fp32_t ax = 0, ay = 0, az = 0;
+    fp32_t ax2 = 0, ay2 = 0, az2 = 0;
+    fp32_t angx, angy, angz;
+
+#define AVERAGE_CNT     (10)
+    for (uint8_t i = 0; i < AVERAGE_CNT; i++)
+    {
+        if ((adxl312_reg_read(ADXL_REG_INT_SOURCE) & ADXL_DATA_READY) == ADXL_DATA_READY)
+        {
+            cnt++;
+            adxl312_read_fifo(ADXL_REG_DATAX0, read_buf, ADXL_DATA_OUT_REG_NUM);
+            ax += ((int16_t)(read_buf[1] << 8)) | read_buf[0];
+            ay += ((int16_t)(read_buf[3] << 8)) | read_buf[2];
+            az += ((int16_t)(read_buf[5] << 8)) | read_buf[4];
+        }
+    }
+
+    ax = ax/cnt;
+    ay = ay/cnt;
+    az = az/cnt;
+
+    ax2 = ax*ax;
+    ay2 = ay*ay;
+    az2 = az*az;
+
+    angx = atan2(ax, sqrt(ay2 + az2));
+    angy = atan2(ay, sqrt(ax2 + az2));
+    angz = atan2(sqrt(ax2 + ay2), az);
+
+    *x = (int16_t)(10 * angx * 180.0 / 3.1415926);
+    *y = (int16_t)(10 * angy * 180.0 / 3.1415926);
+    *z = (int16_t)(10 * angz * 180.0 / 3.1415926);
+
+    *x = *x + 900;
+    *y = *y + 900;
+#undef AVERAGE_CNT
 }
 
 #pragma vector = PORT2_VECTOR
