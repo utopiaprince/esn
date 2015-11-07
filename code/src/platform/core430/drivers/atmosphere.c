@@ -41,9 +41,9 @@ static portBASE_TYPE atmosphere_cmd(void)
 
 }
 
-static void atmo_recv_ch_cb(uint8_t id, uint8_t ch)
+static bool_t atmo_recv_ch_cb(uint8_t id, uint8_t ch)
 {
-    portBASE_TYPE xTaskWoken;
+    portBASE_TYPE xTaskWoken = pdFALSE;
 
 	if (ch == 0x3A) {
 		atmosphere_uart_mode = ATMOS_START_RUNING;
@@ -72,6 +72,8 @@ static void atmo_recv_ch_cb(uint8_t id, uint8_t ch)
 		atmosphere_uart_clear();
 		break;
 	}
+
+    return xTaskWoken
 }
 
 void atmos_sensor_init(uint8_t uart_id, uint32_t baud, 

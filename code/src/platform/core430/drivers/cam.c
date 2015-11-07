@@ -145,7 +145,7 @@ static void camera_uart_stop(void)
 	camera_last_byte = FALSE;
 }
 
-void camera_data_parse(uint8_t *data_ptr)
+portBASE_TYPE camera_data_parse(uint8_t *data_ptr)
 {
 	esn_msg_t esn_msg;
 	portBASE_TYPE xTaskWoken;
@@ -168,23 +168,27 @@ void camera_data_parse(uint8_t *data_ptr)
 	default:
 		break;
 	}
+
+	return xTaskWoken;
 }
 
-static void camera_recv_ch_cb(uint8_t id, uint8_t ch)
+static bool_t camera_recv_ch_cb(uint8_t id, uint8_t ch)
 {
+	portBASE_TYPE xTaskWoken = pdFALSE;
+
 	if (camera_uart_mode == RE_A1_STOP) {
-		return;
+		return xTaskWoken;
 	}
 
 	if ( camera_last_byte == TRUE) {
 		camera_uart_buf[camera_uart_index++] = (ch ^ CAM_FRM_CHECK);
 		camera_last_byte = FALSE;
-		return;
+		return xTaskWoken;
 	}
 
 	if ( ch == CAM_FRM_CHECK) {
 		camera_last_byte = TRUE;
-		return;
+		return xTaskWoken;
 	}
 
 	switch (camera_uart_mode) {
@@ -200,7 +204,7 @@ static void camera_recv_ch_cb(uint8_t id, uint8_t ch)
 		if (ch == CAM_FRM_HEAD) {
 			camera_uart_buf[camera_uart_index] = 0x00;
 			camera_uart_mode = RE_A1_STOP;
-			camera_data_parse(camera_uart_buf);
+			xTaskWoken = camera_data_parse(camera_uart_buf);
 			camera_uart_stop();
 		}
 		break;
@@ -209,6 +213,8 @@ static void camera_recv_ch_cb(uint8_t id, uint8_t ch)
 	default:
 		break;
 	}
+
+	return xTaskWoken;
 }
 
 void camera_frm_send(uint8_t cmd, uint8_t info1, uint8_t info2)

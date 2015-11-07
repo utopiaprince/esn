@@ -26,7 +26,7 @@ typedef enum
   UART_4,                         /**< 串口4:lora */
 } uart_id_t;
 
-typedef void (*uart_interupt_cb_t)(uint8_t id, uint8_t ch);
+typedef bool_t (*uart_interupt_cb_t)(uint8_t id, uint8_t ch);
 
 /**
  * Initializes the serial communications peripheral and GPIO ports

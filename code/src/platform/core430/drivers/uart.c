@@ -183,9 +183,16 @@ void uart_int_cb_reg(uart_interupt_cb_t cb)
 
 static void uart_int_cb_handle(uint8_t id, uint8_t ch)
 {
+    BaseType_t xTaskWoken = pdFALSE;
+
     if (uart_interrupt_cb != NULL)
     {
-        uart_interrupt_cb(id, ch);
+        xTaskWoken = uart_interrupt_cb(id, ch);
+    }
+
+    if(xTaskWoken)
+    {
+        taskYIELD();
     }
 }
 
