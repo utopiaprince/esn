@@ -73,7 +73,7 @@ static bool_t atmo_recv_ch_cb(uint8_t id, uint8_t ch)
 		break;
 	}
 
-    return xTaskWoken
+    return xTaskWoken;
 }
 
 void atmos_sensor_init(uint8_t uart_id, uint32_t baud, 

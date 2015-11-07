@@ -243,8 +243,10 @@ static void adxl312_settings(void)
 void adxl_sensor_init(void)
 {
     adxl312_spi_init();
-    adxl312_port_init();
+    
     adxl312_settings();
+
+    adxl312_port_init();
 }
 
 bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
