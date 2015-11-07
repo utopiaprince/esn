@@ -10,7 +10,7 @@
  */
 #ifndef __BOARD_H__
 #define __BOARD_H__
-
+#include <data_type_def.h>
 void wdt_clear(void);
 
 /**

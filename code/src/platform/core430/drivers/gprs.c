@@ -329,23 +329,32 @@ static void recv_deal(void)
 	{
 		return;
 	}
+	
 	if(my_strstr((const char*)recv.buf, (const char*)send_cmd_result) != NULL)
 	{
 		send_cb_group[send_cmd_index].cb();
 	}
-	if(gprs_info.gprs_state == WORK_ON)
+	else
 	{
-		if(my_strstr((const char*)recv.buf, (const char*)"ERROR\r\n") != NULL)
+		if(gprs_info.gprs_state == WORK_ON)
 		{
-			e_state = E_CNN_REST;
-			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-			write_fifo(ipconfig, mystrlen((char *)ipconfig));
+			if(my_strstr((const char*)recv.buf, (const char*)"ERROR\r\n") != NULL)
+			{
+				e_state = E_CNN_REST;
+				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+				write_fifo(ipconfig, mystrlen((char *)ipconfig));
+			}
+			else if(my_strstr((const char*)recv.buf, (const char*)"SEND FAIL\r\n") != NULL)
+			{
+				e_state = E_CNN_REST;
+				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+				write_fifo(ipconfig, mystrlen((char *)ipconfig));
+			}
 		}
-		else if(my_strstr((const char*)recv.buf, (const char*)"SEND FAIL\r\n") != NULL)
+		else
 		{
-			e_state = E_CNN_REST;
+			e_state = E_IDLE;
 			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-			write_fifo(ipconfig, mystrlen((char *)ipconfig));
 		}
 	}
 }

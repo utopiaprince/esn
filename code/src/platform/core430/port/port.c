@@ -211,7 +211,7 @@ void vPortSetupTimerInterrupt( void )
 	vApplicationSetupTimerInterrupt();
 }
 /*-----------------------------------------------------------*/
-
+#include <board.h>
 #pragma vector=configTICK_VECTOR
 __interrupt __raw void vTickISREntry( void )
 {

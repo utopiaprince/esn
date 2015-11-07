@@ -2266,6 +2266,9 @@
             <name>$PROJ_DIR$\..\platform\core430\drivers\inc\adxl312.h</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\atmosphere.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\platform\core430\drivers\inc\board.h</name>
           </file>
           <file>
@@ -2298,6 +2301,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\atmosphere.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\board.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\cam.c</name>

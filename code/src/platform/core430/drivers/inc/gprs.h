@@ -14,7 +14,7 @@ typedef struct
 {
 	bool_t gprs_state;
 	uint8_t uart_port;
-	uint16_t uart_speed;
+	uint32_t uart_speed;
 	uint8_t dip[4];
 	uint16_t port;
 	bool_t mode;
