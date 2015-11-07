@@ -8,11 +8,11 @@
 
 #define SIZE			(128u)
 #define CMD_CB_NUM		(20u)
-#define	PULL_UP			(P2OUT &= ~BIT1)
-#define	PULL_DOWN		(P2OUT |= BIT1)
-#define POWER_DOWN		(P6OUT &= ~BIT7)
-#define POWER_UP		(P6OUT |= BIT7)
+#define	PULL_UP			(P9OUT &= ~BIT7)
+#define	PULL_DOWN		(P9OUT |= BIT7)
+#define GPRS_DETECT_STATUS()	(P10IN & BIT0)
 
+#define AT_TEST		("AT+CREG?\r\0")
 #define AT			("AT\r")
 #define ATE0		("ATE0\r")
 #define CSMINS		("AT+CSMINS?\r")
@@ -32,6 +32,7 @@ static uint8_t GPRS_CGATT[][20] = {CGATT,"OK\r\n"};
 static uint8_t GPRS_CIPSTART[][20] = {CIPSTART,"CONNECT OK\r\n"};
 static uint8_t GPRS_CIPCLOSE[][20] = {CIPCLOSE,"OK\r\n"};
 static uint8_t GPRS_CIPSEND[][20] = {CIPSEND,">"};
+static uint8_t GPRS_TEST[][20] = {AT_TEST,"OK\r\n"};
 
 typedef void (*gprs_send_cb)(void);
 typedef	void (*gprs_read_cb_t)(const uint8_t *const buf, const uint8_t len);
@@ -305,6 +306,10 @@ static void cmd_cb_register(void)
 	send_cb_group[index].cmd = GPRS_CIPCLOSE[0];
 	send_cb_group[index].result = GPRS_CIPCLOSE[1];
 	send_cb_group[index++].cb = cipclose_cb;
+	
+	send_cb_group[index].cmd = GPRS_TEST[0];
+	send_cb_group[index].result = GPRS_TEST[1];
+	send_cb_group[index++].cb = at_cb;
 }
 
 static void gprs_switch(void)
@@ -313,8 +318,18 @@ static void gprs_switch(void)
 	esn_msg.event = GPRS_EVENT;
 	if(e_state == E_IDLE)
 	{
-		gprs_info.gprs_state = READY_IDLE;
-		write_fifo(GPRS_AT[0],  sizeof(AT) - 1);
+		if((GPRS_DETECT_STATUS() != FALSE))
+		{
+			gprs_info.gprs_state = READY_IDLE;
+			//write_fifo(GPRS_AT[0],  sizeof(AT) - 1);
+			write_fifo(GPRS_TEST[0], sizeof(AT_TEST) - 1);
+		}
+		else
+		{
+			gprs_info.gprs_state = E_CLOSE;
+			e_state = E_CLOSE;
+			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+		}
 	}
 	else if(e_state == E_CNN_SEND)
 	{
@@ -345,21 +360,21 @@ static void gprs_switch(void)
 	else if(e_state == E_UP)
 	{
 		PULL_UP;
-		e_state = E_IDLE;
-		vTaskDelay(5000 / portTICK_RATE_MS);
+		e_state = E_DOWN;
+		vTaskDelay(2000 / portTICK_RATE_MS);
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 	}
 	else if(e_state == E_DOWN)
 	{
 		PULL_DOWN;
-		e_state = E_UP;
-		vTaskDelay(1000 / portTICK_RATE_MS);
+		e_state = E_IDLE;
+		vTaskDelay(5000 / portTICK_RATE_MS);
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 	}
 	else if(e_state == E_CLOSE)
 	{
 		send_cmd_result = NULL;
-		e_state = E_DOWN;
+		e_state = E_UP;
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 	}
 }
@@ -423,24 +438,27 @@ static void gprs_task(void *p)
 
 static void port_init(void)
 {
-	P2SEL &= ~BIT1;
-	P2DIR |=  BIT1;
-	P10DIR |= BIT0;
-	P10OUT |= BIT0;
-	P6SEL &=~BIT7;//Close power
-	P6DIR |= BIT7;
-	P6OUT &= ~BIT7;
+	P9SEL &= ~BIT7;
+	P9DIR |=  BIT7;
 	
-	P6SEL &=~BIT7;//EN_6130 power
-	P6DIR |= BIT7;
-	P6OUT |= BIT7;
-	P10DIR |= BIT0;
-	P10OUT |= BIT0; 
+	P10SEL &= ~BIT0;
+	P10DIR &= ~BIT0;
+//	P10DIR |= BIT0;
+//	P10OUT |= BIT0;
+//	P6SEL &=~BIT7;//Close power
+//	P6DIR |= BIT7;
+//	P6OUT &= ~BIT7;
+//	
+//	P6SEL &=~BIT7;//EN_6130 power
+//	P6DIR |= BIT7;
+//	P6OUT |= BIT7;
+//	P10DIR |= BIT0;
+//	P10OUT |= BIT0; 
 }
 
 static bool_t gprs_init()
 {
-	//port_init();
+	port_init();
 	uart_init(gprs_info.uart_port, gprs_info.uart_speed);
 	cmd_cb_register();
 	gprs_info.gprs_state = READY_IDLE;
@@ -471,7 +489,6 @@ static bool_t gprs_init()
 
 static bool_t gprs_deinit()
 {
-	POWER_DOWN;
 	e_state = E_CLOSE;
 	gprs_info.gprs_state = WORK_DOWN;
 	return TRUE;

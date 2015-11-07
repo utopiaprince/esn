@@ -39,7 +39,6 @@ void esn_detect_task(void *param)
 
             //@todo: test
 #include "esn_package.h"
-#define GAIN_STOCK_START        ((GAIN_STOCK<<8) | 0)
 #define GAIN_DISTANCE_START     ((GAIN_DISTANCE<<8) | 0)
 #define GAIN_TEMPERATURE_START  ((GAIN_TEMPERATURE<<8) | 0)
             esn_msg.event = GAIN_STOCK_START;
