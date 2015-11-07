@@ -11,5 +11,19 @@
 #ifndef __BOARD_H__
 #define __BOARD_H__
 
+void wdt_clear(void);
+
+/**
+ * @biref open or close the led
+ * @param led
+ *  - 0 RED
+ *  - 1 GREEN
+ * @param res
+ *  - TRUE open
+ *  - FLASE close
+ */
+void led_set(uint8_t led, bool_t res);
+
+void board_init(void);
 
 #endif

@@ -8,6 +8,7 @@
 void bsp_init(void)
 {
     clk_init(SYSCLK_8MHZ);
+    board_init();
 }
 
 /* The MSP430X port uses this callback function to configure its tick interrupt.

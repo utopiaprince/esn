@@ -26,5 +26,6 @@
 #include "cam.h"
 #include "atmosphere.h"
 #include "gprs.h"
+#include "board.h"
 
 #endif
