@@ -22,7 +22,7 @@ typedef enum
 {
   UART_1,                         /**< 串口1:485 */
   UART_2,                         /**< 串口2:DBG */
-  UART_3,                         /**< 串口3:TTL */
+  UART_3,                         /**< 串口3:GPRS */
   UART_4,                         /**< 串口4:lora */
 } uart_id_t;
 

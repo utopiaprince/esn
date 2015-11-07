@@ -197,28 +197,31 @@ static void uart_int_cb_handle(uint8_t id, uint8_t ch)
 }
 
 #pragma vector = USCI_A0_VECTOR
-__interrupt void uart1_rx_isr(void)
+__interrupt void uart0_rx_isr(void)
 {
 	uart_int_cb_handle(UART_1, UCA0RXBUF);
 	LPM3_EXIT;
 }
 
 #pragma vector = USCI_A1_VECTOR
-__interrupt void uart2_rx_isr(void)
+__interrupt void uart1_rx_isr(void)
 {
 	uart_int_cb_handle(UART_2, UCA1RXBUF);
 	LPM3_EXIT;
 }
 
 #pragma vector = USCI_A2_VECTOR
-__interrupt void uart3_rx_isr(void)
+__interrupt void uart2_rx_isr(void)
 {
+#if 0
     uart_int_cb_handle(UART_3, UCA2RXBUF);
+#endif
+	gprs_uart_inter_recv(UCA2RXBUF);
     LPM3_EXIT;
 }
 
 #pragma vector = USCI_A3_VECTOR
-__interrupt void uart4_rx_isr(void)
+__interrupt void uart3_rx_isr(void)
 {
     uart_int_cb_handle(UART_4, UCA3RXBUF);
     LPM3_EXIT;

@@ -152,6 +152,9 @@
 #define ADXL_Y_AXIS                 (0x01)
 #define ADXL_Z_AXIS                 (0x02)
 
+#define GAIN_STOCK          	(7u)
+#define GAIN_STOCK_START        ((GAIN_STOCK<<8) | 0)
+
 void adxl_sensor_init(void);
 
 uint8_t adxl_sensor_getid(void);

@@ -26,7 +26,7 @@
 #include <osel_arch.h>
 #include <lib.h>
 #include <drivers.h>
-
+#include <esn_gain.h>
 #define ADXL_CS_EN()            (P3OUT &= ~BIT0)
 #define ADXL_CS_DIS()           (P3OUT |= BIT0)
 
@@ -316,7 +316,7 @@ __interrupt void port2_isr(void)
 {
     BaseType_t xTaskWoken = pdFALSE;
     uint8_t int_source;
-
+	esn_msg_t esn_msg;
     if ((P2IFG & BIT7) == BIT7)
     {
         P2IFG &= ~BIT7;
