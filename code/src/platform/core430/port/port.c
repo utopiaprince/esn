@@ -215,9 +215,10 @@ void vPortSetupTimerInterrupt( void )
 #pragma vector=configTICK_VECTOR
 __interrupt __raw void vTickISREntry( void )
 {
-extern void vPortTickISR( void );
-
+	extern void vPortTickISR( void );
+	extern void wdt_clear();
 	__bic_SR_register_on_exit( SCG1 + SCG0 + OSCOFF + CPUOFF );
+	wdt_clear();
 	vPortTickISR();
 }
 
