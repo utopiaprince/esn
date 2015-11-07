@@ -6,6 +6,8 @@
 #include "queue.h"
 #include "semphr.h"
 #include "timers.h"
+#include <data_type_def.h>
+#include <debug.h>
 
 #define hal_int_state_t         char
 #define HAL_ENTER_CRITICAL(s)   s=0;taskENTER_CRITICAL()
@@ -13,7 +15,7 @@
 
 #define osel_memset             memset
 #define osel_memcpy             memcpy
-#define osel_memcmp             memcmp
+//#define osel_memcmp             memcmp		//使用有问题
 #define osel_mem_alloc          pvPortMalloc
 
 #define osel_delay              vTaskDelay
@@ -34,5 +36,19 @@ typedef struct
     osel_param_t param;
 } osel_event_t;
 
-
+inline static bool_t osel_memcmp(void *const dst, const void *const src, uint16_t len)
+{
+    DBG_ASSERT(dst != NULL __DBG_LINE);
+    DBG_ASSERT(src != NULL __DBG_LINE);
+    uint8_t *tmp = (uint8_t *)dst;
+    uint8_t *s = (uint8_t *)src;
+    while (len--)
+    {
+        if (*tmp++ != *s++)
+        {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
 #endif

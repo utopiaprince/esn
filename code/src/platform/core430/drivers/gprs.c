@@ -12,7 +12,6 @@
 #define	PULL_DOWN		(P9OUT |= BIT7)
 #define GPRS_DETECT_STATUS()	(P10IN & BIT0)
 
-#define AT_TEST		("AT+CREG?\r\0")
 #define AT			("AT\r")
 #define ATE0		("ATE0\r")
 #define CSMINS		("AT+CSMINS?\r")
@@ -25,14 +24,13 @@ static const uint8_t tcp_mode[] = {"\"TCP\""};
 static const uint8_t udp_mode[] = {"\"UDP\""}; 
 static uint8_t ipconfig[50];
 static uint8_t send_data[SIZE];
-static uint8_t GPRS_AT[][6] = {AT,"OK\r\n"};
-static uint8_t GPRS_ATE0[][6] = {ATE0,"OK\r\n"};
-static uint8_t GPRS_CSMINS[][20] = {CSMINS,"OK\r\n"};
-static uint8_t GPRS_CGATT[][20] = {CGATT,"OK\r\n"};
-static uint8_t GPRS_CIPSTART[][20] = {CIPSTART,"CONNECT OK\r\n"};
-static uint8_t GPRS_CIPCLOSE[][20] = {CIPCLOSE,"OK\r\n"};
+static uint8_t GPRS_AT[][6] = {AT,"OK"};
+static uint8_t GPRS_ATE0[][6] = {ATE0,"OK"};
+static uint8_t GPRS_CSMINS[][20] = {CSMINS,"OK"};
+static uint8_t GPRS_CGATT[][20] = {CGATT,"OK"};
+static uint8_t GPRS_CIPSTART[][20] = {CIPSTART,"CONNECT OK"};
+static uint8_t GPRS_CIPCLOSE[][20] = {CIPCLOSE,"OK"};
 static uint8_t GPRS_CIPSEND[][20] = {CIPSEND,">"};
-static uint8_t GPRS_TEST[][20] = {AT_TEST,"OK\r\n"};
 
 typedef void (*gprs_send_cb)(void);
 typedef	void (*gprs_read_cb_t)(const uint8_t *const buf, const uint8_t len);
@@ -57,6 +55,7 @@ typedef enum
 	E_UP,
 	E_DOWN,
 	E_CLOSE,
+	E_DELAY_RECV,
 }E_SATE_E;
 
 typedef struct
@@ -197,6 +196,12 @@ static bool_t write_fifo(const uint8_t *const payload, const uint8_t len)
 	osel_memset(recv.buf, 0 , SIZE);
 	recv.offset = 0;
 	uart_send_string(gprs_info.uart_port, send.buf, send.len);
+	
+	//延时去接收数据
+	esn_msg_t esn_msg;
+	esn_msg.event = GPRS_EVENT;
+	e_state = E_DELAY_RECV;
+	xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 	return TRUE;
 }
 
@@ -229,6 +234,8 @@ static void cgatt_cb(void)
 {
 	uint8_t* ptr = ustrchr(recv.buf, ":");  
 	static uint8_t rest_num = 0;
+	esn_msg_t esn_msg;
+	esn_msg.event = GPRS_EVENT;
 	if(ptr != NULL)
 	{
 		ptr+=2;
@@ -236,7 +243,7 @@ static void cgatt_cb(void)
 		{
 			rest_num = 0;
 			e_state = E_CNN_REST;
-			gprs_switch();
+			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 			write_fifo(ipconfig, mystrlen((char *)ipconfig));
 			return;
 		}
@@ -245,7 +252,13 @@ static void cgatt_cb(void)
 			if(rest_num++ < 20)
 			{
 				e_state = E_IDLE_REST;
-				gprs_init();
+				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+			}
+			else
+			{
+				rest_num = 0;
+				e_state = E_CLOSE;
+				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 			}
 			return;
 		}
@@ -306,10 +319,35 @@ static void cmd_cb_register(void)
 	send_cb_group[index].cmd = GPRS_CIPCLOSE[0];
 	send_cb_group[index].result = GPRS_CIPCLOSE[1];
 	send_cb_group[index++].cb = cipclose_cb;
-	
-	send_cb_group[index].cmd = GPRS_TEST[0];
-	send_cb_group[index].result = GPRS_TEST[1];
-	send_cb_group[index++].cb = at_cb;
+}
+
+static void recv_deal(void)
+{
+	esn_msg_t esn_msg;
+	esn_msg.event = GPRS_EVENT;
+	if(send_cmd_result == NULL)
+	{
+		return;
+	}
+	if(my_strstr((const char*)recv.buf, (const char*)send_cmd_result) != NULL)
+	{
+		send_cb_group[send_cmd_index].cb();
+	}
+	if(gprs_info.gprs_state == WORK_ON)
+	{
+		if(my_strstr((const char*)recv.buf, (const char*)"ERROR\r\n") != NULL)
+		{
+			e_state = E_CNN_REST;
+			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+			write_fifo(ipconfig, mystrlen((char *)ipconfig));
+		}
+		else if(my_strstr((const char*)recv.buf, (const char*)"SEND FAIL\r\n") != NULL)
+		{
+			e_state = E_CNN_REST;
+			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+			write_fifo(ipconfig, mystrlen((char *)ipconfig));
+		}
+	}
 }
 
 static void gprs_switch(void)
@@ -318,11 +356,16 @@ static void gprs_switch(void)
 	esn_msg.event = GPRS_EVENT;
 	if(e_state == E_IDLE)
 	{
+		static uint8_t idle_num = 0;
+		if(idle_num++ > 20)
+		{
+			DBG_ASSERT(FALSE __DBG_LINE);
+		}
 		if((GPRS_DETECT_STATUS() != FALSE))
 		{
+			idle_num = 0;
 			gprs_info.gprs_state = READY_IDLE;
-			//write_fifo(GPRS_AT[0],  sizeof(AT) - 1);
-			write_fifo(GPRS_TEST[0], sizeof(AT_TEST) - 1);
+			write_fifo(GPRS_AT[0],  sizeof(AT) - 1);
 		}
 		else
 		{
@@ -361,7 +404,7 @@ static void gprs_switch(void)
 	{
 		PULL_UP;
 		e_state = E_DOWN;
-		vTaskDelay(2000 / portTICK_RATE_MS);
+		vTaskDelay(1000 / portTICK_RATE_MS);
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 	}
 	else if(e_state == E_DOWN)
@@ -376,6 +419,12 @@ static void gprs_switch(void)
 		send_cmd_result = NULL;
 		e_state = E_UP;
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+	}
+	else if(e_state == E_DELAY_RECV)
+	{
+		vTaskDelay(500 / portTICK_RATE_MS);
+		e_state = E_IDLE;
+		recv_deal();
 	}
 }
 
@@ -416,6 +465,34 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint8_t len)
 	return TRUE;
 }
 
+static void port_init(void)
+{
+	P9DIR |= BIT3;	//上电？
+	P9OUT |= BIT3;
+	
+	P9DIR |= BIT6;	//关闭睡眠
+	P9OUT &= ~BIT6;
+	
+	P9SEL &= ~BIT7;	
+	P9DIR |=  BIT7;
+	
+	P10SEL &= ~BIT0;
+	P10DIR &= ~BIT0;
+}
+
+#define MAINTAIN_TIME	(10*60*1000llu)
+static void gprs_maintain(void *p)
+{
+	while(1)
+	{
+		vTaskDelay(MAINTAIN_TIME / portTICK_RATE_MS);
+		if(gprs_info.gprs_state != WORK_ON)
+		{
+			DBG_ASSERT(FALSE __DBG_LINE);
+		}
+	}
+}
+
 static void gprs_task(void *p)
 {
 	esn_msg_t esn_msg;
@@ -436,29 +513,10 @@ static void gprs_task(void *p)
 	}
 }
 
-static void port_init(void)
-{
-	P9SEL &= ~BIT7;
-	P9DIR |=  BIT7;
-	
-	P10SEL &= ~BIT0;
-	P10DIR &= ~BIT0;
-//	P10DIR |= BIT0;
-//	P10OUT |= BIT0;
-//	P6SEL &=~BIT7;//Close power
-//	P6DIR |= BIT7;
-//	P6OUT &= ~BIT7;
-//	
-//	P6SEL &=~BIT7;//EN_6130 power
-//	P6DIR |= BIT7;
-//	P6OUT |= BIT7;
-//	P10DIR |= BIT0;
-//	P10OUT |= BIT0; 
-}
-
 static bool_t gprs_init()
 {
-	port_init();
+	port_init();         
+	
 	uart_init(gprs_info.uart_port, gprs_info.uart_speed);
 	cmd_cb_register();
 	gprs_info.gprs_state = READY_IDLE;
@@ -466,9 +524,21 @@ static bool_t gprs_init()
 	portBASE_TYPE res = pdTRUE;
 	res = xTaskCreate(gprs_task,                   //*< task body
 					  "gprs_task",                  //*< task name
-					  200,                        //*< task heap
+					  50,                        //*< task heap
 					  NULL,                       //*< tasK handle param
-					  configMAX_PRIORITIES - 3,   //*< task prio
+					  2,   //*< task prio
+					  NULL);                      //*< task pointer
+	if (res != pdTRUE)
+	{
+		DBG_ASSERT(FALSE __DBG_LINE);
+	}
+	
+	res = pdTRUE;
+	res = xTaskCreate(gprs_maintain,                   //*< task body
+					  "gprs_maintain",                  //*< task name
+					  50,                        //*< task heap
+					  NULL,                       //*< tasK handle param
+					  7,   //*< task prio
 					  NULL);                      //*< task pointer
 	if (res != pdTRUE)
 	{
@@ -497,29 +567,6 @@ static bool_t gprs_deinit()
 void gprs_uart_inter_recv(uint8_t ch)
 {
 	recv.buf[recv.offset++] = ch;
-	if(send_cmd_result == NULL)
-	{
-		return;
-	}
-	if(my_strstr((const char*)recv.buf, (const char*)send_cmd_result) != NULL)
-	{
-		send_cb_group[send_cmd_index].cb();
-	}
-	if(gprs_info.gprs_state == WORK_ON)
-	{
-		if(my_strstr((const char*)recv.buf, (const char*)"ERROR\r\n") != NULL)
-		{
-			e_state = E_CNN_REST;
-			gprs_switch();
-			write_fifo(ipconfig, mystrlen((char *)ipconfig));
-		}
-		else if(my_strstr((const char*)recv.buf, (const char*)"SEND FAIL\r\n") != NULL)
-		{
-			e_state = E_CNN_REST;
-			gprs_switch();
-			write_fifo(ipconfig, mystrlen((char *)ipconfig));
-		}
-	}
 }
 
 const struct gprs gprs_driver = 

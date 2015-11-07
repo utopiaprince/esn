@@ -28,9 +28,12 @@ void driver_init(void)
 	gprs_info.port = 8056;
 	gprs_info.mode = TRUE;
 	gprs_info.uart_port = UART_3;
-	gprs_info.uart_speed = 9600;
+	gprs_info.uart_speed = 38400;
 	gprs_driver.set(&gprs_info);
 	gprs_driver.init();
+	
+	P5DIR |= BIT4 | BIT5;	//LED
+	P5OUT |= BIT4 | BIT5;
 }
 
 int main(void)
