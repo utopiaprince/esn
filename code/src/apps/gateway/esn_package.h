@@ -2,9 +2,9 @@
 #include <data_type_def.h>
 #include <pbuf.h>
 #define ID_MAX  (17u)
-#define GAIN_STOCK        	(7u)
-#define GAIN_DISTANCE   	(8u)  
-#define GAIN_TEMPERATURE 	(9u) 
+#define GAIN_STOCK          (7u)
+#define GAIN_DISTANCE       (8u)
+#define GAIN_TEMPERATURE    (9u)
 enum frame_type_e
 {
     FRAME_BEGIN = 0,
@@ -21,13 +21,15 @@ enum message_type_e
 };
 
 #pragma pack(1)
-typedef struct {
+typedef struct
+{
     uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
     float val;
 } esn_part_t;
 
-typedef struct {
+typedef struct
+{
     uint8_t umonitor[ID_MAX];
     uint8_t frame_type;
     uint8_t message_type;

@@ -26,21 +26,21 @@
 /** INSTRUCTION CODES
 *******************************************************************************/
 #define ADXL_REG_DEVID              (0x00)  // 0   R   11100101  Device ID
-#define ADXL_REG_THRESH_TAP         (0x1D)  // 29  R/W 00000000  Tap threshold
+// #define ADXL_REG_THRESH_TAP         (0x1D)  // 29  R/W 00000000  Tap threshold
 #define ADXL_REG_OFSX               (0x1E)  // 30  R/W 00000000  X-axis offset
 #define ADXL_REG_OFSY               (0x1F)  // 31  R/W 00000000  Y-axis offset
 #define ADXL_REG_OFSZ               (0x20)  // 32  R/W 00000000  Z-axis offset
-#define ADXL_REG_DUR                (0x21)  // 33  R/W 00000000  Tap duration
-#define ADXL_REG_LATENT             (0x22)  // 34  R/W 00000000  Tap latency
-#define ADXL_REG_WINDOW             (0x23)  // 35  R/W 00000000  Tap window
+// #define ADXL_REG_DUR                (0x21)  // 33  R/W 00000000  Tap duration
+// #define ADXL_REG_LATENT             (0x22)  // 34  R/W 00000000  Tap latency
+// #define ADXL_REG_WINDOW             (0x23)  // 35  R/W 00000000  Tap window
 #define ADXL_REG_THRESH_ACT         (0x24)  // 36  R/W 00000000  Activity threshold
 #define ADXL_REG_THRESH_INACT       (0x25)  // 37  R/W 00000000  Inactivity threshold
 #define ADXL_REG_TIME_INACT         (0x26)  // 38  R/W 00000000  Inactivity time
 #define ADXL_REG_ACT_INACT_CTL      (0x27)  // 39  R/W 00000000  Axis enable control for activity //                   and inactivity detection
-#define ADXL_REG_THRESH_FF          (0x28)  // 40  R/W 00000000  Free-fall threshold
-#define ADXL_REG_TIME_FF            (0x29)  // 41  R/W 00000000  Free-fall time
-#define ADXL_REG_TAP_AXES           (0x2A)  // 42  R/W 00000000  Axis control for single tap/double tap
-#define ADXL_REG_ACT_TAP_STATUS     (0x2B)  // 43  R   00000000  Source of single tap/double tap
+// #define ADXL_REG_THRESH_FF          (0x28)  // 40  R/W 00000000  Free-fall threshold
+// #define ADXL_REG_TIME_FF            (0x29)  // 41  R/W 00000000  Free-fall time
+// #define ADXL_REG_TAP_AXES           (0x2A)  // 42  R/W 00000000  Axis control for single tap/double tap
+// #define ADXL_REG_ACT_TAP_STATUS     (0x2B)  // 43  R   00000000  Source of single tap/double tap
 #define ADXL_REG_BW_RATE            (0x2C)  // 44  R/W 00001010  Data rate and power mode control
 #define ADXL_REG_POWER_CTL          (0x2D)  // 45  R/W 00000000  Power-saving features control
 #define ADXL_REG_INT_ENABLE         (0x2E)  // 46  R/W 00000000  Interrupt enable control

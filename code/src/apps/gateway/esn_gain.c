@@ -70,13 +70,15 @@ static void esn_gain_task(void *param)
 {
     uint8_t type;
     esn_msg_t esn_msg;
-    while (1) {
+    while (1)
+    {
         if (xQueueReceive(esn_gain_queue,
                           &esn_msg,
                           portMAX_DELAY))
         {
             type = esn_msg.event >> 8;
-            switch (type) {
+            switch (type)
+            {
             case GAIN_CAM:
                 camera_handle(esn_msg.event);
                 break;
@@ -84,6 +86,7 @@ static void esn_gain_task(void *param)
             case GAIN_ATMO:
                 atmos_handle(&esn_msg);
                 break;
+
             case GAIN_STOCK:
             {
                 esn_part_t info;
@@ -103,6 +106,7 @@ static void esn_gain_task(void *param)
                 distance_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
                 break;
             }
+
             case GAIN_TEMPERATURE:
             {
                 esn_part_t info;
@@ -113,8 +117,8 @@ static void esn_gain_task(void *param)
                 temperature_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
                 break;
             }
-            default:
 
+            default:
                 break;
             }
         }
@@ -132,12 +136,14 @@ void esn_gain_init(void)
                       ESN_GAIN_PRIORITY,
                       NULL);
 
-    if (res != pdTRUE) {
+    if (res != pdTRUE)
+    {
         DBG_LOG(DBG_LEVEL_ERROR, "esn gain task init failed\r\n");
     }
 
     esn_gain_queue = xQueueCreate(10, sizeof(esn_msg_t));
-    if (esn_gain_queue == NULL) {
+    if (esn_gain_queue == NULL)
+    {
         DBG_LOG(DBG_LEVEL_ERROR, "esn_gain_queue init failed\r\n");
     }
 
