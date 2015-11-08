@@ -28,7 +28,7 @@ static uint8_t GPRS_AT[][6] = {AT,"OK"};
 static uint8_t GPRS_ATE0[][6] = {ATE0,"OK"};
 static uint8_t GPRS_CSMINS[][20] = {CSMINS,"OK"};
 static uint8_t GPRS_CGATT[][20] = {CGATT,"OK"};
-static uint8_t GPRS_CIPSTART[][20] = {CIPSTART,"CONNECT OK"};
+static uint8_t GPRS_CIPSTART[][20] = {CIPSTART,"OK"};
 static uint8_t GPRS_CIPCLOSE[][20] = {CIPCLOSE,"OK"};
 static uint8_t GPRS_CIPSEND[][20] = {CIPSEND,">"};
 
@@ -242,8 +242,6 @@ static void cgatt_cb(void)
 		if(*ptr == 0x31)
 		{
 			rest_num = 0;
-			e_state = E_CNN_REST;
-			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 			write_fifo(ipconfig, mystrlen((char *)ipconfig));
 			return;
 		}
@@ -333,21 +331,20 @@ static void recv_deal(void)
 	if(my_strstr((const char*)recv.buf, (const char*)send_cmd_result) != NULL)
 	{
 		send_cb_group[send_cmd_index].cb();
+		return;
 	}
 	else
 	{
 		if(gprs_info.gprs_state == WORK_ON)
 		{
-			if(my_strstr((const char*)recv.buf, (const char*)"ERROR\r\n") != NULL)
+			if(my_strstr((const char*)recv.buf, (const char*)"ERROR") != NULL)
 			{
-				e_state = E_CNN_REST;
-				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+				gprs_info.gprs_state = CNN_AGAIN;
 				write_fifo(ipconfig, mystrlen((char *)ipconfig));
 			}
-			else if(my_strstr((const char*)recv.buf, (const char*)"SEND FAIL\r\n") != NULL)
+			else if(my_strstr((const char*)recv.buf, (const char*)"SEND FAIL") != NULL)
 			{
-				e_state = E_CNN_REST;
-				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+				gprs_info.gprs_state = CNN_AGAIN;
 				write_fifo(ipconfig, mystrlen((char *)ipconfig));
 			}
 		}
@@ -383,26 +380,6 @@ static void gprs_switch(void)
 			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 		}
 	}
-	else if(e_state == E_CNN_SEND)
-	{
-		if(gprs_info.gprs_state == WORK_ON)
-		{
-			e_state = E_CLOSE;
-		}
-		else
-		{
-			e_state = E_CNN_REST;
-			write_fifo(ipconfig, mystrlen((char *)ipconfig));
-			xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-		}
-	}
-	else if(e_state == E_CNN_REST)
-	{
-		e_state = E_CNN_SEND;
-		gprs_info.gprs_state = WORK_DOWN;
-		vTaskDelay(11000 / portTICK_RATE_MS);
-		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-	}
 	else if(e_state == E_IDLE_REST)
 	{
 		e_state = E_IDLE;
@@ -431,8 +408,7 @@ static void gprs_switch(void)
 	}
 	else if(e_state == E_DELAY_RECV)
 	{
-		vTaskDelay(500 / portTICK_RATE_MS);
-		e_state = E_IDLE;
+		vTaskDelay(300 / portTICK_RATE_MS);
 		recv_deal();
 	}
 }

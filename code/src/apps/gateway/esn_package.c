@@ -47,7 +47,7 @@ pbuf_t *temperature_package(esn_part_t *info)
         esn_package_t package;
         mac_addr_get(package.umonitor);
         package.frame_type = DATA;
-        package.message_type = M_DISTANCE;
+        package.message_type = M_TEMPERATURE;
         osel_memcpy(package.bmonitor, info->bmonitor, 17);
         package.collect_time = info->collect_time;
         package.alarm = TRUE;

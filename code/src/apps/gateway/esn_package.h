@@ -35,7 +35,7 @@ typedef struct
     uint8_t message_type;
     uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
-    bool_t alarm;
+    uint16_t alarm;
     float val;
 } esn_package_t;
 #pragma pack()

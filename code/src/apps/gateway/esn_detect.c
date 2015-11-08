@@ -27,7 +27,7 @@ void esn_detect_task(void *param)
         //adxl_get_xyz(&x, &y, &z);
 
         //@todo: realy sensor detect
-        uint8_t time = 2;
+        uint8_t time = 5;
         if (time_cnt++ > 50 * time) { //*< 30S 采样一次CAM
             time_cnt = 0;
             esn_msg_t esn_msg;
@@ -43,12 +43,13 @@ void esn_detect_task(void *param)
 #define GAIN_TEMPERATURE_START  ((GAIN_TEMPERATURE<<8) | 0)
             esn_msg.event = GAIN_STOCK_START;
             xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-
+			vTaskDelay(1000 / portTICK_RATE_MS);
             esn_msg.event = GAIN_DISTANCE_START;
             xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-
+			vTaskDelay(1000 / portTICK_RATE_MS);
             esn_msg.event = GAIN_TEMPERATURE_START;
             xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+			vTaskDelay(1000 / portTICK_RATE_MS);
         }
     }
 }
