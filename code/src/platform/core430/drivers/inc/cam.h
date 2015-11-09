@@ -13,7 +13,7 @@
 
 #include "osel_arch.h"
 
-#define CAM_PORT                (UART_1)
+#define CAM_PORT                (UART_2)
 
 #define GAIN_CAM                (0x00)
 

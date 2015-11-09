@@ -238,7 +238,7 @@ void camera_init(uint8_t uart_id, uint32_t baud,
 
 	camer_data_cb = cb;
 	cam_send_queue = queue;
-	uart_int_cb_reg(camera_recv_ch_cb);
+	uart_int_cb_reg(uart_id, camera_recv_ch_cb);
 }
 
 void camera_cmd(uint8_t cmd, uint8_t cnt)

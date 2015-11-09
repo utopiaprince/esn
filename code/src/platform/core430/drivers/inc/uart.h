@@ -1,5 +1,5 @@
 /**
- * @brief       : 
+ * @brief       :
  *
  * @file        : uart.h
  * @author      : gang.cheng
@@ -18,12 +18,13 @@
 #error "include data_type_def.h must appear in source file before include uart.h"
 #endif
 
-typedef enum 
+typedef enum
 {
-  UART_1,                         /**< 串口1:485 */
-  UART_2,                         /**< 串口2:DBG */
-  UART_3,                         /**< 串口3:GPRS */
-  UART_4,                         /**< 串口4:lora */
+	UART_1,                         /**< 串口1:485 */
+	UART_2,                         /**< 串口2:DBG */
+	UART_3,                         /**< 串口3:GPRS */
+	UART_4,                         /**< 串口4:lora */
+	UART_MAX,
 } uart_id_t;
 
 typedef bool_t (*uart_interupt_cb_t)(uint8_t id, uint8_t ch);
@@ -59,7 +60,7 @@ void uart_recv_enable(uint8_t uart_id);
 
 void uart_recv_disable(uint8_t uart_id);
 
-void uart_int_cb_reg(uart_interupt_cb_t cb);
+void uart_int_cb_reg(uint8_t id, uart_interupt_cb_t cb);
 
 
 #endif

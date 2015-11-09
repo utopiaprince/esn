@@ -85,7 +85,7 @@ void atmos_sensor_init(uint8_t uart_id, uint32_t baud,
     
     atmo_data_cb = cb;
     atmo_send_queue = queue;
-    uart_int_cb_reg(atmo_recv_ch_cb);
+    uart_int_cb_reg(uart_id, atmo_recv_ch_cb);
     
     MODBUS_DIR(1);
 	MODBUS_RX();

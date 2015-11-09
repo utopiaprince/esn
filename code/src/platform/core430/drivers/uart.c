@@ -16,7 +16,7 @@
 #include "osel_arch.h"
 
 
-static uart_interupt_cb_t uart_interrupt_cb = NULL;
+static uart_interupt_cb_t uart_interrupt_cb[UART_MAX] = {NULL};
 
 void uart_init(uint8_t uart_id, uint32_t baud_rate)
 {
@@ -173,11 +173,11 @@ void uart_recv_disable(uint8_t uart_id)
     }
 }
 
-void uart_int_cb_reg(uart_interupt_cb_t cb)
+void uart_int_cb_reg(uint8_t id, uart_interupt_cb_t cb)
 {
     if (cb != NULL)
     {
-        uart_interrupt_cb = cb;
+        uart_interrupt_cb[id] = cb;
     }
 }
 
@@ -185,9 +185,9 @@ static void uart_int_cb_handle(uint8_t id, uint8_t ch)
 {
     BaseType_t xTaskWoken = pdFALSE;
 
-    if (uart_interrupt_cb != NULL)
+    if (uart_interrupt_cb[id] != NULL)
     {
-        xTaskWoken = uart_interrupt_cb(id, ch);
+        xTaskWoken = uart_interrupt_cb[id](id, ch);
     }
 
     if(xTaskWoken)

@@ -12,7 +12,7 @@
 #define     MODBUS_TX()					P3OUT |= MODBUS_CONTROL_PIN
 #define		MODBUS_RX()					P3OUT &= ~MODBUS_CONTROL_PIN
 
-#define ATMO_PORT                   (UART_2)
+#define ATMO_PORT                   (UART_1)
 
 #define GAIN_ATMO                   (0x01)
 
