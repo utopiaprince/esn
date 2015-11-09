@@ -19,7 +19,7 @@
 void esn_detect_task(void *param)
 {
     int16_t x, y, z;
-    //adxl_sensor_init();
+    adxl_sensor_init();
     uint16_t time_cnt = 0;
 
     while (1) {

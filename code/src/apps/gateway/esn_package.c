@@ -1,5 +1,7 @@
-#include "esn_package.h"
 #include <osel_arch.h>
+#include <drivers.h>
+#include "esn_package.h"
+
 static void mac_addr_get(uint8_t *mac_addr)
 {
         uint8_t id[ID_MAX] = {0xaa};

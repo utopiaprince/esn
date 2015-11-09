@@ -122,26 +122,9 @@ bool_t adxl312_write_fifo(uint8_t addr, uint8_t *datap, uint8_t len)
     return TRUE;
 }
 
-//static void adxl312_lock_init(void)
-//{
-//    //P3.3 作为模拟scl，输出9个信号
-//    P3SEL &= ~BIT3;// P3.3置成IO口模式
-//  P3DIR |= BIT3; //P3.3做为输出
-//    P3OUT |= BIT3;
-//    // 主设备模拟SCL，从高到低，输出9次，使得从设备释放SDA
-//    for(uint8_t i=0;i<9;i++)
-//    {
-//        P3OUT |= BIT3;
-//        osel_delay(1);
-//        P3OUT &= ~BIT3;
-//        osel_delay(1);
-//    }
-//}
 
 static void adxl312_spi_init(void)
 {
-//    adxl312_lock_init();
-
     P3SEL |= BIT1 + BIT2 + BIT3;
     P3DIR |= BIT0 + BIT1 + BIT3;
     ADXL_CS_DIS();
@@ -171,25 +154,30 @@ static void adxl312_port_init(void)
 
 static void adxl312_settings(void)
 {
-    // ad312_reg_write(ADXL312_REG_BW_RATE, RATE(0x0c));
-    // ad312_reg_write(ADXL312_REG_FIFO_CTL, 0x8a);
-    // ad312_reg_write(ADXL312_REG_POWER_CTL, 0x00);
-    // ad312_reg_write(ADXL312_REG_DATA_FORMAT, 0x08);
-    // ad312_reg_write(ADXL312_REG_OFSX, 0x00);
-    // ad312_reg_write(ADXL312_REG_OFSY, 0x00);
-    // ad312_reg_write(ADXL312_REG_OFSZ, 0x00);
-
-    // ad312_reg_write(ADXL345_REG_DUR, 0x10);
-    // ad312_reg_write(ADXL345_REG_THRESH_TAP, 0x30);
-    // ad312_reg_write(ADXL345_REG_TAP_AXES, 0x07);
-
-    // ad312_reg_write(ADXL345_REG_INT_ENABLE, 0x40);
-    // ad312_reg_write(ADXL345_REG_INT_MAP, 0x00);
-    // adxl312_reg_write(ADXL_REG_POWER_CTL,0x28);
-
     uint8_t device_id = 0;
     adxl312_reg_read(ADXL_REG_DEVID, &device_id);
     DBG_ASSERT(ADXL_DEVICE_ID == device_id __DBG_LINE);
+#if 1
+    adxl312_reg_write(ADXL_REG_BW_RATE, 0x0a);
+    adxl312_reg_write(ADXL_REG_FIFO_CTL, 0x8a);
+    adxl312_reg_write(ADXL_REG_POWER_CTL, 0x00);
+    adxl312_reg_write(ADXL_REG_DATA_FORMAT, 0x08);
+    adxl312_reg_write(ADXL_REG_OFSX, 0x00);
+    adxl312_reg_write(ADXL_REG_OFSY, 0x00);
+    adxl312_reg_write(ADXL_REG_OFSZ, 0x00);
+
+    adxl312_reg_write(ADXL_REG_THRESH_TAP, 0x30);
+    adxl312_reg_write(ADXL_REG_DUR, 0x10);
+    adxl312_reg_write(ADXL_REG_TAP_AXES, 0x07);
+
+    adxl312_reg_write(ADXL_REG_INT_ENABLE, ADXL_SINGLE_TAP);
+    adxl312_reg_write(ADXL_REG_INT_MAP, ADXL_SINGLE_TAP);
+    adxl312_reg_write(ADXL_REG_POWER_CTL, 0x28);
+
+    uint8_t int_source;
+    adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
+#else
+
     // ADXL345_REG_POWER_CTL[3]=0设置成待机模式,即清除测试位
     adxl312_reg_write(ADXL_REG_POWER_CTL, 0x00);
 
@@ -239,6 +227,7 @@ static void adxl312_settings(void)
     adxl312_reg_write(ADXL_REG_POWER_CTL, 0x28);
     uint8_t int_source;
     adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
+#endif
 }
 
 
@@ -274,12 +263,12 @@ bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
 void adxl_get_triple_angle(int16_t *x, int16_t *y, int16_t *z)
 {
     uint8_t read_buf[6];
-    uint8_t cnt=0;
+    uint8_t cnt = 0;
     fp32_t ax = 0, ay = 0, az = 0;
     fp32_t ax2 = 0, ay2 = 0, az2 = 0;
     fp32_t angx, angy, angz;
     uint8_t int_source;
-    
+
 
 #define AVERAGE_CNT     (10)
     for (uint8_t i = 0; i < AVERAGE_CNT; i++)
@@ -296,13 +285,13 @@ void adxl_get_triple_angle(int16_t *x, int16_t *y, int16_t *z)
         }
     }
 
-    ax = ax/cnt;
-    ay = ay/cnt;
-    az = az/cnt;
+    ax = ax / cnt;
+    ay = ay / cnt;
+    az = az / cnt;
 
-    ax2 = ax*ax;
-    ay2 = ay*ay;
-    az2 = az*az;
+    ax2 = ax * ax;
+    ay2 = ay * ay;
+    az2 = az * az;
 
     angx = atan2(ax, sqrt(ay2 + az2));
     angy = atan2(ay, sqrt(ax2 + az2));
@@ -322,13 +311,13 @@ __interrupt void port2_isr(void)
 {
     BaseType_t xTaskWoken = pdFALSE;
     uint8_t int_source;
-	esn_msg_t esn_msg;
+    esn_msg_t esn_msg;
     if ((P2IFG & BIT7) == BIT7)
     {
         P2IFG &= ~BIT7;
         adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
 
-        if (int_source & ADXL_ACTIVITY)
+        if (int_source & ADXL_SINGLE_TAP)
         {
             esn_msg.event = GAIN_STOCK_START;
             xQueueSendFromISR(esn_gain_queue, &esn_msg, &xTaskWoken);
