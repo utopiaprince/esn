@@ -132,7 +132,7 @@ static void adxl312_spi_init(void)
     UCB0CTL1 |= UCSWRST;
     UCB0CTL0 = UCCKPL + UCMSB + UCMST + UCSYNC;
     UCB0CTL1 = UCSSEL__SMCLK;           // Select SMCLK as clock source
-    UCB0BR0 = 0x08;
+    UCB0BR0 = 16;
     UCB0BR1 = 0x00;                     // fBitClock = fBRCLK/UCBRx = SMCLK = DCO/BR  SCLK = 8M
 
     UCB0CTL1 &= ~UCSWRST;               // Initialize USCI state machine
@@ -158,7 +158,7 @@ static void adxl312_settings(void)
     adxl312_reg_read(ADXL_REG_DEVID, &device_id);
     DBG_ASSERT(ADXL_DEVICE_ID == device_id __DBG_LINE);
 #if 1
-    adxl312_reg_write(ADXL_REG_BW_RATE, 0x0a);
+    adxl312_reg_write(ADXL_REG_BW_RATE, 0x0C);
     adxl312_reg_write(ADXL_REG_FIFO_CTL, 0x8a);
     adxl312_reg_write(ADXL_REG_POWER_CTL, 0x00);
     adxl312_reg_write(ADXL_REG_DATA_FORMAT, 0x08);
@@ -316,7 +316,6 @@ __interrupt void port2_isr(void)
     {
         P2IFG &= ~BIT7;
         adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
-
         if (int_source & ADXL_SINGLE_TAP)
         {
             esn_msg.event = GAIN_STOCK_START;
