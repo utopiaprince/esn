@@ -12,7 +12,11 @@
 #define __BOARD_H__
 #include <data_type_def.h>
 void wdt_clear(void);
-
+enum led_e
+{
+	LED_RED,
+	LEN_GREEN,			//用于GPRS连接状态
+};
 /**
  * @biref open or close the led
  * @param led
@@ -26,4 +30,5 @@ void led_set(uint8_t led, bool_t res);
 
 void board_init(void);
 
+void mac_addr_get(uint8_t *mac_addr);
 #endif

@@ -15,7 +15,7 @@
 
 #include "drivers.h"
 #include "esn.h"
-
+#include "esn_package.h"
 static void range_app_handle(void)
 {
     static uint16_t distance_time_cnt = 0;
@@ -33,8 +33,12 @@ static void range_app_handle(void)
         /** 刷新计数器 */
         distance_time_cnt = 0;
         //@TODO: 添加测距异常数据发送接口
-        //
-        //
+        distance_t info;
+		osel_memset(&info,0,sizeof(distance_t));
+		mac_addr_get(info.bmonitor);
+		info.collect_time = 0;
+		info.val = distance;
+		distance_send((uint8_t *)&info, sizeof(distance_t));
 
         //@note 启动摄像头采集数据
         esn_msg_t esn_msg;
@@ -47,8 +51,12 @@ static void range_app_handle(void)
     {
         distance_time_cnt = 0;
         //@TODO: 添加测距异常数据发送接口
-        //
-        //
+        distance_t info;
+		osel_memset(&info,0,sizeof(distance_t));
+		mac_addr_get(info.bmonitor);
+		info.collect_time = 0;
+		info.val = distance;
+		distance_send((uint8_t *)&info, sizeof(distance_t));
     }
 }
 
@@ -125,31 +133,6 @@ void esn_detect_task(void *param)
         camera_app_handle();
         temp_app_handle();
         atmos_app_handle();
-
-//        if (time_cnt++ > DETECT_TIME)   //*< 30S 采样一次CAM
-//        {
-//            time_cnt = 0;
-//            esn_msg_t esn_msg;
-//            esn_msg.event = GAIN_CAM_START;
-//            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-//
-//            esn_msg.event = GAIN_ATMO_START;
-//            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-//
-//            //@todo: test
-//#include "esn_package.h"
-//#define GAIN_DISTANCE_START     ((GAIN_DISTANCE<<8) | 0)
-//#define GAIN_TEMPERATURE_START  ((GAIN_TEMPERATURE<<8) | 0)
-//            esn_msg.event = GAIN_STOCK_START;
-//            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-//            vTaskDelay(1000 / portTICK_RATE_MS);
-//            esn_msg.event = GAIN_DISTANCE_START;
-//            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-//            vTaskDelay(1000 / portTICK_RATE_MS);
-//            esn_msg.event = GAIN_TEMPERATURE_START;
-//            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-//            vTaskDelay(1000 / portTICK_RATE_MS);
-//        }
     }
 }
 

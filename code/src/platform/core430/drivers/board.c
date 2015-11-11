@@ -19,14 +19,20 @@ void wdt_clear(void)
 
 void led_set(uint8_t led, bool_t res)
 {
-    if (led == 0)   //RED
+    if (led == LED_RED)   //RED
     {
         (res == TRUE) ? (P5OUT |= BIT5) : (P5OUT &= ~BIT5);
     }
-    else if (led == 1)
+    else if (led == LEN_GREEN)
     {
         (res == TRUE) ? (P5OUT |= BIT4) : (P5OUT &= ~BIT4);
     }
+}
+
+void mac_addr_get(uint8_t *mac_addr)
+{
+	uint8_t id[17] = {0xaa};
+	osel_memcpy(mac_addr, id, 17);
 }
 
 void board_init(void)

@@ -6,7 +6,7 @@
 
 #define GPRS_EVENT		(0x0100)
 
-#define SIZE			(128u)
+#define SIZE			(LARGE_PBUF_BUFFER_SIZE)
 #define CMD_CB_NUM		(20u)
 #define	PULL_UP			(P9OUT &= ~BIT7)
 #define	PULL_DOWN		(P9OUT |= BIT7)
@@ -335,17 +335,23 @@ static void recv_deal(void)
 	}
 	else
 	{
-		if(gprs_info.gprs_state == WORK_ON)
+		if(gprs_info.gprs_state == WORK_ON || gprs_info.gprs_state == CNN_AGAIN)
 		{
-			if(my_strstr((const char*)recv.buf, (const char*)"ERROR") != NULL)
+			if(my_strstr((const char*)recv.buf, (const char*)"CONNECT\r\n") != NULL)
 			{
-				gprs_info.gprs_state = CNN_AGAIN;
-				write_fifo(ipconfig, mystrlen((char *)ipconfig));
+				gprs_info.gprs_state = WORK_ON;
 			}
-			else if(my_strstr((const char*)recv.buf, (const char*)"SEND FAIL") != NULL)
+			else if(my_strstr((const char*)recv.buf, (const char*)"ERROR\r\n") != NULL)
 			{
 				gprs_info.gprs_state = CNN_AGAIN;
-				write_fifo(ipconfig, mystrlen((char *)ipconfig));
+				e_state = E_IDLE;
+				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+			}
+			else if(my_strstr((const char*)recv.buf, (const char*)"SEND FAIL\r\n") != NULL)
+			{
+				gprs_info.gprs_state = CNN_AGAIN;
+				e_state = E_IDLE;
+				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 			}
 		}
 		else
@@ -509,9 +515,9 @@ static bool_t gprs_init()
 	portBASE_TYPE res = pdTRUE;
 	res = xTaskCreate(gprs_task,                   //*< task body
 					  "gprs_task",                  //*< task name
-					  50,                        //*< task heap
+					  200,                        //*< task heap
 					  NULL,                       //*< tasK handle param
-					  2,   //*< task prio
+					  8,   //*< task prio
 					  NULL);                      //*< task pointer
 	if (res != pdTRUE)
 	{
@@ -523,7 +529,7 @@ static bool_t gprs_init()
 					  "gprs_maintain",                  //*< task name
 					  50,                        //*< task heap
 					  NULL,                       //*< tasK handle param
-					  7,   //*< task prio
+					  4,   //*< task prio
 					  NULL);                      //*< task pointer
 	if (res != pdTRUE)
 	{

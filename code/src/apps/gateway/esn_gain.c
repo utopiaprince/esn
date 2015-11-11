@@ -20,181 +20,161 @@ DBG_THIS_MODULE("esn_gain")
 
 QueueHandle_t esn_gain_queue = NULL;
 
-static bool_t esn_gprs_send(pbuf_t *pbuf)
+static void CharToHex(char * dest, char * buffer , int len)
 {
-    uint8_t buf[128];
-    uint16_t len = pbuf->data_len - ID_MAX - 2;
-    uint8_t index = 0;
-    pbuf->data_p = pbuf->head;
-    buf[0] = 0xa5;
-    buf[1] = 0x5a;
-    index += 2;
-    osel_memcpy(&buf[2], &len, sizeof(uint16_t));
-    index += sizeof(uint16_t);
-    osel_memcpy(&buf[4], pbuf->data_p , pbuf->data_len);
-    index += pbuf->data_len;
-    index += 2;         //CRC_16
-    gprs_info_t gprs_info;
-    gprs_driver.get(&gprs_info);
-    if (gprs_info.gprs_state == WORK_ON)
-    {
-        gprs_driver.write(buf , index);
-        return TRUE;
-    }
-    else
-        return FALSE;
+	int i=0;
+	int j=0;
+	unsigned char temp;
+	while(i<len)
+	{
+		temp=buffer[i];
+		if((temp>=0x30)&&(temp<=0x39))
+		{
+			temp=temp-0x30;
+			dest[j]=temp<<4;
+		}
+		else if((temp>=0x41)&&(temp<=0x46))
+		{
+			temp=temp-0x41+0x0A;
+			dest[j]=temp<<4;
+		}
+		else if((temp>=0x61)&&(temp<=0x66))
+		{
+			temp=temp-0x61+0x0A;
+			dest[j]=temp<<4;
+		}
+		else
+		{
+			dest[j]=0x00;
+		}
+		temp=buffer[i+1];
+		if((temp>=0x30)&&(temp<=0x39))
+		{
+			temp=temp-0x30;
+			dest[j]=dest[j]|temp;
+
+		}
+		else if((temp>=0x41)&&(temp<=0x46))
+		{
+			temp=temp-0x41+0x0A;
+			dest[j]=dest[j]|temp;
+		}
+		else if((temp>=0x61)&&(temp<=0x66))
+		{
+			temp=temp-0x61+0x0A;
+			dest[j]=dest[j]|temp;
+		}
+		else
+		{
+			dest[j]=dest[j]|0x00;
+		}
+
+		i=i+2;
+		j=j+1;
+	}
+	return;
 }
 
 static void camera_recv_data_handle(uint8_t cnt, uint8_t index,
-                                    uint8_t *pdata, uint16_t len)
+									uint8_t *pdata, uint16_t len)
 {
-    //@TODO: SEND data to gprs
-
+	camera_t info;
+	osel_memset(&info,0,sizeof(camera_t));
+	mac_addr_get(info.bmonitor);
+	info.collect_time = 0;
+	info.cnt = cnt;
+	info.index = index;
+	camera_send(&info,pdata,len);
 }
 
 static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 {
-    //@TODO: SEND data to gprs
+	atmo_t info;
+	osel_memset(&info,0,sizeof(atmo_t));
+	mac_addr_get(info.bmonitor);
+	info.collect_time = 0;
+	
+	pdata+=7;
+	CharToHex((char *)&info.atmo_data, (char *)pdata, sizeof(atmo_data_t));
+	atmo_send((uint8_t *)&info, sizeof(atmo_t));
 }
 
 static void range_recv_data_handle(fp32_t distance)
 {
-    //@note 这里不需要发送数据，已经在detect线程完成业务处理
+
 }
-
-// static void shock_recv_data_handle(uint8_t *pdata, uint16_t len)       //震动：被监测ID、采集时间
-// {
-//     //@todo: SEND data to gprs
-//     if (len > sizeof(esn_part_t))
-//         return;
-//     esn_part_t info;
-//     osel_memcpy(&info, pdata, len);
-//     pbuf_t *pbuf = shock_package(&info);
-//     esn_gprs_send(pbuf);
-//     pbuf_free(&pbuf __PLINE2);
-// }
-
-// static void distance_recv_data_handle(uint8_t *pdata, uint16_t len)    //距离：被监测ID、采集时间、距离(float)
-// {
-//     //@todo: SEND data to gprs
-//     if (len > sizeof(esn_part_t))
-//         return;
-//     esn_part_t info;
-//     osel_memcpy(&info, pdata, len);
-//     pbuf_t *pbuf = distance_package(&info);
-//     esn_gprs_send(pbuf);
-//     pbuf_free(&pbuf __PLINE2);
-// }
-
-// static void temperature_recv_data_handle(uint8_t *pdata, uint16_t len)  //导线温度：被监测ID、采集时间、温度(float)
-// {
-//     //@todo: SEND data to gprs
-//     if (len > sizeof(esn_part_t))
-//         return;
-//     esn_part_t info;
-//     osel_memcpy(&info, pdata, len);
-//     pbuf_t *pbuf = temperature_package(&info);
-//     esn_gprs_send(pbuf);
-//     pbuf_free(&pbuf __PLINE2);
-// }
-
 static void esn_gain_task(void *param)
 {
-    uint8_t type;
-    esn_msg_t esn_msg;
-    while (1)
-    {
-        if (xQueueReceive(esn_gain_queue,
-                          &esn_msg,
-                          portMAX_DELAY))
-        {
-            type = esn_msg.event >> 8;
-            switch (type)
-            {
-            case GAIN_CAM:
-                camera_handle(esn_msg.event);
-                break;
-
-            case GAIN_ATMO:
-                atmos_handle(&esn_msg);
-                break;
-
-            case GAIN_STOCK:
-            {
-                int16_t x, y, z;
-                adxl_get_triple_angle(&x, &y, &z);
-                //@TODO: 添加震动数据发送接口
-                //
-                //
-
-                //@note 启动摄像头采集数据
-                esn_msg_t esn_msg;
-                esn_msg.event = GAIN_CAM_START;
-                xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-
-                // esn_part_t info;
-                // osel_memset( info.bmonitor, 0, 17);
-                // info.bmonitor[0] = 0xbb;
-                // info.collect_time = 100;
-                // shock_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
-                break;
-            }
-            // case GAIN_DISTANCE:
-            // {
-            //     esn_part_t info;
-            //     osel_memset( info.bmonitor, 0, 17);
-            //     info.bmonitor[0] = 0xbb;
-            //     info.collect_time = 100;
-            //     info.val = 13.14;
-            //     distance_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
-            //     break;
-            // }
-
-            // case GAIN_TEMPERATURE:
-            // {
-            //     esn_part_t info;
-            //     osel_memset( info.bmonitor, 0, 17);
-            //     info.bmonitor[0] = 0xbb;
-            //     info.collect_time = 100;
-            //     info.val = 20.21;
-            //     temperature_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
-            //     break;
-            // }
-
-            default:
-                break;
-            }
-        }
-    }
+	uint8_t type;
+	esn_msg_t esn_msg;
+	while (1)
+	{
+		if (xQueueReceive(esn_gain_queue,
+						  &esn_msg,
+						  portMAX_DELAY))
+		{
+			type = esn_msg.event >> 8;
+			switch (type)
+			{
+			case GAIN_CAM:
+				camera_handle(esn_msg.event);
+				break;
+				
+			case GAIN_ATMO:
+				atmos_handle(&esn_msg);
+				break;
+				
+			case GAIN_STOCK:
+				{
+					int16_t x, y, z;
+					adxl_get_triple_angle(&x, &y, &z);
+					//@TODO: 添加震动数据发送接口
+					shock_t info;
+					osel_memset(&info,0,sizeof(shock_t));
+					mac_addr_get(info.bmonitor);
+					info.collect_time = 0;
+					shock_send((uint8_t *)&info, sizeof(shock_t));
+					
+					//@note 启动摄像头采集数据
+					esn_msg_t esn_msg;
+					esn_msg.event = GAIN_CAM_START;
+					xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+					break;
+				}
+			default:
+				break;
+			}
+		}
+	}
 }
 
 void esn_gain_init(void)
 {
-    portBASE_TYPE res;
-
-    res = xTaskCreate(esn_gain_task,
-                      "esn_gain_task",
-                      300,
-                      NULL,
-                      ESN_GAIN_PRIORITY,
-                      NULL);
-
-    if (res != pdTRUE)
-    {
-        DBG_LOG(DBG_LEVEL_ERROR, "esn gain task init failed\r\n");
-    }
-
-    esn_gain_queue = xQueueCreate(10, sizeof(esn_msg_t));
-    if (esn_gain_queue == NULL)
-    {
-        DBG_LOG(DBG_LEVEL_ERROR, "esn_gain_queue init failed\r\n");
-    }
-
-    adxl_sensor_init(); //*< 被动接收数据
-
-    atmos_sensor_init(UART_1, 9600, esn_gain_queue, atmos_recv_data_handle);
-    camera_init(UART_2, 9600, esn_gain_queue, camera_recv_data_handle);
-    range_sensor_init(UART_3, 115200, esn_gain_queue, range_recv_data_handle);
+	portBASE_TYPE res;
+	
+	res = xTaskCreate(esn_gain_task,
+					  "esn_gain_task",
+					  300,
+					  NULL,
+					  ESN_GAIN_PRIORITY,
+					  NULL);
+	
+	if (res != pdTRUE)
+	{
+		DBG_LOG(DBG_LEVEL_ERROR, "esn gain task init failed\r\n");
+	}
+	
+	esn_gain_queue = xQueueCreate(10, sizeof(esn_msg_t));
+	if (esn_gain_queue == NULL)
+	{
+		DBG_LOG(DBG_LEVEL_ERROR, "esn_gain_queue init failed\r\n");
+	}
+	
+	adxl_sensor_init(); //*< 被动接收数据
+	
+	atmos_sensor_init(UART_1, 9600, esn_gain_queue, atmos_recv_data_handle);
+	camera_init(UART_2, 9600, esn_gain_queue, camera_recv_data_handle);
+	range_sensor_init(UART_3, 115200, esn_gain_queue, range_recv_data_handle);
 }
 
 
