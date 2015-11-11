@@ -15,6 +15,8 @@
 
 #define CAM_PORT                (UART_2)
 
+#define CAM_FRM_MAX_LEN         (512)
+
 #define GAIN_CAM                (0x00)
 
 #define CAM_ADDR                (CAM_ADDR_BASE + CAM_ADDR_OFFSET)
@@ -44,7 +46,9 @@ typedef enum {
     ENUM_DOWN_ACK  = 0x1D,
 } cmd_ack_enum_t;
 
-typedef void (*camera_data_cb_t)(uint8_t *pdata, uint16_t len);
+typedef void (*camera_data_cb_t)(uint8_t frames_cnt,
+                                 uint8_t index,
+                                 uint8_t *pdata, uint16_t len);
 
 void camera_init(uint8_t uart_id, uint32_t baud,
                  QueueHandle_t queue,

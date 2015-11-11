@@ -47,7 +47,7 @@ static void lora_gpio_init(void)
 void lora_init(void)
 {
     lora_gpio_init();
-    uart_init(UART_3, 9600);
+    // uart_init(UART_3, 9600);
 }
 
 

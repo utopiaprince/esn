@@ -2287,6 +2287,9 @@
             <name>$PROJ_DIR$\..\platform\core430\drivers\inc\lora.h</name>
           </file>
           <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\range.h</name>
+          </file>
+          <file>
             <name>$PROJ_DIR$\..\platform\core430\drivers\inc\sht.h</name>
           </file>
           <file>
@@ -2316,6 +2319,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\lora.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\inc\range.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\uart.c</name>

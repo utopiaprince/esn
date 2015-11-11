@@ -8,7 +8,7 @@
  *
  * -----------------------------------------------
  * head | addr | cmd | info1 | info2 | sh-sl | end
- *
+ * 1byte|  1   |  1  |  var  | var   |  2    |  1
  * Change Logs  :
  *
  * Date        Version      Author      Notes
@@ -33,8 +33,8 @@ bool_t   camera_last_byte = FALSE;
 uint16_t camera_uart_index = 0;
 uint8_t  camera_uart_mode;
 
-static uint8_t camera_uart_data_buf[550];
-uint8_t *camera_uart_buf = &camera_uart_data_buf[0x02]; //*< cmd
+static uint8_t camera_uart_data_buf[530];
+uint8_t *camera_uart_buf = camera_uart_data_buf; //*< cmd
 
 static camera_data_cb_t camer_data_cb;
 static QueueHandle_t cam_send_queue;
@@ -47,10 +47,13 @@ static uint8_t photo_info(uint8_t *pdata)
 	uint16_t i = 0;
 	i = pdata[4];
 	photo_byte_sum = ( i << 0x08) + pdata[0x05];
-	if (photo_byte_sum == 0) {
+	if (photo_byte_sum == 0)
+	{
 		photo_pack_sum = 0;
-	} else {
-		photo_pack_sum = photo_byte_sum / 512 + 1;
+	}
+	else
+	{
+		photo_pack_sum = photo_byte_sum / CAM_FRM_MAX_LEN + 1;
 	}
 	return 0x00;
 }
@@ -59,7 +62,8 @@ static uint16_t check_sum(uint8_t *pdata, uint16_t len)
 {
 	uint16_t i = 0x0000;
 	uint16_t isum = 0x0000;
-	for (; i < len; i++) {
+	for (; i < len; i++)
+	{
 		isum += pdata[i];
 	}
 	return isum;
@@ -74,31 +78,43 @@ static uint8_t camera_frm_create(uint8_t *pdata, uint8_t cmd,
 	uint16_t ck_sum = 0x0000;
 	pdata[pos++] = CAM_FRM_HEAD;
 
-	if ( (addr == CAM_FRM_HEAD) || (addr == CAM_FRM_CHECK) ) {
+	if ( (addr == CAM_FRM_HEAD) || (addr == CAM_FRM_CHECK) )
+	{
 		pdata[pos++] = CAM_FRM_CHECK;
 		pdata[pos++] = (addr ^ CAM_FRM_CHECK);
-	} else {
+	}
+	else
+	{
 		pdata[pos++] = addr;
 	}
 
-	if ( (cmd == CAM_FRM_HEAD) || (cmd == CAM_FRM_CHECK) ) {
+	if ( (cmd == CAM_FRM_HEAD) || (cmd == CAM_FRM_CHECK) )
+	{
 		pdata[pos++] = CAM_FRM_CHECK;
 		pdata[pos++] = (cmd ^ CAM_FRM_CHECK);
-	} else {
+	}
+	else
+	{
 		pdata[pos++] = cmd;
 	}
 
-	if ( (info1 == CAM_FRM_HEAD) || (info1 == CAM_FRM_CHECK) ) {
+	if ( (info1 == CAM_FRM_HEAD) || (info1 == CAM_FRM_CHECK) )
+	{
 		pdata[pos++] = CAM_FRM_CHECK;
 		pdata[pos++] = (info1 ^ CAM_FRM_CHECK);
-	} else {
+	}
+	else
+	{
 		pdata[pos++] = info1;
 	}
 
-	if ( (info2 == CAM_FRM_HEAD) || (info2 == CAM_FRM_CHECK) ) {
+	if ( (info2 == CAM_FRM_HEAD) || (info2 == CAM_FRM_CHECK) )
+	{
 		pdata[pos++] = CAM_FRM_CHECK;
 		pdata[pos++] = (info2 ^ CAM_FRM_CHECK);
-	} else {
+	}
+	else
+	{
 		pdata[pos++] = info2;
 	}
 
@@ -106,19 +122,25 @@ static uint8_t camera_frm_create(uint8_t *pdata, uint8_t cmd,
 
 	isum = (ck_sum & 0xFF00) >> 0x08;
 
-	if ( (isum == CAM_FRM_HEAD) || (isum == CAM_FRM_CHECK) ) {
+	if ( (isum == CAM_FRM_HEAD) || (isum == CAM_FRM_CHECK) )
+	{
 		pdata[pos++] = CAM_FRM_CHECK;
 		pdata[pos++] = (isum ^ CAM_FRM_CHECK);
-	} else {
+	}
+	else
+	{
 		pdata[pos++] = isum;
 	}
 
 	isum = (uint8_t) (ck_sum & 0x00FF);
 
-	if ( (isum == CAM_FRM_HEAD) || (isum == CAM_FRM_CHECK) ) {
+	if ( (isum == CAM_FRM_HEAD) || (isum == CAM_FRM_CHECK) )
+	{
 		pdata[pos++] = CAM_FRM_CHECK;
 		pdata[pos++] = (isum ^ CAM_FRM_CHECK);
-	} else {
+	}
+	else
+	{
 		pdata[pos++] = isum;
 	}
 
@@ -149,7 +171,8 @@ portBASE_TYPE camera_data_parse(uint8_t *data_ptr)
 {
 	esn_msg_t esn_msg;
 	portBASE_TYPE xTaskWoken;
-	switch (data_ptr[0x02]) {
+	switch (data_ptr[0x02])
+	{
 	case CAM_CMD_PHONE:
 		esn_msg.event = (GAIN_CAM << 8) | ENUM_PHOTO_ACK;
 		xQueueSendFromISR(cam_send_queue, &esn_msg, &xTaskWoken);
@@ -176,24 +199,29 @@ static bool_t camera_recv_ch_cb(uint8_t id, uint8_t ch)
 {
 	portBASE_TYPE xTaskWoken = pdFALSE;
 
-	if (camera_uart_mode == RE_A1_STOP) {
+	if (camera_uart_mode == RE_A1_STOP)
+	{
 		return xTaskWoken;
 	}
 
-	if ( camera_last_byte == TRUE) {
+	if ( camera_last_byte == TRUE)
+	{
 		camera_uart_buf[camera_uart_index++] = (ch ^ CAM_FRM_CHECK);
 		camera_last_byte = FALSE;
 		return xTaskWoken;
 	}
 
-	if ( ch == CAM_FRM_CHECK) {
+	if ( ch == CAM_FRM_CHECK)
+	{
 		camera_last_byte = TRUE;
 		return xTaskWoken;
 	}
 
-	switch (camera_uart_mode) {
+	switch (camera_uart_mode)
+	{
 	case RE_A1_START:
-		if (ch == CAM_FRM_HEAD) {
+		if (ch == CAM_FRM_HEAD)
+		{
 			camera_uart_mode = RE_A1_RUN;
 			camera_uart_buf[camera_uart_index++] = ch;
 		}
@@ -201,7 +229,8 @@ static bool_t camera_recv_ch_cb(uint8_t id, uint8_t ch)
 
 	case RE_A1_RUN:
 		camera_uart_buf[camera_uart_index++] = ch;
-		if (ch == CAM_FRM_HEAD) {
+		if (ch == CAM_FRM_HEAD)
+		{
 			camera_uart_buf[camera_uart_index] = 0x00;
 			camera_uart_mode = RE_A1_STOP;
 			xTaskWoken = camera_data_parse(camera_uart_buf);
@@ -244,7 +273,8 @@ void camera_init(uint8_t uart_id, uint32_t baud,
 void camera_cmd(uint8_t cmd, uint8_t cnt)
 {
 	camera_uart_start();
-	switch (cmd) {
+	switch (cmd)
+	{
 	case CAM_CMD_PHONE:
 		camera_frm_send(cmd, PHOTO_INFOR1, PHOTO_INFOR2);
 		break;
@@ -266,7 +296,8 @@ void camera_cmd(uint8_t cmd, uint8_t cnt)
 void camera_handle(uint16_t cmd)
 {
 	cmd_temp = cmd & 0x00FF;
-	switch (cmd_temp) {
+	switch (cmd_temp)
+	{
 	case CAM_CMD_PHONE:
 		camera_cmd(cmd_temp, 0);
 		break;
@@ -279,15 +310,21 @@ void camera_handle(uint16_t cmd)
 		break;
 
 	case ENUM_DATA_ACK:
-		if (camer_data_cb != NULL) {
-			camer_data_cb(camera_uart_data_buf, 512);
+		photo_pack_pos++;
+		if (camer_data_cb != NULL)
+		{
+			camer_data_cb(photo_pack_sum,
+			              photo_pack_pos,
+			              &camera_uart_data_buf[4], CAM_FRM_MAX_LEN);
 		}
 
-		photo_pack_pos++;
-		if (photo_pack_pos < photo_pack_sum) {
+		if (photo_pack_pos < photo_pack_sum)
+		{
 			cmd_temp = CAM_CMD_DATA;
 			camera_cmd(cmd_temp, photo_pack_pos);
-		} else {
+		}
+		else
+		{
 			cmd_temp = CAM_CMD_POWERDOWN;
 			camera_cmd(cmd_temp, 0x00);
 		}

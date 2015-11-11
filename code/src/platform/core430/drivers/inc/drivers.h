@@ -27,5 +27,6 @@
 #include "atmosphere.h"
 #include "gprs.h"
 #include "board.h"
-
+#include "range.h"
+ 
 #endif

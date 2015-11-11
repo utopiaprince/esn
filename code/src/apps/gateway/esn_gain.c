@@ -24,7 +24,7 @@ static bool_t esn_gprs_send(pbuf_t *pbuf)
 {
 	uint8_t buf[128];
 	uint16_t len = pbuf->data_len - ID_MAX - 2;
-	uint8_t index =0;
+	uint8_t index = 0;
 	pbuf->data_p = pbuf->head;
 	buf[0] = 0xa5;
 	buf[1] = 0x5a;
@@ -36,23 +36,30 @@ static bool_t esn_gprs_send(pbuf_t *pbuf)
 	index += 2;			//CRC_16
 	gprs_info_t gprs_info;
 	gprs_driver.get(&gprs_info);
-	if(gprs_info.gprs_state == WORK_ON)
+	if (gprs_info.gprs_state == WORK_ON)
 	{
-		gprs_driver.write(buf ,index);
+		gprs_driver.write(buf , index);
 		return TRUE;
 	}
 	else
 		return FALSE;
 }
 
-static void camera_recv_data_handle(uint8_t *pdata, uint16_t len)
+static void camera_recv_data_handle(uint8_t cnt, uint8_t index,
+                                    uint8_t *pdata, uint16_t len)
 {
 	//@todo: SEND data to gprs
+	_NOP();
 }
 
 static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 {
 	//@todo: SEND data to gprs
+}
+
+static void range_recv_data_handle(fp32_t distance)
+{
+	//@todo: send data to gprs
 }
 
 static void shock_recv_data_handle(uint8_t *pdata, uint16_t len)       //震动：被监测ID、采集时间
@@ -98,8 +105,8 @@ static void esn_gain_task(void *param)
 	while (1)
 	{
 		if (xQueueReceive(esn_gain_queue,
-						  &esn_msg,
-						  portMAX_DELAY))
+		                  &esn_msg,
+		                  portMAX_DELAY))
 		{
 			type = esn_msg.event >> 8;
 			switch (type)
@@ -107,42 +114,42 @@ static void esn_gain_task(void *param)
 			case GAIN_CAM:
 				camera_handle(esn_msg.event);
 				break;
-				
+
 			case GAIN_ATMO:
 				atmos_handle(&esn_msg);
 				break;
-				
+
 			case GAIN_STOCK:
-				{
-					esn_part_t info;
-					osel_memset( info.bmonitor, 0, 17);
-					info.bmonitor[0] = 0xbb;
-					info.collect_time = 100;
-					shock_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
-					break;
-				}
+			{
+				esn_part_t info;
+				osel_memset( info.bmonitor, 0, 17);
+				info.bmonitor[0] = 0xbb;
+				info.collect_time = 100;
+				shock_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
+				break;
+			}
 			case GAIN_DISTANCE:
-				{
-					esn_part_t info;
-					osel_memset( info.bmonitor, 0, 17);
-					info.bmonitor[0] = 0xbb;
-					info.collect_time = 100;
-					info.val = 13.14;
-					distance_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
-					break;
-				}
-				
+			{
+				esn_part_t info;
+				osel_memset( info.bmonitor, 0, 17);
+				info.bmonitor[0] = 0xbb;
+				info.collect_time = 100;
+				info.val = 13.14;
+				distance_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
+				break;
+			}
+
 			case GAIN_TEMPERATURE:
-				{
-					esn_part_t info;
-					osel_memset( info.bmonitor, 0, 17);
-					info.bmonitor[0] = 0xbb;
-					info.collect_time = 100;
-					info.val = 20.21;
-					temperature_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
-					break;
-				}
-				
+			{
+				esn_part_t info;
+				osel_memset( info.bmonitor, 0, 17);
+				info.bmonitor[0] = 0xbb;
+				info.collect_time = 100;
+				info.val = 20.21;
+				temperature_recv_data_handle((uint8_t *)&info, sizeof(esn_part_t));
+				break;
+			}
+
 			default:
 				break;
 			}
@@ -153,28 +160,30 @@ static void esn_gain_task(void *param)
 void esn_gain_init(void)
 {
 	portBASE_TYPE res;
-	
+
 	res = xTaskCreate(esn_gain_task,
-					  "esn_gain_task",
-					  300,
-					  NULL,
-					  ESN_GAIN_PRIORITY,
-					  NULL);
-	
+	                  "esn_gain_task",
+	                  300,
+	                  NULL,
+	                  ESN_GAIN_PRIORITY,
+	                  NULL);
+
 	if (res != pdTRUE)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "esn gain task init failed\r\n");
 	}
-	
+
 	esn_gain_queue = xQueueCreate(10, sizeof(esn_msg_t));
 	if (esn_gain_queue == NULL)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "esn_gain_queue init failed\r\n");
 	}
 
-	camera_init(CAM_PORT, 9600, esn_gain_queue, camera_recv_data_handle);
-	
-	atmos_sensor_init(ATMO_PORT, 9600, esn_gain_queue, atmos_recv_data_handle);
+	adxl_sensor_init(); //*< 被动接收数据
+
+	atmos_sensor_init(UART_1, 9600, esn_gain_queue, atmos_recv_data_handle);
+	camera_init(UART_2, 9600, esn_gain_queue, camera_recv_data_handle);
+	range_sensor_init(UART_3, 115200, esn_gain_queue, range_recv_data_handle);
 }
 
 
