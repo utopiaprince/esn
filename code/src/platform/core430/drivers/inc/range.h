@@ -34,6 +34,8 @@ void range_sensor_init(uint8_t uart_id, uint32_t baud,
 
 void range_cmd(void);
 
+fp32_t range_sensor_get(void);
+
 void range_handle(esn_msg_t *msg);
 
 #endif

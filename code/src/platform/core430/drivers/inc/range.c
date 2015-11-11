@@ -30,6 +30,8 @@ static uint8_t range_uart_mode = RANGE_STATUS_RUNNING;
 static range_data_cb_t range_data_cb;
 static QueueHandle_t range_send_queue;
 
+static fp32_t range_var = 100.0;   
+
 static void range_uart_clear(void)
 {
     range_uart_mode = RANGE_STATUS_RUNNING;
@@ -113,7 +115,7 @@ void range_handle(esn_msg_t *msg)
 {
     uint8_t cmd = msg->event & 0x00FF;
     uint32_t index = 0;
-    fp32_t distance = 0;
+
     switch (cmd)
     {
     case RANGE_CMD_START:
@@ -121,10 +123,12 @@ void range_handle(esn_msg_t *msg)
         break;
 
     case RANGE_DATA_END:
-        distance = range_change();
+        portENTER_CRITICAL();
+        range_var = range_change();
+        portEXIT_CRITICAL();
         if (range_data_cb != NULL)
         {
-            range_data_cb(distance);
+            range_data_cb(range_var);
         }
         break;
 
@@ -132,6 +136,12 @@ void range_handle(esn_msg_t *msg)
         break;
     }
 }
+
+fp32_t range_sensor_get(void)
+{
+    return range_var;
+}
+
 
 
 

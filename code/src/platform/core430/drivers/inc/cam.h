@@ -56,6 +56,10 @@ void camera_init(uint8_t uart_id, uint32_t baud,
 
 void camera_cmd(uint8_t cmd, uint8_t cnt);
 
+bool_t camera_status_get(void);
+
+void camera_status_clr(void);
+
 void camera_handle(uint16_t cmd);
 
 #endif

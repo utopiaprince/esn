@@ -33,6 +33,8 @@ bool_t   camera_last_byte = FALSE;
 uint16_t camera_uart_index = 0;
 uint8_t  camera_uart_mode;
 
+static bool_t camera_has_start = FALSE;
+
 static uint8_t camera_uart_data_buf[530];
 uint8_t *camera_uart_buf = camera_uart_data_buf; //*< cmd
 
@@ -292,6 +294,16 @@ void camera_cmd(uint8_t cmd, uint8_t cnt)
 	}
 }
 
+bool_t camera_status_get(void)
+{
+	return camera_has_start;
+}
+
+void camera_status_clr(void)
+{
+	camera_has_start = FALSE;
+}
+
 
 void camera_handle(uint16_t cmd)
 {
@@ -299,6 +311,7 @@ void camera_handle(uint16_t cmd)
 	switch (cmd_temp)
 	{
 	case CAM_CMD_PHONE:
+		camera_has_start = TRUE;
 		camera_cmd(cmd_temp, 0);
 		break;
 

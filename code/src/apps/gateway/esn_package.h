@@ -3,7 +3,6 @@
 #include <pbuf.h>
 #define ID_MAX              (17u)
 
-#define GAIN_DISTANCE       (8u)
 #define GAIN_TEMPERATURE    (9u)
 enum frame_type_e
 {
