@@ -279,7 +279,7 @@ void camera_handle(uint16_t cmd)
 		break;
 
 	case ENUM_DATA_ACK:
-		if (!camer_data_cb) {
+		if (camer_data_cb != NULL) {
 			camer_data_cb(camera_uart_data_buf, 512);
 		}
 

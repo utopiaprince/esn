@@ -171,9 +171,8 @@ void esn_gain_init(void)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "esn_gain_queue init failed\r\n");
 	}
-	
-	
-	camera_init(CAM_PORT, 115200, esn_gain_queue, camera_recv_data_handle);
+
+	camera_init(CAM_PORT, 9600, esn_gain_queue, camera_recv_data_handle);
 	
 	atmos_sensor_init(ATMO_PORT, 9600, esn_gain_queue, atmos_recv_data_handle);
 }
