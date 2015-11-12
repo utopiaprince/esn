@@ -156,6 +156,10 @@ static void adxl312_settings(void)
 {
     uint8_t device_id = 0;
     adxl312_reg_read(ADXL_REG_DEVID, &device_id);
+	if(device_id == 0)
+	{
+		return;
+	}
     DBG_ASSERT(ADXL_DEVICE_ID == device_id __DBG_LINE);
 #if 1
     adxl312_reg_write(ADXL_REG_BW_RATE, 0x0C);

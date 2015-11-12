@@ -41,11 +41,11 @@ mmh:1;
 typedef struct
 {
 	driver_state_t driver_state;
-	uint16_t wind_direction;	//风向
-	uint32_t wind_speed;		//风速
-	uint32_t temperature;		//温度
-	uint32_t humidity;			//湿度
-	uint32_t pressure;			//气压
+	uint16_t wind_direction;	//风向:转换成十进制整型
+	uint32_t wind_speed;		//风速:转换成浮点数
+	uint32_t temperature;		//温度:转换成浮点数
+	uint32_t humidity;			//湿度:转换成浮点数
+	uint32_t pressure;			//气压:转换成浮点数
 	uint16_t compass;			//电子罗盘
 	uint16_t rainfall_state;	//降雨状态
 	uint32_t rainfall_streng;	//降雨强度
@@ -85,7 +85,7 @@ typedef struct
 	uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
 	float val;		
-}temperature_t;		//距离
+}temperature_t;		//温度
 
 typedef struct
 {

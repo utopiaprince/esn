@@ -6,7 +6,8 @@
 
 #define GPRS_EVENT		(0x0100)
 
-#define SIZE			(LARGE_PBUF_BUFFER_SIZE)
+#define SEND_SIZE		(570)
+#define SIZE			(30)
 #define CMD_CB_NUM		(20u)
 #define	PULL_UP			(P9OUT &= ~BIT7)
 #define	PULL_DOWN		(P9OUT |= BIT7)
@@ -60,7 +61,7 @@ typedef enum
 
 typedef struct
 {
-	uint8_t buf[SIZE];
+	uint8_t buf[SEND_SIZE];
 	uint8_t len;
 	GPRS_STATE_E state;
 }send_t;
@@ -82,7 +83,7 @@ static volatile uint8_t *send_cmd_result;
 static volatile uint8_t send_cmd_index = 0;
 
 
-static bool_t write_fifo(const uint8_t *const payload, const uint8_t len);
+static bool_t write_fifo(const uint8_t *const payload, const uint16_t len);
 static bool_t gprs_init();
 
 /**
@@ -163,10 +164,10 @@ static void ipconfig_get(uint8_t *cmd, uint8_t len)
 	}
 }
 
-static bool_t write_fifo(const uint8_t *const payload, const uint8_t len)
+static bool_t write_fifo(const uint8_t *const payload, const uint16_t len)
 {
 	DBG_ASSERT(payload != NULL __DBG_LINE);
-	if(len > SIZE)
+	if(len > SEND_SIZE)
 	{
 		DBG_ASSERT(FALSE __DBG_LINE);
 	}
@@ -189,7 +190,7 @@ static bool_t write_fifo(const uint8_t *const payload, const uint8_t len)
 		{
 			return FALSE;
 		}
-		osel_memset(send.buf, 0 , SIZE);
+		osel_memset(send.buf, 0 , SEND_SIZE);
 		osel_memcpy(send.buf,payload,len);
 		send.len = len;
 	}
@@ -449,7 +450,7 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 		
 		write_fifo(send_data,mystrlen((char *)send_data));
 		
-		osel_memset(send.buf, 0x00,SIZE);
+		osel_memset(send.buf, 0x00,SEND_SIZE);
 		osel_memcpy(send.buf, payload, len);
 		send.len = len;
 	}

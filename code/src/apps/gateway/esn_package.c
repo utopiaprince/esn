@@ -14,7 +14,7 @@ static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 		data[1] = 0x5a;
 		osel_memcpy(&data[2], &len, sizeof(uint16_t));
 		length += 4+2;
-		gprs_driver.write(data,length);
+		//gprs_driver.write(data,length);
 		return TRUE;
 	}
 	else
