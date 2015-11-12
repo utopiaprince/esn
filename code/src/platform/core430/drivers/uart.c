@@ -37,8 +37,8 @@ void uart_init(uint8_t uart_id, uint32_t baud_rate)
 		UCA0CTL1 = UCSWRST;
 		UCA0CTL0 = UCMODE_0;
 		//*< change UCSSEL_2 to UCSSEL__ACLK if lpm mode
-        UCA0CTL1 |= UCSSEL_2;				/* SMCLK,8M */
-
+        UCA0CTL1 |= UCSSEL__SMCLK;				/* SMCLK,8M */
+		
 		UCA0BR0 = br0;
 		UCA0BR1 = br1;
 		UCA0MCTL = UCBRF_0 | (fract<<1);

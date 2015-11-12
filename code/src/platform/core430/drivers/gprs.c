@@ -435,7 +435,7 @@ static void gprs_read_register(void *cb)
 		gprs_read_cb = (gprs_read_cb_t)cb;
 }
 
-static bool_t gprs_write_fifo(const uint8_t *const payload, const uint8_t len)
+static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 {
 	DBG_ASSERT(payload != NULL __DBG_LINE);
 	if(gprs_info.gprs_state == WORK_ON)

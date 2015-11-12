@@ -2,7 +2,7 @@
 #include <osel_arch.h>
 #include <gprs.h>
 #include <board.h>
-static bool_t esn_gprs_send(uint8_t *data, uint8_t length)
+static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 {
 	gprs_info_t gprs_info;
 	gprs_driver.get(&gprs_info);
@@ -26,8 +26,8 @@ static bool_t esn_gprs_send(uint8_t *data, uint8_t length)
 
 void camera_send(camera_t *info, uint8_t *pdata, uint16_t len)
 {
-	uint8_t data[550];
-	uint8_t length= 0;
+	uint8_t data[570];
+	uint16_t length= 0;
 	uint8_t *p = data;
 	p+=4;
 

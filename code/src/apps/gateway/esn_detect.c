@@ -101,6 +101,12 @@ static void atmos_app_handle(void)
     }
 }
 
+
+static void test_app_handle(void)
+{
+	//@TODO
+}
+
 static void camera_app_handle(void)
 {
     static uint16_t camera_time_cnt = 0;
@@ -133,6 +139,8 @@ void esn_detect_task(void *param)
         camera_app_handle();
         temp_app_handle();
         atmos_app_handle();
+		
+		test_app_handle();
     }
 }
 
@@ -140,7 +148,7 @@ bool_t esn_detect_init(void)
 {
     xTaskCreate(esn_detect_task,
                 "esn detect task",
-                200,
+                100,
                 NULL,
                 ESN_DETECT_PRIORITY,
                 NULL);

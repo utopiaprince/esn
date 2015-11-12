@@ -15,9 +15,9 @@ const uint8_t atmosphere_cmd_data[] = {0x3A, 0x30, 0x31, 0x30, 0x33,
                                       };
 
 
-#define MOD_RECV_DATA_SIZE 0x64
+#define MOD_RECV_DATA_SIZE 0x56
 uint8_t atmosphere_uart_data_buf[MOD_RECV_DATA_SIZE];
-uint8_t *atmosphere_uart_buf = &atmosphere_uart_data_buf[3];
+uint8_t *atmosphere_uart_buf = &atmosphere_uart_data_buf[0];
 uint8_t atmosphere_uart_mode;
 uint8_t atmosphere_uart_index;
 
@@ -35,15 +35,19 @@ static portBASE_TYPE atmosphere_cmd(void)
     atmosphere_uart_clear();
     MODBUS_TX();
     osel_delay(1 / portTICK_RATE_MS);
-    uart_send_string(ATMO_PORT, (uint8_t *)atmosphere_cmd_data , sizeof(atmosphere_cmd_data));
-    MODBUS_RX();
+	
+	portENTER_CRITICAL();
+    uart_send_string(ATMO_PORT, (uint8_t *)atmosphere_cmd_data , strlen((char const*)atmosphere_cmd_data));
+	portEXIT_CRITICAL();
+	MODBUS_RX();
     return pdTRUE;
 }
 
 static bool_t atmo_recv_ch_cb(uint8_t id, uint8_t ch)
 {
     portBASE_TYPE xTaskWoken = pdFALSE;
-
+	
+	ch &= 0x7F;
     if (ch == 0x3A)
     {
         atmosphere_uart_mode = ATMOS_START_RUNING;
@@ -106,12 +110,9 @@ void atmos_handle(esn_msg_t *msg)
 
     case ATMOS_START_END:
         index = (uint32_t)(msg->param);
-        atmosphere_uart_data_buf[0] = index + 1;
-        atmosphere_uart_data_buf[1] = 0x00;
-        atmosphere_uart_data_buf[1] = 0xFD;
         if (atmo_data_cb != NULL)
         {
-            atmo_data_cb(atmosphere_uart_data_buf, index + 3);
+            atmo_data_cb(atmosphere_uart_data_buf, index);
         }
         break;
 

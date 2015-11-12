@@ -85,6 +85,7 @@ static void camera_recv_data_handle(uint8_t cnt, uint8_t index,
 	info.cnt = cnt;
 	info.index = index;
 	camera_send(&info,pdata,len);
+	osel_delay(configTICK_RATE_HZ);
 }
 
 static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
@@ -154,7 +155,7 @@ void esn_gain_init(void)
 	
 	res = xTaskCreate(esn_gain_task,
 					  "esn_gain_task",
-					  300,
+					  400,
 					  NULL,
 					  ESN_GAIN_PRIORITY,
 					  NULL);

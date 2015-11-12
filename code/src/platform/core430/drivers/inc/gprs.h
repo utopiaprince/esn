@@ -28,7 +28,7 @@ struct gprs
     bool_t (*init)(void);                               
     bool_t (*deinit)(void);                            
     void (*read)(void *cb);
-    bool_t (*write)(const uint8_t *const payload, const uint8_t len);   
+    bool_t (*write)(const uint8_t *const payload, const uint16_t len);   
 };
 
 /**

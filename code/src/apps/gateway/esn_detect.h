@@ -15,7 +15,7 @@
 #error "include data_type_def.h must appear in source file before include esn_detect.h"
 #endif
 
-extern bool_t camrea_has_sent;
+//extern bool_t camrea_has_sent;
 
 #define RANGE_DATA_TIME					(600u)		//*< 10分钟
 #define RANGE_MIN_THRESHOLD				(30.8)
@@ -25,7 +25,7 @@ extern bool_t camrea_has_sent;
 
 #define CAMERA_DATA_TIME				(14400u)	//*< 4小时
 
-#define ATMOS_DATA_TIME					(600u)
+#define ATMOS_DATA_TIME					(5u)
 
 
 /**

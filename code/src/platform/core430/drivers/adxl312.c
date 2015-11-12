@@ -316,6 +316,7 @@ __interrupt void port2_isr(void)
     {
         P2IFG &= ~BIT7;
         adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
+		
         if (int_source & ADXL_SINGLE_TAP)
         {
             esn_msg.event = GAIN_STOCK_START;
@@ -325,6 +326,8 @@ __interrupt void port2_isr(void)
         {
             ;
         }
+		P2IFG &= ~BIT7;
+		adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
     }
 
     if (xTaskWoken)
