@@ -133,7 +133,6 @@ void esn_detect_task(void *param)
     while (1)
     {
         vTaskDelay(configTICK_RATE_HZ - 1); //*< 1s采集一次原始数据
-        //adxl_get_xyz(&x, &y, &z);
 
         range_app_handle();
         camera_app_handle();
