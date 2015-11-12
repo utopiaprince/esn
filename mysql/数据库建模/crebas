@@ -1,0 +1,230 @@
+/*==============================================================*/
+/* DBMS name:      MySQL 5.0                                    */
+/* Created on:     2015/8/15 21:13:06                           */
+/*==============================================================*/
+
+
+drop procedure if exists insert_distance;
+
+drop procedure if exists insert_id_to_id_manage;
+
+drop procedure if exists insert_shock_alarm_log;
+
+drop procedure if exists insert_temperature;
+
+drop procedure if exists maintain_online;
+
+drop procedure if exists random_data_test;
+
+drop function if exists random_length_string;
+
+drop procedure if exists select_table_id_manage;
+
+drop function if exists string_split;
+
+drop procedure if exists update_id_manage_infoall;
+
+drop procedure if exists user_interface;
+
+drop table if exists ALARM_LOG;
+
+drop table if exists DISTANCE_INFO;
+
+drop table if exists ID_MANAGE;
+
+drop table if exists PARAMETER;
+
+drop table if exists TEMPERATER_INFO;
+
+/*==============================================================*/
+/* Table: ALARM_LOG                                             */
+/*==============================================================*/
+create table ALARM_LOG
+(
+   onum                 int not null auto_increment,
+   id                   varchar(34) not null,
+   type                 int default NULL,
+   time                 int not null,
+   pic                  mediumblob,
+   local_time           timestamp,
+   primary key (onum)
+);
+
+/*==============================================================*/
+/* Table: DISTANCE_INFO                                         */
+/*==============================================================*/
+create table DISTANCE_INFO
+(
+   onum                 int not null auto_increment,
+   id                   varchar(34) not null,
+   alarm_state          int not null,
+   val                  float not null default 0,
+   time                 int not null,
+   local_time           timestamp,
+   primary key (onum)
+);
+
+/*==============================================================*/
+/* Table: ID_MANAGE                                             */
+/*==============================================================*/
+create table ID_MANAGE
+(
+   id                   varchar(34) not null,
+   parent_id            varchar(34) not null,
+   online_state         bool not null default 0,
+   shock_state          bool not null default 0,
+   temperature_state    bool not null default 0,
+   distance_state       bool not null default 0,
+   ip                   varchar(50),
+   gateway_id           varchar(34),
+   local_time           timestamp,
+   primary key (id)
+);
+
+/*==============================================================*/
+/* Table: PARAMETER                                             */
+/*==============================================================*/
+create table PARAMETER
+(
+   onum                 int not null,
+   parameter            varchar(20),
+   primary key (onum)
+);
+
+/*==============================================================*/
+/* Table: TEMPERATER_INFO                                       */
+/*==============================================================*/
+create table TEMPERATER_INFO
+(
+   onum                 int not null auto_increment,
+   id                   varchar(34) not null,
+   alarm_state          int not null,
+   val                  float not null default 0,
+   time                 int not null,
+   local_time           timestamp,
+   primary key (onum)
+);
+
+
+create procedure insert_distance (uid varchar(255),ualarm_state int,utype int,uval float,utime int)
+begin
+insert into distance_info (id,alarm_state,val,time) values (uid,ualarm_state,uval,utime);
+select LAST_INSERT_ID();
+if ualarm_state=1 then
+    insert into alarm_log (id,type,time) values (uid,utype,utime);
+    select LAST_INSERT_ID();
+    update id_manage set distance_state = 1 where id = uid;
+end if;
+end;
+
+
+create procedure insert_id_to_id_manage (id varchar(255),parent_id varchar(255),ip varchar(255))
+begin
+insert into id_manage (id,parent_id,online_state,shock_state,
+temperature_state,distance_state,ip,gateway_id) values (id,parent_id,1,0,0,0,ip,"");
+end;
+
+
+create procedure insert_shock_alarm_log (uid varchar(255),utype int,utime int)
+begin
+insert into alarm_log (id,type,time) values (uid,utype,utime);
+SELECT LAST_INSERT_ID();
+update id_manage set shock_state = 1 where id = uid;
+end;
+
+
+create procedure insert_temperature (uid varchar(255),ualarm_state int,utype int,uval float,utime int)
+begin
+insert into temperater_info (id,alarm_state,val,time) values (uid,ualarm_state,uval,utime);
+select LAST_INSERT_ID();
+if ualarm_state=1 then
+    insert into alarm_log (id,type,time) values (uid,utype,utime);
+    select LAST_INSERT_ID();
+    update id_manage set temperature_state = 1 where id = uid;
+end if;
+end;
+
+
+create procedure maintain_online ()
+begin
+update id_manage set online_state=0 where 
+(UNIX_TIMESTAMP( now() ) - UNIX_TIMESTAMP( local_time ))>(15*60) ;
+end;
+
+
+create procedure random_data_test (n int)
+BEGIN
+DECLARE i INT DEFAULT 0;
+truncate table id_manage;
+while i<n do
+		set @id=random_length_string(34);
+		set @parent_id=random_length_string(34);
+		set @online_state = 1;
+		set @shock_state = 0;
+		set @temperature_state = 0;
+		set @distance_state = 0;
+		insert into id_manage (id,parent_id,online_state,shock_state,temperature_state,distance_state)
+		values(@id,@parent_id,@online_state,@shock_state,@temperature_state,@distance_state);
+set  i=i+1;
+end while;
+END;
+
+
+create function random_length_string (n int) 
+RETURNS varchar(255)
+BEGIN
+#DECLARE chars_str varchar(100) DEFAULT 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+DECLARE chars_str varchar(100) DEFAULT '0123456789';
+DECLARE return_str varchar(255) DEFAULT '';
+DECLARE i INT DEFAULT 0;
+WHILE i < n DO
+SET return_str = concat(return_str,substring(chars_str , FLOOR(1 + RAND()*9 ),1));
+SET i = i +1;
+END WHILE;
+RETURN return_str;
+END;
+
+
+create procedure select_table_id_manage ()
+begin
+select * from id_manage;
+end;
+
+
+create function string_split (f_string varchar(1000),f_delimiter varchar(5),f_order int) 
+RETURNS varchar(255) CHARSET utf8
+BEGIN
+declare result varchar(255) default '';
+set result = reverse(substring_index(reverse(substring_index(f_string,f_delimiter,f_order)),f_delimiter,1));
+return result;
+END;
+
+
+create procedure update_id_manage_infoall (uid varchar(255),uparent_id varchar(255),uonline_state int,
+ushock_state int,utemperature_state int,udistance_state int,uip varchar(50),ugateway_id varchar(255))
+begin
+update id_manage set parent_id=uparent_id,online_state=uonline_state,shock_state=ushock_state,
+temperature_state=utemperature_state,distance_state=udistance_state,ip=uip,gateway_id=ugateway_id 
+where id = uid;
+end;
+
+
+set time_zone = '+8:00';
+set global event_scheduler = on;
+set global max_connect_errors = 1000;
+set global max_connections = 5000;
+set global wait_timeout=100;
+set global interactive_timeout=100;
+set global key_buffer_size= 256000000;
+set global max_allowed_packet= 1048576;
+
+insert into parameter values (48,"震动");
+insert into parameter values (49,"距离");
+insert into parameter values (50,"温度");
+insert into parameter values (20,"导线");
+
+drop event if exists maintain_online_e;
+create event maintain_online_e on schedule every 300 second
+on completion  preserve enable
+do call maintain_online();
+
