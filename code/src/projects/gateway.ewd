@@ -231,7 +231,7 @@
         </option>
         <option>
           <name>UsbComPort</name>
-          <state>COM7</state>
+          <state>COM9</state>
         </option>
         <option>
           <name>FetConnection</name>
@@ -256,7 +256,7 @@
         </option>
         <option>
           <name>OTargetVccTypeDefault</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCBetaDll</name>

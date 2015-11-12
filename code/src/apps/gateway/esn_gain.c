@@ -84,8 +84,8 @@ static void camera_recv_data_handle(uint8_t cnt, uint8_t index,
 	info.collect_time = 0;
 	info.cnt = cnt;
 	info.index = index;
-	camera_send(&info,pdata,len);
-	osel_delay(configTICK_RATE_HZ);
+	//camera_send(&info,pdata,len);
+	//osel_delay(configTICK_RATE_HZ);
 }
 
 static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)

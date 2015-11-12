@@ -55,7 +55,7 @@ static uint8_t photo_info(uint8_t *pdata)
 	}
 	else
 	{
-		photo_pack_sum = photo_byte_sum / CAM_FRM_MAX_LEN + 1;
+		photo_pack_sum = (photo_byte_sum-1) / CAM_FRM_MAX_LEN + 1;
 	}
 	return 0x00;
 }
@@ -324,13 +324,20 @@ void camera_handle(uint16_t cmd)
 
 	case ENUM_DATA_ACK:
 		photo_pack_pos++;
+		if(photo_pack_pos == photo_pack_sum-2)
+		{
+			_NOP();
+		}
+		
+		
 		if (camer_data_cb != NULL)
 		{
 			camer_data_cb(photo_pack_sum,
 			              photo_pack_pos,
 			              &camera_uart_data_buf[4], CAM_FRM_MAX_LEN);
 		}
-
+		
+		osel_memset(camera_uart_data_buf, 0x00, sizeof(camera_uart_data_buf));
 		if (photo_pack_pos < photo_pack_sum)
 		{
 			cmd_temp = CAM_CMD_DATA;

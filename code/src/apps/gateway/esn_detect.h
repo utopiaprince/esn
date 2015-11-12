@@ -25,7 +25,7 @@
 
 #define CAMERA_DATA_TIME				(14400u)	//*< 4小时
 
-#define ATMOS_DATA_TIME					(5u)
+#define ATMOS_DATA_TIME					(600u)
 
 
 /**
