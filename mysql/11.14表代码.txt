@@ -1,6 +1,12 @@
+drop procedure if exists insert_acceleration;
+
+drop procedure if exists insert_atmo;
+
 drop procedure if exists insert_distance;
 
 drop procedure if exists insert_id_to_id_manage;
+
+drop procedure if exists insert_pic;
 
 drop procedure if exists insert_shock;
 
@@ -20,15 +26,63 @@ drop procedure if exists update_id_manage_infoall;
 
 drop procedure if exists user_interface;
 
+drop table if exists acceleration_info;
+
+drop table if exists atmo_info;
+
 drop table if exists distance_info;
 
 drop table if exists id_manage;
 
 drop table if exists parameter;
 
+drop table if exists pic_info;
+
 drop table if exists shock_info;
 
 drop table if exists temperater_info;
+
+/*==============================================================*/
+/* Table: acceleration_info                                     */
+/*==============================================================*/
+create table acceleration_info
+(
+   onum                 int not null auto_increment,
+   id                   varchar(34),
+   collect_time         int,
+   x                    float,
+   y                    float,
+   z                    float,
+   local_time           timestamp,
+   primary key (onum)
+);
+
+/*==============================================================*/
+/* Table: atmo_info                                             */
+/*==============================================================*/
+create table atmo_info
+(
+   onum                 int not null auto_increment,
+   id                   varchar(34),
+   collect_time         int,
+   state_temperature    int,
+   state_wind_direction_speed int,
+   state_pressure       int,
+   state_compass        int,
+   state_hyetometer     int,
+   wind_direction       int,
+   wind_speed           float,
+   temperature          float,
+   humidity             float,
+   pressure             float,
+   compass              int,
+   rainfall_state       int,
+   rainfall_streng      float,
+   rainfall_total       float,
+   rainfall_streng_unit varbinary(20),
+   local_time           timestamp,
+   primary key (onum)
+);
 
 /*==============================================================*/
 /* Table: distance_info                                         */
@@ -40,7 +94,6 @@ create table distance_info
    alarm_state          int not null,
    val                  float not null default 0,
    time                 int not null,
-   pic                  mediumblob,
    local_time           timestamp,
    primary key (onum)
 );
@@ -77,6 +130,19 @@ create table parameter
 alter table parameter comment 'parameter';
 
 /*==============================================================*/
+/* Table: pic_info                                              */
+/*==============================================================*/
+create table pic_info
+(
+   onum                 int not null auto_increment,
+   collect_time         int,
+   id                   varchar(34),
+   pic                  mediumblob,
+   local_time           timestamp,
+   primary key (onum)
+);
+
+/*==============================================================*/
 /* Table: shock_info                                            */
 /*==============================================================*/
 create table shock_info
@@ -85,7 +151,6 @@ create table shock_info
    id                   varchar(34),
    alarm_state          int,
    time                 int,
-   pic                  mediumblob,
    local_time           timestamp,
    primary key (onum)
 );
@@ -107,6 +172,44 @@ create table temperater_info
 alter table temperater_info comment 'temperater_info';
 
 
+create procedure insert_acceleration (uid varchar(50),ucollect_time int,ux float,uy float,uz float)
+begin
+insert into acceleration_info (id,collect_time,x,y,z) values (uid,ucollect_time,ux,uy,uz);
+select LAST_INSERT_ID();
+end;
+
+
+create procedure insert_atmo (uid varchar(50),ucollect_time int,driver_state varchar(50),val varchar(500))
+begin
+set @driver_state_temperature=string_split(driver_state,',',1);
+set @driver_state_wind_direction_speed=string_split(driver_state,',',2);
+set @driver_state_pressure=string_split(driver_state,',',3);
+set @driver_state_compass=string_split(driver_state,',',4);
+set @driver_state_hyetometer=string_split(driver_state,',',5);
+
+set @wind_direction_s=string_split(val,',',1);
+set @wind_speed_s=string_split(val,',',2);
+set @temperature_s=string_split(val,',',3);
+set @humidity_s=string_split(val,',',4);
+set @pressure_s=string_split(val,',',5);
+set @compass_s=string_split(val,',',6);
+set @rainfall_state_s=string_split(val,',',7);
+set @rainfall_streng_s=string_split(val,',',8);
+set @rainfall_total_s=string_split(val,',',9);
+set @rainfall_streng_unit_s=string_split(val,',',10);
+
+
+insert into atmo_info (id,collect_time,state_temperature,state_wind_direction_speed,
+state_pressure,state_compass,state_hyetometer,wind_direction,wind_speed,
+temperature,humidity,pressure,compass,rainfall_state,rainfall_streng,rainfall_total,
+rainfall_streng_unit) values (uid,ucollect_time,@driver_state_temperature,@driver_state_wind_direction_speed,
+@driver_state_pressure,@driver_state_compass,@driver_state_hyetometer,@wind_direction_s,@wind_speed_s,
+@temperature_s,@humidity_s,@pressure_s,@compass_s,@rainfall_state_s,@rainfall_streng_s,
+@rainfall_total_s,@rainfall_streng_unit_s);
+select LAST_INSERT_ID();
+end;
+
+
 create procedure insert_distance (uid varchar(255),ualarm_state int,uval float,utime int)
 begin
 insert into distance_info (id,alarm_state,val,time) values (uid,ualarm_state,uval,utime);
@@ -123,6 +226,13 @@ create procedure insert_id_to_id_manage (id varchar(255),parent_id varchar(255),
 begin
 insert into id_manage (id,parent_id,online_state,shock_state,
 temperature_state,distance_state,ip,gateway_id) values (id,parent_id,1,0,0,0,ip,"");
+end;
+
+
+create procedure insert_pic (uid varchar(50),ucollect_time int,upic mediumblob)
+begin
+insert into pic_info (id,collect_time,pic) values (uid,ucollect_time,upic);
+select LAST_INSERT_ID();
 end;
 
 

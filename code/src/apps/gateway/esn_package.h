@@ -22,6 +22,7 @@ enum message_type_e
 	M_ATMO		=0x34,
 	M_CAME		=0x35,
 };
+
 #pragma pack(1)
 typedef struct
 {
@@ -31,6 +32,7 @@ pressure:1,						//气压
 compass:1,						//电子罗盘
 hyetometer:1;					//雨量计
 }driver_state_t;
+
 typedef struct
 {
 	uint16_t reserve	:8,
@@ -91,8 +93,8 @@ typedef struct
 {
 	uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
-	uint8_t index;
-	uint8_t cnt;
+	uint16_t index;
+	uint16_t cnt;
 }camera_t;
 
 typedef struct

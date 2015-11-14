@@ -95,7 +95,7 @@ void toINT(void *des)
 	*b =S2B_UINT16(*b);
 }
 
-static void camera_recv_data_handle(uint8_t cnt, uint8_t index,
+static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 									uint8_t *pdata, uint16_t len)
 {
 	camera_t info;
@@ -108,7 +108,7 @@ static void camera_recv_data_handle(uint8_t cnt, uint8_t index,
 	osel_delay(configTICK_RATE_HZ);
 }
 
-static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
+void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 {
 	atmo_t info;
 	osel_memset(&info, 0, sizeof(atmo_t));
@@ -118,17 +118,17 @@ static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 	pdata += 7;
 	CharToHex((char *)&info.atmo_data, (char *)pdata, 2*sizeof(atmo_data_t));
 	atmo_data_t *adata = &info.atmo_data;
-	toINT(&adata->driver_state);
-	toINT(&adata->wind_direction);
-	tofloat(&adata->wind_speed);
-	tofloat(&adata->temperature);
-	tofloat(&adata->humidity);
-	tofloat(&adata->pressure);
-	toINT(&adata->compass);
-	toINT(&adata->rainfall_state);
-	tofloat(&adata->rainfall_streng);
-	tofloat(&adata->rainfall_total);
-	toINT(&adata->rainfall_streng_unit);
+	toINT((uint16_t *)&adata->driver_state);
+	toINT((uint16_t *)&adata->wind_direction);
+	tofloat((f_t *)&adata->wind_speed);
+	tofloat((f_t *)&adata->temperature);
+	tofloat((f_t *)&adata->humidity);
+	tofloat((f_t *)&adata->pressure);
+	toINT((uint16_t *)&adata->compass);
+	toINT((uint16_t *)&adata->rainfall_state);
+	tofloat((f_t *)&adata->rainfall_streng);
+	tofloat((f_t *)&adata->rainfall_total);
+	toINT((uint16_t *)&adata->rainfall_streng_unit);
 	
 	atmo_send((uint8_t *)&info, sizeof(atmo_t));
 }

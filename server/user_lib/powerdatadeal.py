@@ -1,8 +1,12 @@
-# coding=utf-8
+#coding=utf-8
 import struct
+import binascii
+import re
+import os
 from ctypes import *
 import _thread
-
+import sched, time
+import pymysql as mdb
 import user_lib.globalval as globalval
 import user_lib.mysql as mysql
 
@@ -21,6 +25,34 @@ class message_type_e():
     M_SHOCK = 0x30
     M_DISTANCE = 0x31
     M_TEMPERATURE = 0x32
+    M_ACCE  = 0x33
+    M_ATMO  = 0x34
+    M_CAME  = 0x35
+
+class acce_t:#加速度
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.z = 0
+
+class atmos_t:#气象
+    def __init__(self):
+        self.driver_state_temperature = 0               #温度
+        self.driver_state_wind_direction_speed = 0      #风向风速
+        self.driver_state_pressure = 0                  #气压
+        self.driver_state_compass = 0                   #电子罗盘
+        self.driver_state_hyetometer = 0                #雨量计
+
+        self.wind_direction = 0
+        self.wind_speed = 0
+        self.temperature = 0
+        self.humidity = 0
+        self.pressure = 0
+        self.compass = 0
+        self.rainfall_state = 0
+        self.rainfall_streng = 0
+        self.rainfall_total = 0
+        self.rainfall_streng_unit = ''
 
 class power_t:
     def __init__(self):
@@ -91,9 +123,74 @@ def confirm_id(power):  # 验证是否需要往id_manage中插入数据
         mysql.mdb_call(sql)
         print('创建ID：%s' % (power.monitor))
         read_id_manage()
+    return
 
+def GetMiddleStr(content,startStr,endStr):
+    startIndex = content.index(startStr)
+    if startIndex>=0:
+        startIndex += len(startStr)
+    endIndex = content.index(endStr)
+    return content[startIndex:endIndex]
 
-def shock(power, buf):
+def save_pic(pic_name,uid):
+    #print(pic_name, id)
+    with open(pic_name, 'rb') as f:
+        img = f.read()
+        f.close()
+    hexstr = binascii.b2a_hex(img).decode('utf-8')
+    insert_pic = ("insert INTO pic_info (id,pic) VALUES (\"%s\",'%B')" % (uid,img))
+    print(insert_pic)
+    mysql.mdb_insert(insert_pic)
+    return
+    #insert_pic = ("call insert_pic(\"%s\",\"%s\")" % (id, img))
+    #print(insert_pic)
+    #rs, row = mysql.mdb_call(insert_pic)
+    #print("创建图片记录%d,id:%s" % (rs[0]['LAST_INSERT_ID()'], id))
+    #test
+    select_pic = ("call select_pic(\"%s\",%d)" % (uid,1))
+    rs, row = mysql.mdb_call(select_pic)
+    for i in range(row):
+        a =rs[i]['pic']
+
+    with open(pic_name, 'wb') as fp:
+        fp.write(a)
+        fp.close()
+    return
+
+def camera(power, buf):#照片
+    index = 0
+    for i in range(0, 17):
+        power.bmonitor += dec2hex_str(buf[i])
+    index += 17
+    power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
+    index += 4
+    power.alarm = buf[index]
+    index += 2
+
+    total = buf[index] + (buf[index+1]<<8)
+    index += 2
+    current = buf[index] + (buf[index+1]<<8)
+    index += 2
+
+    pic_temp = ("%s\%s\%s.jpg" % (os.path.abspath('.'),"temp",power.monitor))
+
+    if current == 1:
+        with open(pic_temp, 'wb+') as f:
+            for i in range(index,len(buf)-2):
+                f.write(struct.pack("B",buf[i]))
+    else:
+        with open(pic_temp, 'ab+') as f:
+            for i in range(index,len(buf)-2):
+                f.write(struct.pack("B",buf[i]))
+    f.close()
+
+    if current == (total - 2):
+        s = sched.scheduler(time.time, time.sleep)
+        s.enter(2, 1, save_pic, (pic_temp,power.monitor,))
+        s.run()
+    return
+
+def shock(power, buf):#震动报警
     index = 0
     for i in range(0, 17):
         power.bmonitor += dec2hex_str(buf[i])
@@ -114,7 +211,7 @@ def shock(power, buf):
     return
 
 
-def distance(power, buf):
+def distance(power, buf):#激光测距
     index = 0
     for i in range(0, 17):
         power.bmonitor += dec2hex_str(buf[i])
@@ -153,7 +250,7 @@ def distance(power, buf):
     return
 
 
-def temperature(power, buf):
+def temperature(power, buf):#导线温度
     index = 0
     for i in range(0, 17):
         power.bmonitor += dec2hex_str(buf[i])
@@ -191,6 +288,151 @@ def temperature(power, buf):
             print("创建温度报警记录%d,id:%s;温度:%s" % (rs[0]['LAST_INSERT_ID()'], power.monitor,power.temperature))
     return
 
+def acceleration(power, buf):#加速度
+    index = 0
+    for i in range(0, 17):
+        power.bmonitor += dec2hex_str(buf[i])
+    index += 17
+    power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
+    index += 4
+    power.alarm = buf[index]
+    index += 2
+
+    acce = acce_t()
+    acce.x = float(("%s.%s" % (int(buf[index+1]),int(buf[index]))))
+    index +=2
+    acce.y = float(("%s.%s" % (int(buf[index+1]),int(buf[index]))))
+    index +=2
+    acce.z = float(("%s.%s" % (int(buf[index+1]),int(buf[index]))))
+
+    confirm_id(power)
+    rse = find_id(power.monitor)
+    insert_acceleration =  ("call insert_acceleration(\"%s\",%d,%f,%f,%f)" % (power.monitor,power.collect_time,
+                                                         acce.x, acce.y,acce.z))
+    rs, row = mysql.mdb_call(insert_acceleration)
+    print("创建加速度记录%d,id:%s;加速度:[%s  %s  %s]" % (rs[0]['LAST_INSERT_ID()'], power.monitor,acce.x, acce.y,acce.z))
+    return
+
+def atmo(power, buf):#气象
+    index = 0
+    for i in range(0, 17):
+        power.bmonitor += dec2hex_str(buf[i])
+    index += 17
+    power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
+    index += 4
+    power.alarm = buf[index]
+    index += 2
+
+    atmos = atmos_t()
+    atmos.driver_state_temperature = buf[index] & 1
+    atmos.driver_state_wind_direction_speed = buf[index] & 2
+    atmos.driver_state_pressure = buf[index] & 4
+    atmos.driver_state_compass = buf[index] & 8
+    atmos.driver_state_hyetometer = buf[index] & 16
+
+    if(atmos.driver_state_temperature >0 ):atmos.driver_state_temperature=1
+    if(atmos.driver_state_wind_direction_speed >0 ):atmos.driver_state_wind_direction_speed=1
+    if(atmos.driver_state_pressure >0 ):atmos.driver_state_pressure=1
+    if(atmos.driver_state_compass >0 ):atmos.driver_state_compass=1
+    if(atmos.driver_state_hyetometer >0 ):atmos.driver_state_hyetometer=1
+    index += 2
+
+    atmos.wind_direction = buf[index] + (buf[index+1]<<8)
+    index += 2
+    #风速
+    f1 = hex(buf[index])[2:]
+    index += 1
+    f2 = hex(buf[index])[2:]
+    index += 1
+    f3 = hex(buf[index])[2:]
+    index += 1
+    f4 = hex(buf[index])[2:]
+    index += 1
+    s = ("%s%s%s%s" % (f4, f3, f2, f1))
+    atmos.wind_speed = convert(s)
+    #温度
+    f1 = hex(buf[index])[2:]
+    index += 1
+    f2 = hex(buf[index])[2:]
+    index += 1
+    f3 = hex(buf[index])[2:]
+    index += 1
+    f4 = hex(buf[index])[2:]
+    index += 1
+    s = ("%s%s%s%s" % (f4, f3, f2, f1))
+    atmos.temperature = convert(s)
+    #湿度
+    f1 = hex(buf[index])[2:]
+    index += 1
+    f2 = hex(buf[index])[2:]
+    index += 1
+    f3 = hex(buf[index])[2:]
+    index += 1
+    f4 = hex(buf[index])[2:]
+    index += 1
+    s = ("%s%s%s%s" % (f4, f3, f2, f1))
+    atmos.humidity = convert(s)
+    #气压
+    f1 = hex(buf[index])[2:]
+    index += 1
+    f2 = hex(buf[index])[2:]
+    index += 1
+    f3 = hex(buf[index])[2:]
+    index += 1
+    f4 = hex(buf[index])[2:]
+    index += 1
+    s = ("%s%s%s%s" % (f4, f3, f2, f1))
+    atmos.pressure = convert(s)
+    #电子罗盘
+    atmos.compass = buf[index] + (buf[index+1]<<8)
+    index += 2
+    #降雨状态
+    atmos.rainfall_state = buf[index] + (buf[index+1]<<8)
+    index += 2
+    #降雨强度
+    f1 = hex(buf[index])[2:]
+    index += 1
+    f2 = hex(buf[index])[2:]
+    index += 1
+    f3 = hex(buf[index])[2:]
+    index += 1
+    f4 = hex(buf[index])[2:]
+    index += 1
+    s = ("%s%s%s%s" % (f4, f3, f2, f1))
+    atmos.rainfall_streng = convert(s)
+    #累积降雨量
+    f1 = hex(buf[index])[2:]
+    index += 1
+    f2 = hex(buf[index])[2:]
+    index += 1
+    f3 = hex(buf[index])[2:]
+    index += 1
+    f4 = hex(buf[index])[2:]
+    index += 1
+    s = ("%s%s%s%s" % (f4, f3, f2, f1))
+    atmos.rainfall_total = convert(s)
+
+    atmos.rainfall_streng_unit = buf[index+1] & 7
+    if atmos.rainfall_streng_unit == 1:
+        atmos.rainfall_streng_unit = "mm/s"
+    elif atmos.rainfall_streng_unit == 2:
+        atmos.rainfall_streng_unit = "mm/m"
+    else:
+        atmos.rainfall_streng_unit = "mm/h"
+
+    state = ("\"%d,%d,%d,%d,%d\"" % (atmos.driver_state_temperature,atmos.driver_state_wind_direction_speed,atmos.driver_state_pressure,
+                                 atmos.driver_state_compass,atmos.driver_state_hyetometer))
+    val = ("\"%d,%.2f,%.2f,%.2f,%.2f,%d,%d,%.2f,%.2f,%s\"" % (atmos.wind_direction,atmos.wind_speed,atmos.temperature,
+                                              atmos.humidity,atmos.pressure,atmos.compass,
+                                              atmos.rainfall_state,atmos.rainfall_streng,atmos.rainfall_total,
+                                              atmos.rainfall_streng_unit))
+    confirm_id(power)
+    rse = find_id(power.monitor)
+    insert_atmos =  ("call insert_atmo(\"%s\",%d,%s,%s)" % (power.monitor,power.collect_time,state,val))
+    rs, row = mysql.mdb_call(insert_atmos)
+    print("创建气象记录%d,id:%s;  [%s   %s]" % (rs[0]['LAST_INSERT_ID()'], power.monitor,state,val))
+
+    return
 
 def frame_data_deal(power, buf, length):
     power.message_type = buf[0]
@@ -201,6 +443,12 @@ def frame_data_deal(power, buf, length):
         distance(power, data)
     elif power.message_type == message_type_e.M_TEMPERATURE:
         temperature(power, data)
+    elif power.message_type == message_type_e.M_ACCE:
+        acceleration(power, data);
+    elif power.message_type == message_type_e.M_ATMO:
+        atmo(power, data);
+    elif power.message_type == message_type_e.M_CAME:
+        camera(power, data);
     return
 
 

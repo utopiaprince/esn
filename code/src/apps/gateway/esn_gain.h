@@ -21,4 +21,5 @@ extern QueueHandle_t esn_gain_queue;
 
 void esn_gain_init(void);
 
+void atmos_recv_data_handle(uint8_t *pdata, uint16_t len);
 #endif

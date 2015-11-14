@@ -46,8 +46,8 @@ typedef enum {
     ENUM_DOWN_ACK  = 0x1D,
 } cmd_ack_enum_t;
 
-typedef void (*camera_data_cb_t)(uint8_t frames_cnt,
-                                 uint8_t index,
+typedef void (*camera_data_cb_t)(uint16_t frames_cnt,
+                                 uint16_t index,
                                  uint8_t *pdata, uint16_t len);
 
 void camera_init(uint8_t uart_id, uint32_t baud,

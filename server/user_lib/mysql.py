@@ -46,6 +46,19 @@ def mdb_call(sql):
             cur.close()
             con.close()
 
+def mdb_insert(sql):
+    try:
+        con = mdb.connect(host=uhost,port=uport,user=uuser,passwd=upasswd,db=udb)
+        cur = con.cursor(mdb.cursors.DictCursor)
+        cur.execute(sql)
+        con.commit()
+    except mdb.Error as e:
+        print ("Mysql Error %d: %s" % (e.args[0], e.args[1]))
+    finally:
+         if con:
+            cur.close()
+            con.close()
+
 def mdb_select(sql):
     try:
         con = mdb.connect(host=uhost,port=uport,user=uuser,passwd=upasswd,db=udb)

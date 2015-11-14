@@ -1,6 +1,6 @@
 import socketserver
 import user_lib.powerdatadeal as power
-import user_lib.globalval as globalval
+
 def convert2hex(d):
     try:
         hex_array = []

@@ -42,12 +42,12 @@ void camera_send(camera_t *info, uint8_t *pdata, uint16_t len)
 	osel_memcpy(p, &package, sizeof(esn_package_t));
 	length += sizeof(esn_package_t);
 	p += sizeof(esn_package_t);
-	*p = info->cnt;
-	length++;
-	p++;
-	*p = info->index;
-	length++;
-	p++;
+	osel_memcpy(p, &info->cnt, sizeof(uint16_t));
+	length+=2;
+	p+=2;
+	osel_memcpy(p, &info->index, sizeof(uint16_t));
+	length+=2;
+	p+=2;
 	osel_memcpy(p, pdata, len);
 	length+=len;
 	esn_gprs_send(data, length);
@@ -55,7 +55,7 @@ void camera_send(camera_t *info, uint8_t *pdata, uint16_t len)
 
 void acceleration_send(uint8_t *pdata, uint16_t len)
 {
-	if(len > sizeof(atmo_t))
+	if(len > sizeof(acceleration_t))
 		return;
 	uint8_t data[LARGE_PBUF_BUFFER_SIZE];
 	uint8_t length= 0;
