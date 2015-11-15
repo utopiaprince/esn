@@ -41,6 +41,9 @@ uint8_t *camera_uart_buf = camera_uart_data_buf; //*< cmd
 static camera_data_cb_t camer_data_cb;
 static QueueHandle_t cam_send_queue;
 
+static TickType_t cam_old_tick = 0; //*< 4字节
+static TickType_t cam_new_tick = 0;
+
 static uint8_t cmd_temp = CAM_CMD_PHONE;
 
 
@@ -311,9 +314,42 @@ void camera_handle(uint16_t cmd)
 	switch (cmd_temp)
 	{
 	case CAM_CMD_PHONE:
-		camera_has_start = TRUE;
-		camera_cmd(cmd_temp, 0);
+    {
+		
+        bool_t cam_can_sent = FALSE;
+        
+        cam_new_tick = xTaskGetTickCount();
+        if(cam_old_tick == 0)
+        {
+            cam_old_tick = cam_new_tick;
+            cam_can_sent = TRUE;
+        }
+        else if (cam_new_tick > cam_old_tick)
+        {
+            //*< 300S以内只触发一次
+            if ((cam_new_tick - cam_old_tick) > 300 * configTICK_RATE_HZ)
+            {
+                cam_can_sent = TRUE;
+                cam_old_tick = cam_new_tick;
+            }
+        }
+        else
+        {
+            if (((portMAX_DELAY - cam_old_tick) + cam_new_tick) > 300 * configTICK_RATE_HZ)
+            {
+                cam_can_sent = TRUE;
+                cam_old_tick = cam_new_tick;
+            }
+        }
+        
+        if (cam_can_sent)
+        {
+            cam_can_sent = FALSE;
+            camera_has_start = TRUE;
+            camera_cmd(cmd_temp, 0);
+        }
 		break;
+    }
 
 	case ENUM_PHOTO_ACK:
 		photo_info(camera_uart_buf);
@@ -324,12 +360,6 @@ void camera_handle(uint16_t cmd)
 
 	case ENUM_DATA_ACK:
 		photo_pack_pos++;
-		if(photo_pack_pos == photo_pack_sum-2)
-		{
-			_NOP();
-		}
-		
-		
 		if (camer_data_cb != NULL)
 		{
 			camer_data_cb(photo_pack_sum,

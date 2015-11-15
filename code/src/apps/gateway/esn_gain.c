@@ -144,8 +144,7 @@ static void esn_gain_task(void *param)
 	esn_msg_t esn_msg;
 	TickType_t stock_old_tick = 0; //*< 4字节
 	TickType_t stock_new_tick = 0;
-	TickType_t cam_old_tick = 0; //*< 4字节
-	TickType_t cam_new_tick = 0;
+    
 	while (1)
 	{
 		if (xQueueReceive(esn_gain_queue,
@@ -156,32 +155,8 @@ static void esn_gain_task(void *param)
 			switch (type)
 			{
 			case GAIN_CAM:
-				{
-					bool_t cam_can_sent = FALSE;
-					cam_new_tick = xTaskGetTickCount();
-					if (cam_new_tick > cam_old_tick)
-					{
-						//*< 300S以内只触发一次
-						if ((cam_new_tick - cam_old_tick) > 300 * configTICK_RATE_HZ)
-						{
-							cam_old_tick = cam_new_tick;
-						}
-					}
-					else
-					{
-						if (((portMAX_DELAY - cam_old_tick) + cam_new_tick) > 300 * configTICK_RATE_HZ)
-						{
-							cam_old_tick = cam_new_tick;
-						}
-					}
-					
-					if (cam_can_sent)
-					{
-						camera_handle(esn_msg.event);
-					}
-					
-					break;
-				}
+				camera_handle(esn_msg.event);
+                break;
 				
 			case GAIN_ATMO:
 				atmos_handle(&esn_msg);
@@ -193,7 +168,7 @@ static void esn_gain_task(void *param)
 				
 			case GAIN_STOCK:
 				{
-					bool_t stock_can_sent = FALSE;
+					static bool_t stock_can_sent = TRUE;
 					stock_new_tick = xTaskGetTickCount();
 					if (stock_new_tick > stock_old_tick)
 					{
@@ -201,6 +176,7 @@ static void esn_gain_task(void *param)
 						if ((stock_new_tick - stock_old_tick) > 10 * configTICK_RATE_HZ)
 						{
 							stock_old_tick = stock_new_tick;
+                            stock_can_sent = TRUE;
 						}
 					}
 					else
@@ -208,11 +184,13 @@ static void esn_gain_task(void *param)
 						if (((portMAX_DELAY - stock_old_tick) + stock_new_tick) > 10 * configTICK_RATE_HZ)
 						{
 							stock_old_tick = stock_new_tick;
+                            stock_can_sent = TRUE;
 						}
 					}
 					
 					if (stock_can_sent)
 					{
+                        stock_can_sent = FALSE;
 						int16_t x, y, z;
 						adxl_get_triple_angle(&x, &y, &z);
 						//@TODO: 添加震动数据发送接口
@@ -262,7 +240,7 @@ void esn_gain_init(void)
 	
 	atmos_sensor_init(UART_1, 9600, esn_gain_queue, atmos_recv_data_handle);
 	camera_init(UART_2, 9600, esn_gain_queue, camera_recv_data_handle);
-	range_sensor_init(UART_3, 9600, esn_gain_queue, range_recv_data_handle);
+//	range_sensor_init(UART_3, 9600, esn_gain_queue, range_recv_data_handle);
 }
 
 

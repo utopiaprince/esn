@@ -8,13 +8,12 @@ static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 	gprs_driver.get(&gprs_info);
 	if(gprs_info.gprs_state == WORK_ON)
 	{
-		led_set(LEN_GREEN, TRUE);
 		uint16_t len = length - ID_MAX - 2;
 		data[0] = 0xa5;
 		data[1] = 0x5a;
 		osel_memcpy(&data[2], &len, sizeof(uint16_t));
 		length += 4+2;
-		//gprs_driver.write(data,length);
+		gprs_driver.write(data,length);
 		return TRUE;
 	}
 	else

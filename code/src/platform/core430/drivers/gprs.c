@@ -3,6 +3,7 @@
 #include <osel_arch.h>
 #include <hal_timer.h>
 #include <uart.h>
+#include <drivers.h>
 
 #define GPRS_EVENT		(0x0100)
 
@@ -268,6 +269,7 @@ static void cgatt_cb(void)
 static void cipstart_cb(void)
 {
 	gprs_info.gprs_state = WORK_ON;
+    led_set(LEN_GREEN, TRUE);
 }
 
 static void cipclose_cb(void)
@@ -510,13 +512,17 @@ static bool_t gprs_init()
 	port_init();         
 	
 	uart_init(gprs_info.uart_port, gprs_info.uart_speed);
+    uart_int_cb_reg(gprs_info.uart_port, gprs_uart_inter_recv);
+//    
+        
+        
 	cmd_cb_register();
 	gprs_info.gprs_state = READY_IDLE;
 	
 	portBASE_TYPE res = pdTRUE;
 	res = xTaskCreate(gprs_task,                   //*< task body
 					  "gprs_task",                  //*< task name
-					  200,                        //*< task heap
+					  300,                        //*< task heap
 					  NULL,                       //*< tasK handle param
 					  8,   //*< task prio
 					  NULL);                      //*< task pointer
@@ -556,9 +562,10 @@ static bool_t gprs_deinit()
 	return TRUE;
 }
 
-void gprs_uart_inter_recv(uint8_t ch)
+bool_t gprs_uart_inter_recv(uint8_t id, uint8_t ch)
 {
 	recv.buf[recv.offset++] = ch;
+    return FALSE;
 }
 
 const struct gprs gprs_driver = 
