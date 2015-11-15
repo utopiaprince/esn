@@ -144,8 +144,7 @@ static void esn_gain_task(void *param)
 	esn_msg_t esn_msg;
 	TickType_t stock_old_tick = 0; //*< 4字节
 	TickType_t stock_new_tick = 0;
-	TickType_t cam_old_tick = 0; //*< 4字节
-	TickType_t cam_new_tick = 0;
+    
 	while (1)
 	{
 		if (xQueueReceive(esn_gain_queue,
@@ -156,35 +155,8 @@ static void esn_gain_task(void *param)
 			switch (type)
 			{
 			case GAIN_CAM:
-				{
-					static bool_t cam_can_sent = TRUE;
-					cam_new_tick = xTaskGetTickCount();
-					if (cam_new_tick > cam_old_tick)
-					{
-						//*< 300S以内只触发一次
-						if ((cam_new_tick - cam_old_tick) > 10 * configTICK_RATE_HZ)
-						{
-							cam_old_tick = cam_new_tick;
-                            cam_can_sent = TRUE;
-						}
-					}
-					else
-					{
-						if (((portMAX_DELAY - cam_old_tick) + cam_new_tick) > 10 * configTICK_RATE_HZ)
-						{
-							cam_old_tick = cam_new_tick;
-                            cam_can_sent = TRUE;
-						}
-					}
-					
-					if (cam_can_sent)
-					{
-                        cam_can_sent = FALSE;
-						camera_handle(esn_msg.event);
-					}
-					
-					break;
-				}
+				camera_handle(esn_msg.event);
+                break;
 				
 			case GAIN_ATMO:
 				atmos_handle(&esn_msg);

@@ -311,9 +311,41 @@ void camera_handle(uint16_t cmd)
 	switch (cmd_temp)
 	{
 	case CAM_CMD_PHONE:
+    {
 		camera_has_start = TRUE;
-		camera_cmd(cmd_temp, 0);
+        bool_t cam_can_sent = FALSE;
+        static TickType_t cam_old_tick = 0; //*< 4字节
+        static TickType_t cam_new_tick = 0;
+        cam_new_tick = xTaskGetTickCount();
+        if(cam_old_tick == 0)
+        {
+            cam_can_sent = TRUE;
+        }
+        else if (cam_new_tick > cam_old_tick)
+        {
+            //*< 300S以内只触发一次
+            if ((cam_new_tick - cam_old_tick) > 300 * configTICK_RATE_HZ)
+            {
+                cam_can_sent = TRUE;
+                cam_old_tick = cam_new_tick;
+            }
+        }
+        else
+        {
+            if (((portMAX_DELAY - cam_old_tick) + cam_new_tick) > 300 * configTICK_RATE_HZ)
+            {
+                cam_can_sent = TRUE;
+                cam_old_tick = cam_new_tick;
+            }
+        }
+        
+        if (cam_can_sent)
+        {
+            cam_can_sent = FALSE;
+            camera_cmd(cmd_temp, 0);
+        }
 		break;
+    }
 
 	case ENUM_PHOTO_ACK:
 		photo_info(camera_uart_buf);
