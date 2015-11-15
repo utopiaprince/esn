@@ -35,5 +35,6 @@ struct gprs
 * @brief 串口中断调用
 * @param[in] 接收到的串口字符
 */
-void gprs_uart_inter_recv(uint8_t ch);
+bool_t gprs_uart_inter_recv(uint8_t id, uint8_t ch);
+
 extern const struct gprs gprs_driver;

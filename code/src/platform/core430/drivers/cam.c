@@ -324,12 +324,6 @@ void camera_handle(uint16_t cmd)
 
 	case ENUM_DATA_ACK:
 		photo_pack_pos++;
-		if(photo_pack_pos == photo_pack_sum-2)
-		{
-			_NOP();
-		}
-		
-		
 		if (camer_data_cb != NULL)
 		{
 			camer_data_cb(photo_pack_sum,

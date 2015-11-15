@@ -17,7 +17,7 @@
 
 //extern bool_t camrea_has_sent;
 
-#define RANGE_DATA_TIME					(10u)		//*< 10分钟
+#define RANGE_DATA_TIME					(600u)		//*< 10分钟
 #define RANGE_MIN_THRESHOLD				(100.0)     
 
 #define ANGLE_DATA_TIME                 (600u)
@@ -25,7 +25,7 @@
 #define TEMP_DATA_TIME					(600u)
 #define TEMP_MAX_THRESHOLD				(100.0)
 
-#define CAMERA_DATA_TIME				(14400u)	//*< 4小时
+#define CAMERA_DATA_TIME				(30u)	//*< 4小时
 
 #define ATMOS_DATA_TIME					(600u)
 

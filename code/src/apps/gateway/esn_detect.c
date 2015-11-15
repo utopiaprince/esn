@@ -124,16 +124,22 @@ uint8_t a[] = ":010322A01F0038C28F3CF5333341E7666642743E144468000C00016666425600
 static void test_app_handle(void)
 {
 	//@TODO
-//	acceleration_t info;
-//	osel_memset(&info, 0, sizeof(acceleration_t));
-//	mac_addr_get(info.bmonitor);
-//	info.collect_time = 0;
-//	info.x = 0x0010;
-//	info.y = 0x2010;
-//	info.z = 0x3010;
-//	acceleration_send((uint8_t *)&info,sizeof(acceleration_t));
+    static uint16_t test_time_cnt = 0;
+    if(test_time_cnt++ > 10)
+    {
+        test_time_cnt = 0;
+        acceleration_t info;
+        osel_memset(&info, 0, sizeof(acceleration_t));
+        mac_addr_get(info.bmonitor);
+        info.collect_time = 0;
+        info.x = 0x0010;
+        info.y = 0x2010;
+        info.z = 0x3010;
+        acceleration_send((uint8_t *)&info,sizeof(acceleration_t));
+    }
 	
-	atmos_recv_data_handle(a,50);
+	
+//	atmos_recv_data_handle(a,50);
 }
 
 static void camera_app_handle(void)
@@ -163,9 +169,9 @@ void esn_detect_task(void *param)
 	{
 		vTaskDelay(configTICK_RATE_HZ - 1); //*< 1s采集一次原始数据
 #if 1
-        range_app_handle();
+//        range_app_handle();
 //        angle_app_handle();
-//        camera_app_handle();
+        camera_app_handle();
 //        temp_app_handle();
 //        atmos_app_handle();
 #else
