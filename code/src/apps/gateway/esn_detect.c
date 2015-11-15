@@ -44,7 +44,6 @@ static void range_app_handle(void)
 		esn_msg_t esn_msg;
 		esn_msg.event = GAIN_CAM_START;
 		xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-		
 	}
 	
 	if (distance_time_cnt++ > RANGE_DATA_TIME)
