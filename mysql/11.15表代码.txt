@@ -18,6 +18,8 @@ drop procedure if exists random_data_test;
 
 drop function if exists random_length_string;
 
+drop procedure if exists select_pic;
+
 drop procedure if exists select_table_id_manage;
 
 drop function if exists string_split;
@@ -135,9 +137,8 @@ alter table parameter comment 'parameter';
 create table pic_info
 (
    onum                 int not null auto_increment,
-   collect_time         int,
    id                   varchar(34),
-   pic                  mediumblob,
+   pic                  varchar(255),
    local_time           timestamp,
    primary key (onum)
 );
@@ -229,9 +230,9 @@ temperature_state,distance_state,ip,gateway_id) values (id,parent_id,1,0,0,0,ip,
 end;
 
 
-create procedure insert_pic (uid varchar(50),ucollect_time int,upic mediumblob)
+create procedure insert_pic (uid varchar(50),upic varchar(100))
 begin
-insert into pic_info (id,collect_time,pic) values (uid,ucollect_time,upic);
+insert into pic_info (id,pic) values (uid,upic);
 select LAST_INSERT_ID();
 end;
 
@@ -310,6 +311,12 @@ SET i = i +1;
 END WHILE;
 RETURN return_str;
 END;
+
+
+create procedure select_pic (uid varchar(50),unum int)
+begin
+select * from  pic_info order by uid desc limit unum;
+end;
 
 
 create procedure select_table_id_manage ()

@@ -3,6 +3,7 @@ import struct
 import binascii
 import re
 import os
+import shutil
 from ctypes import *
 import _thread
 import sched, time
@@ -132,30 +133,34 @@ def GetMiddleStr(content,startStr,endStr):
     endIndex = content.index(endStr)
     return content[startIndex:endIndex]
 
+def GetNowTime():
+    return time.strftime("%Y%m%d-%H%M%S",time.localtime(time.time()))
+
+def moveFileto(sourceDir,  targetDir):
+    shutil.copy(sourceDir,  targetDir)
+
 def save_pic(pic_name,uid):
-    #print(pic_name, id)
+    fpic_path = ("%s\%s\%s" % (os.path.abspath('.'),"pic",uid))
+    pic_path= ("%s\%s.jpg" % (fpic_path,GetNowTime()))
+    if os.path.exists(fpic_path) == False:
+        os.makedirs(fpic_path)
     with open(pic_name, 'rb') as f:
         img = f.read()
         f.close()
-    hexstr = binascii.b2a_hex(img).decode('utf-8')
-    insert_pic = ("insert INTO pic_info (id,pic) VALUES (\"%s\",'%B')" % (uid,img))
-    print(insert_pic)
-    mysql.mdb_insert(insert_pic)
-    return
-    #insert_pic = ("call insert_pic(\"%s\",\"%s\")" % (id, img))
-    #print(insert_pic)
-    #rs, row = mysql.mdb_call(insert_pic)
-    #print("创建图片记录%d,id:%s" % (rs[0]['LAST_INSERT_ID()'], id))
+    with open(pic_path, 'wb') as fp:
+        fp.write(img)
+        fp.close()
+
+    path=pic_path.replace('\\','\\\\')
+    insert_pic = ("insert INTO pic_info (id,pic) VALUES (\"%s\",\"%s\")" % (uid,path))
+    mysql.mdb_call(insert_pic)
+'''
     #test
     select_pic = ("call select_pic(\"%s\",%d)" % (uid,1))
     rs, row = mysql.mdb_call(select_pic)
     for i in range(row):
         a =rs[i]['pic']
-
-    with open(pic_name, 'wb') as fp:
-        fp.write(a)
-        fp.close()
-    return
+'''
 
 def camera(power, buf):#照片
     index = 0

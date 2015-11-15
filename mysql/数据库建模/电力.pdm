@@ -3777,9 +3777,9 @@ end
 <a:Code>insert_pic</a:Code>
 <a:CreationDate>1447489975</a:CreationDate>
 <a:Creator>all</a:Creator>
-<a:ModificationDate>1447519245</a:ModificationDate>
+<a:ModificationDate>1447545785</a:ModificationDate>
 <a:Modifier>all</a:Modifier>
-<a:Procedure.Text>create procedure %PROC% (uid varchar(50),upic mediumblob)
+<a:Procedure.Text>create procedure %PROC% (uid varchar(50),upic varchar(100))
 begin
 insert into pic_info (id,pic) values (uid,upic);
 select LAST_INSERT_ID();
@@ -4625,9 +4625,10 @@ end
 <a:Code>pic</a:Code>
 <a:CreationDate>1447489926</a:CreationDate>
 <a:Creator>all</a:Creator>
-<a:ModificationDate>1447489926</a:ModificationDate>
+<a:ModificationDate>1447546152</a:ModificationDate>
 <a:Modifier>all</a:Modifier>
-<a:DataType>mediumblob</a:DataType>
+<a:DataType>varchar(255)</a:DataType>
+<a:Length>255</a:Length>
 </o:Column>
 <o:Column Id="o153">
 <a:ObjectID>DE523A9A-9C4A-48EA-BC97-8CA744C48273</a:ObjectID>
