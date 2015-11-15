@@ -1,5 +1,6 @@
 import socketserver
 import user_lib.powerdatadeal as power
+import traceback
 
 def convert2hex(d):
     try:
@@ -23,24 +24,28 @@ class tcp_service(socketserver.BaseRequestHandler):
         remain = []
         array = []
         while True:
-            data = self.request.recv(1024).strip()
-            if not data:break
-            array=[]
-            if len(remain)!=0:
-                array.append(remain)
-            #if globalval.isWindowsSystem() == True:
-            temp = data
-            #if globalval.isLinuxSystem() == True:
-                #temp = convert2hex(data)
-            if False == temp:
-                continue
-            array.extend(temp)
-            array_len = len(array)
-            remainlen = power.recv_data(array,self.client_address)
-            remain=[]
-            if remainlen != 0:
-                remain = appand_remain(array,array_len,remainlen)
-            #self.request.sendall(data)
+            try:
+                data = self.request.recv(1024).strip()
+                if not data:break
+                array=[]
+                if len(remain)!=0:
+                    array.append(remain)
+                #if globalval.isWindowsSystem() == True:
+                temp = data
+                #if globalval.isLinuxSystem() == True:
+                    #temp = convert2hex(data)
+                if False == temp:
+                    continue
+                array.extend(temp)
+                array_len = len(array)
+                remainlen = power.recv_data(array,self.client_address)
+                remain=[]
+                if remainlen != 0:
+                    remain = appand_remain(array,array_len,remainlen)
+                #self.request.sendall(data)
+            except:
+                traceback.print_exc()
+                break
         print ("closed from:", self.client_address)
         self.finish()
 

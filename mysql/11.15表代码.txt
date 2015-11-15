@@ -283,6 +283,11 @@ while i<n do
 		set @temperature_state = 0;
 		set @distance_state = 0;
 		set @ip = '127.0.0.1:5000';
+        
+        set @x = FLOOR(300 + (RAND() * 1000))*0.1;
+		set @y = FLOOR(300 + (RAND() * 1000))*0.1;
+		set @z = FLOOR(300 + (RAND() * 1000))*0.1;
+        
 		insert into id_manage (id,parent_id,online_state,shock_state,temperature_state,distance_state,ip)
 		values(@id,@parent_id,@online_state,@shock_state,@temperature_state,@distance_state,@ip);
 
@@ -293,6 +298,8 @@ while i<n do
 		call insert_shock(@id,@ustate,@utime);
 		call insert_distance(@id,@ustate,@uval,@utime);
 		call insert_temperature(@id,@ustate,@uval,@utime);
+        call insert_acceleration(@id,@utime,@x,@y,@z);
+        call insert_atmo(@id,@utime,"1,1,1,1,0","56,0.03,28.90,61.10,928.97,12,1,53.60,0.00,mm/m");
 set  i=i+1;
 end while;
 END;

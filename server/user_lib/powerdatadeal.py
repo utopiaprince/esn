@@ -1,13 +1,10 @@
 #coding=utf-8
 import struct
-import binascii
-import re
 import os
 import shutil
 from ctypes import *
 import _thread
 import sched, time
-import pymysql as mdb
 import user_lib.globalval as globalval
 import user_lib.mysql as mysql
 
@@ -152,8 +149,10 @@ def save_pic(pic_name,uid):
         fp.close()
 
     path=pic_path.replace('\\','\\\\')
-    insert_pic = ("insert INTO pic_info (id,pic) VALUES (\"%s\",\"%s\")" % (uid,path))
-    mysql.mdb_call(insert_pic)
+    insert_pic =(("call insert_pic(\"%s\",\"%s\")") % (uid,pic_path))
+    rs, row = mysql.mdb_call(insert_pic)
+    print("创建图片记录%d,id:%s" % (rs[0]['LAST_INSERT_ID()'], uid))
+
 '''
     #test
     select_pic = ("call select_pic(\"%s\",%d)" % (uid,1))
@@ -178,7 +177,8 @@ def camera(power, buf):#照片
     index += 2
 
     pic_temp = ("%s\%s\%s.jpg" % (os.path.abspath('.'),"temp",power.monitor))
-
+    process = ("图片进度:%.2f%%; id:%s" % ((current/total)*100, power.monitor))
+    print(process)
     if current == 1:
         with open(pic_temp, 'wb+') as f:
             for i in range(index,len(buf)-2):
@@ -191,7 +191,7 @@ def camera(power, buf):#照片
 
     if current == (total - 2):
         s = sched.scheduler(time.time, time.sleep)
-        s.enter(2, 1, save_pic, (pic_temp,power.monitor,))
+        s.enter(10, 1, save_pic, (pic_temp,power.monitor,))
         s.run()
     return
 
@@ -433,6 +433,8 @@ def atmo(power, buf):#气象
                                               atmos.rainfall_streng_unit))
     confirm_id(power)
     rse = find_id(power.monitor)
+    print(val)
+    return
     insert_atmos =  ("call insert_atmo(\"%s\",%d,%s,%s)" % (power.monitor,power.collect_time,state,val))
     rs, row = mysql.mdb_call(insert_atmos)
     print("创建气象记录%d,id:%s;  [%s   %s]" % (rs[0]['LAST_INSERT_ID()'], power.monitor,state,val))
