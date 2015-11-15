@@ -32,7 +32,7 @@ static void range_app_handle(void)
 	{
 		/** 刷新计数器 */
 		distance_time_cnt = 0;
-		//@TODO: 添加测距异常数据发送接口
+		//@note: 添加测距异常数据发送接口
 		distance_t info;
 		osel_memset(&info,0,sizeof(distance_t));
 		mac_addr_get(info.bmonitor);
@@ -58,6 +58,26 @@ static void range_app_handle(void)
 		info.val = distance;
 		distance_send((uint8_t *)&info, sizeof(distance_t));
 	}
+}
+
+static void angle_app_handle(void)
+{
+    static uint16_t angle_time_cnt = 0;
+    int16_t x, y, z;
+    if(angle_time_cnt++ >= ANGLE_DATA_TIME)
+    {
+        angle_time_cnt = 0;
+        adxl_get_triple_angle(&x, &y, &z);
+        //@TODO: 添加角度数据发送接口
+        acceleration_t info;
+        osel_memset(&info, 0, sizeof(acceleration_t));
+        mac_addr_get(info.bmonitor);
+        info.collect_time = 0;
+        info.x = x;
+        info.y = y;
+        info.z = z;
+        acceleration_send((uint8_t *)&info, sizeof(acceleration_t));
+    }
 }
 
 static fp32_t temp_sensor_get(void)
@@ -143,12 +163,13 @@ void esn_detect_task(void *param)
 	while (1)
 	{
 		vTaskDelay(configTICK_RATE_HZ - 1); //*< 1s采集一次原始数据
-		
-		//        range_app_handle();
-		//        camera_app_handle();
-		//        temp_app_handle();
-		//        atmos_app_handle();
-#if 1		
+#if 1
+        range_app_handle();
+        angle_app_handle();
+//        camera_app_handle();
+//        temp_app_handle();
+//        atmos_app_handle();
+#else
 		test_app_handle();
 #endif
 	}

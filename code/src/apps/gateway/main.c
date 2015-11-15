@@ -27,7 +27,7 @@ void driver_init(void)
 	gprs_info.dip[3] = 152;
 	gprs_info.port = 8056;
 	gprs_info.mode = TRUE;
-	gprs_info.uart_port = UART_3;
+	gprs_info.uart_port = UART_4;
 	gprs_info.uart_speed = 115200;
 	gprs_driver.set(&gprs_info);
 	gprs_driver.init();
@@ -44,7 +44,7 @@ int main(void)
 	esn_active_init();
 	esn_gain_init();
 	
-	driver_init();
+//	driver_init();
 	stack_init();
 	
 	vTaskStartScheduler();

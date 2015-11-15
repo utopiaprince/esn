@@ -75,6 +75,8 @@ typedef struct
 {
 	uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
+//    uint8_t thresh_tap; //*< 震动阈值
+//    uint8_t dur;        //*< 震动持续时间
 }shock_t;			//震动
 typedef struct
 {

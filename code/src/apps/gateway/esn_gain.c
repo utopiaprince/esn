@@ -186,6 +186,10 @@ static void esn_gain_task(void *param)
 			case GAIN_ATMO:
 				atmos_handle(&esn_msg);
 				break;
+                
+            case GAIN_RANGE:
+                range_handle(&esn_msg);
+                break;
 				
 			case GAIN_STOCK:
 				{
