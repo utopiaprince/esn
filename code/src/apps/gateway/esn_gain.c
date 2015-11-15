@@ -262,7 +262,7 @@ void esn_gain_init(void)
 	
 	atmos_sensor_init(UART_1, 9600, esn_gain_queue, atmos_recv_data_handle);
 	camera_init(UART_2, 9600, esn_gain_queue, camera_recv_data_handle);
-	range_sensor_init(UART_3, 115200, esn_gain_queue, range_recv_data_handle);
+	range_sensor_init(UART_3, 9600, esn_gain_queue, range_recv_data_handle);
 }
 
 
