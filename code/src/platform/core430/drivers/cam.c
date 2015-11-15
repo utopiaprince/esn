@@ -41,6 +41,9 @@ uint8_t *camera_uart_buf = camera_uart_data_buf; //*< cmd
 static camera_data_cb_t camer_data_cb;
 static QueueHandle_t cam_send_queue;
 
+static TickType_t cam_old_tick = 0; //*< 4字节
+static TickType_t cam_new_tick = 0;
+
 static uint8_t cmd_temp = CAM_CMD_PHONE;
 
 
@@ -312,13 +315,13 @@ void camera_handle(uint16_t cmd)
 	{
 	case CAM_CMD_PHONE:
     {
-		camera_has_start = TRUE;
+		
         bool_t cam_can_sent = FALSE;
-        static TickType_t cam_old_tick = 0; //*< 4字节
-        static TickType_t cam_new_tick = 0;
+        
         cam_new_tick = xTaskGetTickCount();
         if(cam_old_tick == 0)
         {
+            cam_old_tick = cam_new_tick;
             cam_can_sent = TRUE;
         }
         else if (cam_new_tick > cam_old_tick)
@@ -342,6 +345,7 @@ void camera_handle(uint16_t cmd)
         if (cam_can_sent)
         {
             cam_can_sent = FALSE;
+            camera_has_start = TRUE;
             camera_cmd(cmd_temp, 0);
         }
 		break;
