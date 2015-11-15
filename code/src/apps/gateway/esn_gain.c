@@ -161,15 +161,15 @@ static void esn_gain_task(void *param)
 					cam_new_tick = xTaskGetTickCount();
 					if (cam_new_tick > cam_old_tick)
 					{
-						//*< 60S以内只触发一次
-						if ((cam_new_tick - cam_old_tick) > 60 * configTICK_RATE_HZ)
+						//*< 300S以内只触发一次
+						if ((cam_new_tick - cam_old_tick) > 300 * configTICK_RATE_HZ)
 						{
 							cam_old_tick = cam_new_tick;
 						}
 					}
 					else
 					{
-						if (((portMAX_DELAY - cam_old_tick) + cam_new_tick) > 60 * configTICK_RATE_HZ)
+						if (((portMAX_DELAY - cam_old_tick) + cam_new_tick) > 300 * configTICK_RATE_HZ)
 						{
 							cam_old_tick = cam_new_tick;
 						}
@@ -186,6 +186,10 @@ static void esn_gain_task(void *param)
 			case GAIN_ATMO:
 				atmos_handle(&esn_msg);
 				break;
+                
+            case GAIN_RANGE:
+                range_handle(&esn_msg);
+                break;
 				
 			case GAIN_STOCK:
 				{
@@ -258,7 +262,7 @@ void esn_gain_init(void)
 	
 	atmos_sensor_init(UART_1, 9600, esn_gain_queue, atmos_recv_data_handle);
 	camera_init(UART_2, 9600, esn_gain_queue, camera_recv_data_handle);
-	range_sensor_init(UART_3, 115200, esn_gain_queue, range_recv_data_handle);
+	range_sensor_init(UART_3, 9600, esn_gain_queue, range_recv_data_handle);
 }
 
 

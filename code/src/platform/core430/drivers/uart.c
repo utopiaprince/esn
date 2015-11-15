@@ -213,17 +213,18 @@ __interrupt void uart1_rx_isr(void)
 #pragma vector = USCI_A2_VECTOR
 __interrupt void uart2_rx_isr(void)
 {
-#if 0
     uart_int_cb_handle(UART_3, UCA2RXBUF);
-#endif
-	gprs_uart_inter_recv(UCA2RXBUF);
     LPM3_EXIT;
 }
 
 #pragma vector = USCI_A3_VECTOR
 __interrupt void uart3_rx_isr(void)
 {
+#if 0
     uart_int_cb_handle(UART_4, UCA3RXBUF);
+#else
+    gprs_uart_inter_recv(UCA2RXBUF);
+#endif
     LPM3_EXIT;
 }
 
