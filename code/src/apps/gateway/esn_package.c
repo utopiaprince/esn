@@ -18,14 +18,15 @@ static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 	}
 	else
 	{
-		led_set(LEN_GREEN, FALSE);
 		return FALSE;
 	}
 }
 
 void camera_send(camera_t *info, uint8_t *pdata, uint16_t len)
 {
-	uint8_t data[570];
+	if(len>200)
+		return;
+	uint8_t data[250];
 	uint16_t length= 0;
 	uint8_t *p = data;
 	p+=4;

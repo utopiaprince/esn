@@ -123,23 +123,38 @@ static void atmos_app_handle(void)
 uint8_t a[] = ":010322A01F0038C28F3CF5333341E7666642743E144468000C000166664256000042F70201A6";
 static void test_app_handle(void)
 {
-	//@TODO
-    static uint16_t test_time_cnt = 0;
-    if(test_time_cnt++ > 10)
-    {
-        test_time_cnt = 0;
-        acceleration_t info;
-        osel_memset(&info, 0, sizeof(acceleration_t));
-        mac_addr_get(info.bmonitor);
-        info.collect_time = 0;
-        info.x = 0x0010;
-        info.y = 0x2010;
-        info.z = 0x3010;
-        acceleration_send((uint8_t *)&info,sizeof(acceleration_t));
-    }
+	//@TODO:加速度
+//    static uint16_t test_time_cnt = 0;
+//    if(test_time_cnt++ > 10)
+//    {
+//        test_time_cnt = 0;
+//        acceleration_t info;
+//        osel_memset(&info, 0, sizeof(acceleration_t));
+//        mac_addr_get(info.bmonitor);
+//        info.collect_time = 0;
+//        info.x = 0x0010;
+//        info.y = 0x2010;
+//        info.z = 0x3010;
+//        acceleration_send((uint8_t *)&info,sizeof(acceleration_t));
+//    }
 	
-	
+	//@TODO:气象
 //	atmos_recv_data_handle(a,50);
+	
+	//@TODO 照相
+	uint8_t pdata[170];
+	camera_t info;
+	osel_memset(&info, 0, sizeof(camera_t));
+	mac_addr_get(info.bmonitor);
+	info.collect_time = 0;
+	info.cnt = 10;
+	info.index = 1;
+	osel_memset(pdata, 0, 170);
+	pdata[0]=0xff;
+	pdata[1]=0xd8;
+	pdata[169] = 0xee;
+	//camera_send(&info, (uint8_t *)pdata, 170);
+	osel_delay(configTICK_RATE_HZ*20);
 }
 
 static void camera_app_handle(void)
@@ -168,10 +183,10 @@ void esn_detect_task(void *param)
 	while (1)
 	{
 		vTaskDelay(configTICK_RATE_HZ - 1); //*< 1s采集一次原始数据
-#if 1
+#if 0
 //        range_app_handle();
 //        angle_app_handle();
-        camera_app_handle();
+//        camera_app_handle();
 //        temp_app_handle();
 //        atmos_app_handle();
 #else
@@ -184,7 +199,7 @@ bool_t esn_detect_init(void)
 {
 	xTaskCreate(esn_detect_task,
 				"esn detect task",
-				100,
+				300,
 				NULL,
 				ESN_DETECT_PRIORITY,
 				NULL);
