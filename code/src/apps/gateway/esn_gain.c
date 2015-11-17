@@ -95,6 +95,9 @@ void toINT(void *des)
 	*b =S2B_UINT16(*b);
 }
 
+/**
+ * @note 每次camera接收的数据都是512字节一包，需要按照128字节拆分成4包
+ */
 static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 									uint8_t *pdata, uint16_t len)
 {
@@ -102,10 +105,17 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 	osel_memset(&info, 0, sizeof(camera_t));
 	mac_addr_get(info.bmonitor);
 	info.collect_time = 0;
-	info.cnt = cnt;
-	info.index = index;
-	camera_send(&info, pdata, len);
-	osel_delay(configTICK_RATE_HZ);
+	info.cnt = cnt*4;
+    
+    uint8_t *datap = NULL;
+    for(uint8_t i=0;i<4;i++)
+    {
+        info.index = 4*(index-1)+1+i;
+        datap = pdata + 128*i;
+        
+        camera_send(&info, datap, 128);
+        osel_delay(configTICK_RATE_HZ/2);
+    }
 }
 
 void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
