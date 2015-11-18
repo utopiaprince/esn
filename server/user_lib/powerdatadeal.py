@@ -7,6 +7,7 @@ import _thread
 import sched, time
 import user_lib.globalval as globalval
 import user_lib.mysql as mysql
+import threading
 
 lock = _thread.allocate_lock()
 
@@ -149,7 +150,7 @@ def save_pic(pic_name,uid):
         fp.close()
 
     path=pic_path.replace('\\','\\\\')
-    insert_pic =(("call insert_pic(\"%s\",\"%s\")") % (uid,pic_path))
+    insert_pic =(("call insert_pic(\"%s\",\"%s\")") % (uid,path))
     rs, row = mysql.mdb_call(insert_pic)
     print("创建图片记录%d,id:%s" % (rs[0]['LAST_INSERT_ID()'], uid))
 
@@ -162,6 +163,7 @@ def save_pic(pic_name,uid):
 '''
 
 def camera(power, buf):#照片
+
     index = 0
     for i in range(0, 17):
         power.bmonitor += dec2hex_str(buf[i])
@@ -513,7 +515,10 @@ def recv_data(buf, client_address):
                     frame.append(buf[i])
                 length -= frame_len
                 index += frame_len
-                frame_deal(frame, frame_len, client_address)
+                t = threading.Thread(target=frame_deal,args=(frame,frame_len,client_address))
+                t.setDaemon(True)
+                t.start();
+                #frame_deal(frame, frame_len, client_address)
             state = data_state_e.HEAD1
         length -= 1
     return 0

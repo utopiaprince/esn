@@ -26,7 +26,7 @@ void camera_send(camera_t *info, uint8_t *pdata, uint16_t len)
 {
 	if(len>200)
 		return;
-	uint8_t data[250];
+	uint8_t data[200];
 	uint16_t length= 0;
 	uint8_t *p = data;
 	p+=4;

@@ -17,6 +17,7 @@ def appand_remain(array,array_len,remainlen):
     remain = []
     for i in range(array_len -remainlen ,array_len):
         remain.append(array[i])
+    return remain
 
 class tcp_service(socketserver.BaseRequestHandler):
     def handle(self):
@@ -28,7 +29,7 @@ class tcp_service(socketserver.BaseRequestHandler):
                 if not data:break
                 array=[]
                 if len(remain)!=0:
-                    array.append(remain)
+                    array.extend(remain)
                 #if globalval.isWindowsSystem() == True:
                 temp = data
                 #if globalval.isLinuxSystem() == True:
@@ -40,6 +41,8 @@ class tcp_service(socketserver.BaseRequestHandler):
                 remainlen = power.recv_data(array,self.client_address)
                 if remainlen != 0:
                     remain = appand_remain(array,array_len,remainlen)
+                else :
+                    remain = []
                 #self.request.sendall(data)
             except:
                 traceback.print_exc()

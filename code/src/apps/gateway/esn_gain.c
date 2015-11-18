@@ -91,16 +91,11 @@ void toINT(void *des)
     uint8_t temp = *lb;
     *lb = *hb;
     *hb = temp;
-    
-//	*b =S2B_UINT16(*b);
 }
 
 void tofloat(void *des)
 {
-	f_t *f = (f_t *)des;
-//	f->a = S2B_UINT16(f->a);
-//	f->b = S2B_UINT16(f->b);
-    
+	f_t *f = (f_t *)des; 
     toINT(&(f->a));
     toINT(&(f->b));
 }
@@ -116,7 +111,6 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 	mac_addr_get(info.bmonitor);
 	info.collect_time = 0;
 	info.cnt = cnt*4;
-    
     uint8_t *datap = NULL;
     for(uint8_t i=0;i<4;i++)
     {
@@ -124,7 +118,7 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
         datap = pdata + 128*i;
         
         camera_send(&info, datap, 128);
-        osel_delay(configTICK_RATE_HZ/2);
+        osel_delay(configTICK_RATE_HZ*2);
     }
 }
 
@@ -218,7 +212,7 @@ static void esn_gain_task(void *param)
                     osel_memset(&info, 0, sizeof(shock_t));
                     mac_addr_get(info.bmonitor);
                     info.collect_time = 0;
-                    shock_send((uint8_t *)&info, sizeof(shock_t));
+                    //shock_send((uint8_t *)&info, sizeof(shock_t));
                     
                     //@note 启动摄像头采集数据
                     esn_msg_t esn_msg;

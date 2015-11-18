@@ -44,6 +44,8 @@ void board_init(void)
     // wdt
     P6SEL &= ~BIT0;
     P6DIR |= BIT0;
+	
+	led_set(LED_RED, FALSE);
 }
 
 

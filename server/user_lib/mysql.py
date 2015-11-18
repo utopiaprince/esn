@@ -1,4 +1,5 @@
 #coding=utf-8
+import sys
 import pymysql as mdb
 
 uhost='localhost'
@@ -32,7 +33,7 @@ def mdb_cnn():
 
 def mdb_call(sql):
     try:
-        con = mdb.connect(host=uhost,port=uport,user=uuser,passwd=upasswd,db=udb)
+        con = mdb.connect(host=uhost,port=uport,user=uuser,passwd=upasswd,db=udb,charset='utf8')
         cur = con.cursor(mdb.cursors.DictCursor)
         cur.execute(sql)
         con.commit()
@@ -48,7 +49,7 @@ def mdb_call(sql):
 
 def mdb_insert(sql):
     try:
-        con = mdb.connect(host=uhost,port=uport,user=uuser,passwd=upasswd,db=udb)
+        con = mdb.connect(host=uhost,port=uport,user=uuser,passwd=upasswd,db=udb,charset='utf8')
         cur = con.cursor(mdb.cursors.DictCursor)
         cur.execute(sql)
         con.commit()
@@ -61,7 +62,7 @@ def mdb_insert(sql):
 
 def mdb_select(sql):
     try:
-        con = mdb.connect(host=uhost,port=uport,user=uuser,passwd=upasswd,db=udb)
+        con = mdb.connect(host=uhost,port=uport,user=uuser,passwd=upasswd,db=udb,charset='utf8')
         cur = con.cursor(mdb.cursors.DictCursor)
         cur.execute(sql)
         rows = int(cur.rowcount)

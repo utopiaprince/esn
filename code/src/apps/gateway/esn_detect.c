@@ -184,11 +184,11 @@ void esn_detect_task(void *param)
 	{
 		vTaskDelay(1*configTICK_RATE_HZ - 5); //*< 5s采集一次原始数据
 #if 1
-        range_app_handle();
-        angle_app_handle();
-        camera_app_handle();
-        temp_app_handle();
-        atmos_app_handle();
+//        range_app_handle();
+//        angle_app_handle();
+//        camera_app_handle();
+//        temp_app_handle();
+//        atmos_app_handle();
 #else
 		test_app_handle();
 #endif
