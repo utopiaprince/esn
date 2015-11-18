@@ -157,7 +157,7 @@ void distance_send(uint8_t *pdata, uint16_t len)
 	osel_memcpy(p, &package, sizeof(esn_package_t));
 	length += sizeof(esn_package_t);
 	p += sizeof(esn_package_t);
-	osel_memcpy(&p, &info.val, sizeof(float));
+	osel_memcpy(p, &info.val, sizeof(float));
 	length += sizeof(float);
 	esn_gprs_send(data, length);
 }
@@ -184,7 +184,7 @@ void temperature_package(uint8_t *pdata, uint16_t len)
 	osel_memcpy(p, &package, sizeof(esn_package_t));
 	length += sizeof(esn_package_t);
 	p += sizeof(esn_package_t);
-	osel_memcpy(&p, &info.val, sizeof(float));
+	osel_memcpy(p, &info.val, sizeof(float));
 	length += sizeof(float);
 	esn_gprs_send(data, length);
 }

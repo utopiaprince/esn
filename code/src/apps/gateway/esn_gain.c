@@ -82,19 +82,32 @@ static void CharToHex(char * dest, char * buffer , int len)
 	return;
 }
 
-void tofloat(void *des)
-{
-	f_t *f = (f_t *)des;
-	f->a = S2B_UINT16(f->a);
-	f->b = S2B_UINT16(f->b);
-}
+
 
 void toINT(void *des)
 {
-	uint16_t *b = (uint16_t *)des;
-	*b =S2B_UINT16(*b);
+	uint8_t *lb = (uint8_t *)des;
+    uint8_t *hb = (uint8_t *)des + 1;
+    uint8_t temp = *lb;
+    *lb = *hb;
+    *hb = temp;
+    
+//	*b =S2B_UINT16(*b);
 }
 
+void tofloat(void *des)
+{
+	f_t *f = (f_t *)des;
+//	f->a = S2B_UINT16(f->a);
+//	f->b = S2B_UINT16(f->b);
+    
+    toINT(&(f->a));
+    toINT(&(f->b));
+}
+
+/**
+ * @note 每次camera接收的数据都是512字节一包，需要按照128字节拆分成4包
+ */
 static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 									uint8_t *pdata, uint16_t len)
 {
@@ -102,22 +115,29 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 	osel_memset(&info, 0, sizeof(camera_t));
 	mac_addr_get(info.bmonitor);
 	info.collect_time = 0;
-	info.cnt = cnt;
-	info.index = index;
-	camera_send(&info, pdata, len);
-	osel_delay(configTICK_RATE_HZ);
+	info.cnt = cnt*4;
+    
+    uint8_t *datap = NULL;
+    for(uint8_t i=0;i<4;i++)
+    {
+        info.index = 4*(index-1)+1+i;
+        datap = pdata + 128*i;
+        
+        camera_send(&info, datap, 128);
+        osel_delay(configTICK_RATE_HZ/2);
+    }
 }
 
+static atmo_t atmo_info;
 void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 {
-	atmo_t info;
-	osel_memset(&info, 0, sizeof(atmo_t));
-	mac_addr_get(info.bmonitor);
-	info.collect_time = 0;
+	osel_memset(&atmo_info, 0, sizeof(atmo_t));
+	mac_addr_get(atmo_info.bmonitor);
+	atmo_info.collect_time = 0;
 	
 	pdata += 7;
-	CharToHex((char *)&info.atmo_data, (char *)pdata, 2*sizeof(atmo_data_t));
-	atmo_data_t *adata = &info.atmo_data;
+	CharToHex((char *)&atmo_info.atmo_data, (char *)pdata, 2*sizeof(atmo_data_t));
+	atmo_data_t *adata = &atmo_info.atmo_data;
 	toINT((uint16_t *)&adata->driver_state);
 	toINT((uint16_t *)&adata->wind_direction);
 	tofloat((f_t *)&adata->wind_speed);
@@ -130,7 +150,7 @@ void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 	tofloat((f_t *)&adata->rainfall_total);
 	toINT((uint16_t *)&adata->rainfall_streng_unit);
 	
-	atmo_send((uint8_t *)&info, sizeof(atmo_t));
+	atmo_send((uint8_t *)&atmo_info, sizeof(atmo_t));
 }
 
 static void range_recv_data_handle(fp32_t distance)
@@ -167,46 +187,46 @@ static void esn_gain_task(void *param)
                 break;
 				
 			case GAIN_STOCK:
-				{
-					static bool_t stock_can_sent = TRUE;
-					stock_new_tick = xTaskGetTickCount();
-					if (stock_new_tick > stock_old_tick)
-					{
-						//*< 10S以内只触发一次
-						if ((stock_new_tick - stock_old_tick) > 10 * configTICK_RATE_HZ)
-						{
-							stock_old_tick = stock_new_tick;
-                            stock_can_sent = TRUE;
-						}
-					}
-					else
-					{
-						if (((portMAX_DELAY - stock_old_tick) + stock_new_tick) > 10 * configTICK_RATE_HZ)
-						{
-							stock_old_tick = stock_new_tick;
-                            stock_can_sent = TRUE;
-						}
-					}
-					
-					if (stock_can_sent)
-					{
-                        stock_can_sent = FALSE;
-						int16_t x, y, z;
-						adxl_get_triple_angle(&x, &y, &z);
-						//@TODO: 添加震动数据发送接口
-						shock_t info;
-						osel_memset(&info, 0, sizeof(shock_t));
-						mac_addr_get(info.bmonitor);
-						info.collect_time = 0;
-						shock_send((uint8_t *)&info, sizeof(shock_t));
-						
-						//@note 启动摄像头采集数据
-						esn_msg_t esn_msg;
-						esn_msg.event = GAIN_CAM_START;
-						xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-					}
-					break;
-				}
+            {
+                static bool_t stock_can_sent = TRUE;
+                stock_new_tick = xTaskGetTickCount();
+                if (stock_new_tick > stock_old_tick)
+                {
+                    //*< 10S以内只触发一次
+                    if ((stock_new_tick - stock_old_tick) > 10 * configTICK_RATE_HZ)
+                    {
+                        stock_old_tick = stock_new_tick;
+                        stock_can_sent = TRUE;
+                    }
+                }
+                else
+                {
+                    if (((portMAX_DELAY - stock_old_tick) + stock_new_tick) > 10 * configTICK_RATE_HZ)
+                    {
+                        stock_old_tick = stock_new_tick;
+                        stock_can_sent = TRUE;
+                    }
+                }
+                
+                if (stock_can_sent)
+                {
+                    stock_can_sent = FALSE;
+                    int16_t x, y, z;
+                    adxl_get_triple_angle(&x, &y, &z);
+                    //@TODO: 添加震动数据发送接口
+                    shock_t info;
+                    osel_memset(&info, 0, sizeof(shock_t));
+                    mac_addr_get(info.bmonitor);
+                    info.collect_time = 0;
+                    shock_send((uint8_t *)&info, sizeof(shock_t));
+                    
+                    //@note 启动摄像头采集数据
+                    esn_msg_t esn_msg;
+                    esn_msg.event = GAIN_CAM_START;
+                    xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+                }
+                break;
+            }
 			default:
 				break;
 			}
@@ -240,7 +260,7 @@ void esn_gain_init(void)
 	
 	atmos_sensor_init(UART_1, 9600, esn_gain_queue, atmos_recv_data_handle);
 	camera_init(UART_2, 9600, esn_gain_queue, camera_recv_data_handle);
-//	range_sensor_init(UART_3, 9600, esn_gain_queue, range_recv_data_handle);
+	range_sensor_init(UART_3, 9600, esn_gain_queue, range_recv_data_handle);
 }
 
 
