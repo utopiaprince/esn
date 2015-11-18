@@ -22,7 +22,6 @@ class tcp_service(socketserver.BaseRequestHandler):
     def handle(self):
         print ('connected from:', self.client_address)
         remain = []
-        array = []
         while True:
             try:
                 data = self.request.recv(1024).strip()
@@ -39,7 +38,6 @@ class tcp_service(socketserver.BaseRequestHandler):
                 array.extend(temp)
                 array_len = len(array)
                 remainlen = power.recv_data(array,self.client_address)
-                remain=[]
                 if remainlen != 0:
                     remain = appand_remain(array,array_len,remainlen)
                 #self.request.sendall(data)

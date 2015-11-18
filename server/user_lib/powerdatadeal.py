@@ -226,14 +226,16 @@ def distance(power, buf):#激光测距
     power.alarm = buf[index]
     index += 2
 
-    f1 = hex(buf[index])[2:]
+    f1 = ("%02x" % (buf[index]))
     index += 1
-    f2 = hex(buf[index])[2:]
+    f2 = ("%02x" % (buf[index]))
     index += 1
-    f3 = hex(buf[index])[2:]
+    f3 = ("%02x" % (buf[index]))
     index += 1
-    f4 = hex(buf[index])[2:]
+    f4 = ("%02x" % (buf[index]))
+    index += 1
     s = ("%s%s%s%s" % (f4, f3, f2, f1))
+
     power.distance = convert(s)
     confirm_id(power)
     rse = find_id(power.monitor)
@@ -265,13 +267,14 @@ def temperature(power, buf):#导线温度
     power.alarm = buf[index]
     index += 2
 
-    f1 = hex(buf[index])[2:]
+    f1 = ("%02x" % (buf[index]))
     index += 1
-    f2 = hex(buf[index])[2:]
+    f2 = ("%02x" % (buf[index]))
     index += 1
-    f3 = hex(buf[index])[2:]
+    f3 = ("%02x" % (buf[index]))
     index += 1
-    f4 = hex(buf[index])[2:]
+    f4 = ("%02x" % (buf[index]))
+    index += 1
     s = ("%s%s%s%s" % (f4, f3, f2, f1))
     power.temperature = convert(s)
     confirm_id(power)
@@ -345,46 +348,46 @@ def atmo(power, buf):#气象
     atmos.wind_direction = buf[index] + (buf[index+1]<<8)
     index += 2
     #风速
-    f1 = hex(buf[index])[2:]
+    f1 = ("%02x" % (buf[index]))
     index += 1
-    f2 = hex(buf[index])[2:]
+    f2 = ("%02x" % (buf[index]))
     index += 1
-    f3 = hex(buf[index])[2:]
+    f3 = ("%02x" % (buf[index]))
     index += 1
-    f4 = hex(buf[index])[2:]
+    f4 = ("%02x" % (buf[index]))
     index += 1
     s = ("%s%s%s%s" % (f4, f3, f2, f1))
     atmos.wind_speed = convert(s)
     #温度
-    f1 = hex(buf[index])[2:]
+    f1 = ("%02x" % (buf[index]))
     index += 1
-    f2 = hex(buf[index])[2:]
+    f2 = ("%02x" % (buf[index]))
     index += 1
-    f3 = hex(buf[index])[2:]
+    f3 = ("%02x" % (buf[index]))
     index += 1
-    f4 = hex(buf[index])[2:]
+    f4 = ("%02x" % (buf[index]))
     index += 1
     s = ("%s%s%s%s" % (f4, f3, f2, f1))
     atmos.temperature = convert(s)
     #湿度
-    f1 = hex(buf[index])[2:]
+    f1 = ("%02x" % (buf[index]))
     index += 1
-    f2 = hex(buf[index])[2:]
+    f2 = ("%02x" % (buf[index]))
     index += 1
-    f3 = hex(buf[index])[2:]
+    f3 = ("%02x" % (buf[index]))
     index += 1
-    f4 = hex(buf[index])[2:]
+    f4 = ("%02x" % (buf[index]))
     index += 1
     s = ("%s%s%s%s" % (f4, f3, f2, f1))
     atmos.humidity = convert(s)
     #气压
-    f1 = hex(buf[index])[2:]
+    f1 = ("%02x" % (buf[index]))
     index += 1
-    f2 = hex(buf[index])[2:]
+    f2 = ("%02x" % (buf[index]))
     index += 1
-    f3 = hex(buf[index])[2:]
+    f3 = ("%02x" % (buf[index]))
     index += 1
-    f4 = hex(buf[index])[2:]
+    f4 = ("%02x" % (buf[index]))
     index += 1
     s = ("%s%s%s%s" % (f4, f3, f2, f1))
     atmos.pressure = convert(s)
@@ -395,24 +398,24 @@ def atmo(power, buf):#气象
     atmos.rainfall_state = buf[index] + (buf[index+1]<<8)
     index += 2
     #降雨强度
-    f1 = hex(buf[index])[2:]
+    f1 = ("%02x" % (buf[index]))
     index += 1
-    f2 = hex(buf[index])[2:]
+    f2 = ("%02x" % (buf[index]))
     index += 1
-    f3 = hex(buf[index])[2:]
+    f3 = ("%02x" % (buf[index]))
     index += 1
-    f4 = hex(buf[index])[2:]
+    f4 = ("%02x" % (buf[index]))
     index += 1
     s = ("%s%s%s%s" % (f4, f3, f2, f1))
     atmos.rainfall_streng = convert(s)
     #累积降雨量
-    f1 = hex(buf[index])[2:]
+    f1 = ("%02x" % (buf[index]))
     index += 1
-    f2 = hex(buf[index])[2:]
+    f2 = ("%02x" % (buf[index]))
     index += 1
-    f3 = hex(buf[index])[2:]
+    f3 = ("%02x" % (buf[index]))
     index += 1
-    f4 = hex(buf[index])[2:]
+    f4 = ("%02x" % (buf[index]))
     index += 1
     s = ("%s%s%s%s" % (f4, f3, f2, f1))
     atmos.rainfall_total = convert(s)
@@ -433,8 +436,6 @@ def atmo(power, buf):#气象
                                               atmos.rainfall_streng_unit))
     confirm_id(power)
     rse = find_id(power.monitor)
-    print(val)
-    return
     insert_atmos =  ("call insert_atmo(\"%s\",%d,%s,%s)" % (power.monitor,power.collect_time,state,val))
     rs, row = mysql.mdb_call(insert_atmos)
     print("创建气象记录%d,id:%s;  [%s   %s]" % (rs[0]['LAST_INSERT_ID()'], power.monitor,state,val))
