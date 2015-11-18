@@ -18,7 +18,7 @@
 //extern bool_t camrea_has_sent;
 
 #define RANGE_DATA_TIME					(600u)		//*< 10分钟
-#define RANGE_MIN_THRESHOLD				(100.0)     
+#define RANGE_MIN_THRESHOLD				(100.0)       //*< 默认100米
 
 #define ANGLE_DATA_TIME                 (600u)
 

@@ -23,7 +23,7 @@ static void range_app_handle(void)
 	esn_msg.event = GAIN_RANGE_START;
 	xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
 	
-	vTaskDelay(1);  //*< 延时10ms采样一下数据
+	vTaskDelay(5);  //*< 延时10ms采样一下数据
 	
 	//*< 获取到距离数据
 	fp32_t distance = range_sensor_get();
@@ -182,13 +182,13 @@ void esn_detect_task(void *param)
 {
 	while (1)
 	{
-		vTaskDelay(configTICK_RATE_HZ - 1); //*< 1s采集一次原始数据
+		vTaskDelay(1*configTICK_RATE_HZ - 5); //*< 5s采集一次原始数据
 #if 1
-//        range_app_handle();
-//        angle_app_handle();
-//        camera_app_handle();
-//        temp_app_handle();
-//        atmos_app_handle();
+        range_app_handle();
+        angle_app_handle();
+        camera_app_handle();
+        temp_app_handle();
+        atmos_app_handle();
 #else
 		test_app_handle();
 #endif

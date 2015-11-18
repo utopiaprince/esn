@@ -120,6 +120,7 @@ void range_handle(esn_msg_t *msg)
     switch (cmd)
     {
     case RANGE_CMD_START:
+        range_uart_clear();
         range_cmd();
         break;
 
