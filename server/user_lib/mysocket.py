@@ -50,8 +50,23 @@ class tcp_service(socketserver.BaseRequestHandler):
         print ("closed from:", self.client_address)
         self.finish()
 
+class udp_service(socketserver.BaseRequestHandler):
+    def handle(self):
+        try:
+            data = self.request[0].strip()
+            power.recv_data(data,self.client_address)
+            #self.request.sendall(data)
+        except:
+            traceback.print_exc()
+
 def tcp_service_start(host,port):
     addr = (host, port)
-    tcpServ = socketserver.ThreadingTCPServer(addr, tcp_service)
-    print ('waiting for connection...')
-    tcpServ.serve_forever()
+    server = socketserver.ThreadingTCPServer(addr, tcp_service)
+    print ('[TCP:%d] waiting for connection...' % port)
+    server.serve_forever()
+
+def udp_service_start(host,port):
+    addr = (host, port)
+    server = socketserver.UDPServer(addr, udp_service)
+    print ('[UDP:%d] waiting for connection...' % port)
+    server.serve_forever()

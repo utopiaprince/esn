@@ -2,9 +2,6 @@
 #include <data_type_def.h>
 #include <pbuf.h>
 #define ID_MAX  (17u)
-#define GAIN_STOCK          (7u)
-#define GAIN_DISTANCE       (8u)
-#define GAIN_TEMPERATURE    (9u)
 enum frame_type_e
 {
     FRAME_BEGIN = 0,

@@ -1,6 +1,8 @@
 #pragma once
 #include <data_type_def.h>
 
+#define GPRS_HEART	(10u)
+#define GPRS_HEART_START        ((GPRS_HEART<<8) | 0)
 typedef enum
 {
 	READY_IDLE,

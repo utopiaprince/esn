@@ -116,15 +116,13 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
     {
         info.index = 4*(index-1)+1+i;
         datap = pdata + 128*i;
-        
         camera_send(&info, datap, 128);
-        osel_delay(configTICK_RATE_HZ*2);
     }
 }
 
-static atmo_t atmo_info;
 void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 {
+	atmo_t atmo_info;
 	osel_memset(&atmo_info, 0, sizeof(atmo_t));
 	mac_addr_get(atmo_info.bmonitor);
 	atmo_info.collect_time = 0;
@@ -212,7 +210,7 @@ static void esn_gain_task(void *param)
                     osel_memset(&info, 0, sizeof(shock_t));
                     mac_addr_get(info.bmonitor);
                     info.collect_time = 0;
-                    //shock_send((uint8_t *)&info, sizeof(shock_t));
+                    shock_send((uint8_t *)&info, sizeof(shock_t));
                     
                     //@note 启动摄像头采集数据
                     esn_msg_t esn_msg;
@@ -221,6 +219,12 @@ static void esn_gain_task(void *param)
                 }
                 break;
             }
+			case GPRS_HEART:
+				{
+					uint8_t data[1] = {0xfe};
+					gprs_driver.write(data,1);
+					break;
+				}
 			default:
 				break;
 			}

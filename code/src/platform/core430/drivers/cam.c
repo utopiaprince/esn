@@ -326,8 +326,8 @@ void camera_handle(uint16_t cmd)
         }
         else if (cam_new_tick > cam_old_tick)
         {
-            //*< 300S以内只触发一次
-            if ((cam_new_tick - cam_old_tick) > 300 * configTICK_RATE_HZ)
+            //*< 600S以内只触发一次
+            if ((cam_new_tick - cam_old_tick) > 600 * configTICK_RATE_HZ)
             {
                 cam_can_sent = TRUE;
                 cam_old_tick = cam_new_tick;

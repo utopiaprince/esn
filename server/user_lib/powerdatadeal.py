@@ -120,26 +120,19 @@ def confirm_id(power):  # 验证是否需要往id_manage中插入数据
     else:
         sql = 'call insert_id_to_id_manage(\'%s\',\'%s\',\'%s\')' % (power.monitor, power.bmonitor, power.ip)
         mysql.mdb_call(sql)
-        print('创建ID：%s' % (power.monitor))
+        print('%s 创建ID：%s' % (GetNowTime(),power.monitor))
         read_id_manage()
     return
 
-def GetMiddleStr(content,startStr,endStr):
-    startIndex = content.index(startStr)
-    if startIndex>=0:
-        startIndex += len(startStr)
-    endIndex = content.index(endStr)
-    return content[startIndex:endIndex]
-
 def GetNowTime():
-    return time.strftime("%Y%m%d-%H%M%S",time.localtime(time.time()))
+    return time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
 
-def moveFileto(sourceDir,  targetDir):
-    shutil.copy(sourceDir,  targetDir)
+def make_time():
+    return time.strftime("%Y%m%d-%H%M%S",time.localtime(time.time()))
 
 def save_pic(pic_name,uid):
     fpic_path = ("%s\%s\%s" % (os.path.abspath('.'),"pic",uid))
-    pic_path= ("%s\%s.jpg" % (fpic_path,GetNowTime()))
+    pic_path= ("%s\%s.jpg" % (fpic_path,make_time()))
     if os.path.exists(fpic_path) == False:
         os.makedirs(fpic_path)
     with open(pic_name, 'rb') as f:
@@ -152,7 +145,7 @@ def save_pic(pic_name,uid):
     path=pic_path.replace('\\','\\\\')
     insert_pic =(("call insert_pic(\"%s\",\"%s\")") % (uid,path))
     rs, row = mysql.mdb_call(insert_pic)
-    print("创建图片记录%d,id:%s" % (rs[0]['LAST_INSERT_ID()'], uid))
+    print("%s 创建图片记录%d,id:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], uid))
 
 '''
     #test
@@ -179,7 +172,7 @@ def camera(power, buf):#照片
     index += 2
 
     pic_temp = ("%s\%s\%s.jpg" % (os.path.abspath('.'),"temp",power.monitor))
-    process = ("图片进度:%.2f%%; id:%s" % ((current/total)*100, power.monitor))
+    process = ("%s 图片进度:%.2f%%; id:%s" % (GetNowTime(),(current/total)*100, power.monitor))
     print(process)
     if current == 1:
         with open(pic_temp, 'wb+') as f:
@@ -212,9 +205,9 @@ def shock(power, buf):#震动报警
     insert_shock = (("call insert_shock(\"%s\",%d,%d)") % (power.monitor, power.alarm, power.collect_time))
     rs, row = mysql.mdb_call(insert_shock)
     if power.alarm == 1:
-        print("创建震动报警记录%d,id:%s" % (rs[0]['LAST_INSERT_ID()'], power.monitor))
+        print("%s 创建震动报警记录%d,id:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor))
     else:
-        print("取消震动报警记录,id:%s" % (power.monitor))
+        print("%s 取消震动报警记录,id:%s" % (GetNowTime(),power.monitor))
     return
 
 
@@ -248,14 +241,14 @@ def distance(power, buf):#激光测距
     if rse['distance_state'] != power.alarm:
         if power.alarm == 1:
             rse['distance_state'] = 1
-            print("创建距离报警记录%d,id:%s;距离:%s" % (rs[0]['LAST_INSERT_ID()'], power.monitor, power.distance))
+            print("%s 创建距离报警记录%d,id:%s;距离:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor, power.distance))
         else:
             rse['distance_state'] = 0
-            print("取消距离报警记录,id:%s;距离:%s" % (power.monitor,power.distance))
+            print("%s 取消距离报警记录,id:%s;距离:%s" % (GetNowTime(),power.monitor,power.distance))
     else:
         if power.alarm == 1:
             rse['distance_state'] = 1
-            print("创建距离报警记录%d,id:%s;距离:%s" % (rs[0]['LAST_INSERT_ID()'], power.monitor,power.distance))
+            print("%s 创建距离报警记录%d,id:%s;距离:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor,power.distance))
     return
 
 
@@ -288,14 +281,14 @@ def temperature(power, buf):#导线温度
     if rse['temperature_state'] != power.alarm:
         if power.alarm == 1:
             rse['temperature_state'] = 1
-            print("创建温度报警记录%d,id:%s;温度:%s" % (rs[0]['LAST_INSERT_ID()'], power.monitor,power.temperature))
+            print("%s 创建温度报警记录%d,id:%s;温度:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor,power.temperature))
         else:
             rse['temperature_state'] = 0
-            print("取消温度报警记录,id:%s;温度:%s" % (power.monitor,power.temperature))
+            print("%s 取消温度报警记录,id:%s;温度:%s" % (GetNowTime(),power.monitor,power.temperature))
     else:
         if power.alarm == 1:
             rse['temperature_state'] = 1
-            print("创建温度报警记录%d,id:%s;温度:%s" % (rs[0]['LAST_INSERT_ID()'], power.monitor,power.temperature))
+            print("%s 创建温度报警记录%d,id:%s;温度:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor,power.temperature))
     return
 
 def acceleration(power, buf):#加速度
@@ -320,7 +313,7 @@ def acceleration(power, buf):#加速度
     insert_acceleration =  ("call insert_acceleration(\"%s\",%d,%f,%f,%f)" % (power.monitor,power.collect_time,
                                                          acce.x, acce.y,acce.z))
     rs, row = mysql.mdb_call(insert_acceleration)
-    print("创建加速度记录%d,id:%s;加速度:[%s  %s  %s]" % (rs[0]['LAST_INSERT_ID()'], power.monitor,acce.x, acce.y,acce.z))
+    print("%s 创建加速度记录%d,id:%s;加速度:[%s  %s  %s]" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor,acce.x, acce.y,acce.z))
     return
 
 def atmo(power, buf):#气象
@@ -440,7 +433,7 @@ def atmo(power, buf):#气象
     rse = find_id(power.monitor)
     insert_atmos =  ("call insert_atmo(\"%s\",%d,%s,%s)" % (power.monitor,power.collect_time,state,val))
     rs, row = mysql.mdb_call(insert_atmos)
-    print("创建气象记录%d,id:%s;  [%s   %s]" % (rs[0]['LAST_INSERT_ID()'], power.monitor,state,val))
+    print("%s 创建气象记录%d,id:%s;  [%s   %s]" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor,state,val))
 
     return
 
