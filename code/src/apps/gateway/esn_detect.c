@@ -215,6 +215,7 @@ void esn_detect_task(void *param)
         
         range_app_handle();
         vTaskDelay(200 / portTICK_PERIOD_MS);
+		
         camera_app_handle();
         vTaskDelay(200 / portTICK_PERIOD_MS);
 
