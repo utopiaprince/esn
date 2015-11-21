@@ -15,13 +15,13 @@
 #define	PULL_DOWN		(P9OUT |= BIT7)
 #define GPRS_DETECT_STATUS()	(P10IN & BIT0)
 
-#define AT			("AT\r")
-#define ATE0		("ATE0\r")
-#define CSMINS		("AT+CSMINS?\r")
-#define CGATT		("AT+CGATT?\r")
-#define CIPSTART	("AT+CIPSTART=%s,%s\r")
-#define CIPCLOSE	("AT+CIPCLOSE\r")
-#define CIPSEND		("AT+CIPSEND=%d\r")
+#define AT			("AT\r")                    //*< TEST
+#define ATE0		("ATE0\r")                  //*< 关闭回显
+#define CSMINS		("AT+CSMINS?\r")            //*< 检查SIM卡
+#define CGATT		("AT+CGATT?\r")             //*< 附着网络
+#define CIPSTART	("AT+CIPSTART=%s,%s\r")     //*< 连接SOCKET
+#define CIPCLOSE	("AT+CIPCLOSE\r")           //*< 关闭SOCKET
+#define CIPSEND		("AT+CIPSEND=%d\r")         //*< 发送数据长度
 
 static const uint8_t tcp_mode[] = {"\"TCP\""};
 static const uint8_t udp_mode[] = {"\"UDP\""};
@@ -41,6 +41,7 @@ gprs_read_cb_t gprs_read_cb;
 static xQueueHandle gprs_queue = NULL;
 static xSemaphoreHandle gprs_mutex = NULL;
 static SemaphoreHandle_t guart_Semaphore = NULL; 
+static TimerHandle_t gprs_daemon_timer = NULL;
 
 static void gprs_switch(void);
 static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len);
@@ -238,6 +239,8 @@ static bool_t cipstart_deal(void)
 
 static void cipsend_ok_cb(void)
 {
+    xTimerStop(gprs_daemon_timer, 0);
+    vTaskDelay(300 / portTICK_RATE_MS);
 	xSemaphoreGive(gprs_mutex);
 }
 
@@ -411,6 +414,7 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 		if (gprs_info.gprs_state == WORK_ON && len < SEND_SIZE)
 		{
 			//等待数据发送完成
+            xTimerReset(gprs_daemon_timer, 600);
 			osel_memset(send_data, 0x00, SIZE);
 			tfp_sprintf((char *)send_data, CIPSEND, len);
 
@@ -454,7 +458,7 @@ static void gprs_maintain(void *p)
 			if(num%2 == 0)
 			{
 				e_state = E_CLOSE;
-				xQueueSendFromISR(gprs_queue, &esn_msg, NULL);
+				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 			}
 			else if(num >= 5)
 			{
@@ -488,27 +492,27 @@ void uart_deal_task(void *p)
 				{
 					memset(recv.buf, 0 , SIZE);
 					e_state = E_SEND;
-					xQueueSendFromISR(gprs_queue, &esn_msg, NULL);
+					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 				}
 				else if (my_strstr((const char*)recv.buf, (const char*)"SEND OK\r\n") != NULL)
 				{
 					memset(recv.buf, 0 , SIZE);
 					e_state = E_SEND_OK;
-					xQueueSendFromISR(gprs_queue, &esn_msg, NULL);
+					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 				}
 				else if (my_strstr((const char*)recv.buf, (const char*)"ERROR") != NULL)
 				{
 					memset(recv.buf, 0 , SIZE);
 					gprs_info.gprs_state = GPRS_NET_ERROR;
 					e_state = E_IDLE;
-					xQueueSendFromISR(gprs_queue, &esn_msg, NULL);
+					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 				}
 				else if (my_strstr((const char*)recv.buf, (const char*)"SEND FAIL") != NULL)
 				{
 					memset(recv.buf, 0 , SIZE);
 					gprs_info.gprs_state = GPRS_NET_ERROR;
 					e_state = E_IDLE;
-					xQueueSendFromISR(gprs_queue, &esn_msg, NULL);
+					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 				}
 			}
 		}  
@@ -539,6 +543,14 @@ static void gprs_task(void *p)
 	}
 }
 
+static void gprs_sent_timeout_cb(TimerHandle_t timer)
+{
+    osel_memset(recv.buf, 0 , SIZE);
+	recv.offset = 0;
+    xTimerStop(timer, 0);
+    xSemaphoreGive(gprs_mutex);
+}
+
 static bool_t gprs_init()
 {
 	port_init();
@@ -554,6 +566,15 @@ static bool_t gprs_init()
 	xTaskCreate(gprs_task, "gprs_task", 300, NULL, tskIDLE_PRIORITY+6, NULL);  
 	xTaskCreate(uart_deal_task, "uart_deal_task", 50, NULL, tskIDLE_PRIORITY+7, NULL);  
 	xTaskCreate(gprs_maintain, "gprs_maintain", 50, NULL, tskIDLE_PRIORITY+1, NULL);  
+    
+    gprs_daemon_timer = xTimerCreate("GprsTimer",
+                                   (6 * configTICK_RATE_HZ),
+                                   pdTRUE,
+                                   NULL,
+                                   gprs_sent_timeout_cb);
+    if (gprs_daemon_timer == NULL) {
+        DBG_ASSERT(FALSE __DBG_LINE);
+    }
 	
 	gprs_queue = xQueueCreate(2, sizeof(esn_msg_t));
 	if (gprs_queue == NULL)
@@ -585,8 +606,8 @@ bool_t gprs_uart_inter_recv(uint8_t id, uint8_t ch)
 			xSemaphoreGiveFromISR( guart_Semaphore, &xHigherPriorityTaskWoken );  
 		}  
 	}
-	portYIELD_FROM_ISR( xHigherPriorityTaskWoken ); 
-	return TRUE;
+//	portYIELD_FROM_ISR( xHigherPriorityTaskWoken ); 
+	return FALSE;
 }
 
 const struct gprs gprs_driver =

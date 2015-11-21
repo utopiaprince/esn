@@ -152,8 +152,11 @@
 #define ADXL_Y_AXIS                 (0x01)
 #define ADXL_Z_AXIS                 (0x02)
 
-#define GAIN_STOCK          	(7u)
-#define GAIN_STOCK_START        ((GAIN_STOCK<<8) | 0)
+#define GAIN_ANGLE                  (6u)
+#define ANGLE_CMD_START             (0u)
+     
+#define GAIN_STOCK          	    (7u)
+#define STOCK_CMD_START             (0u)
 
 void adxl_sensor_init(void);
 

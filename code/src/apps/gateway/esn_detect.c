@@ -16,66 +16,92 @@
 #include "drivers.h"
 #include "esn.h"
 #include "esn_package.h"
+
+
+static bool_t range_can_sent = FALSE;
+static TickType_t range_old_tick = 0; //*< 4字节
+static TickType_t range_new_tick = 0;
+    
 static void range_app_handle(void)
 {
-	static uint16_t distance_time_cnt = 0;
-	esn_msg_t esn_msg;
-	esn_msg.event = GAIN_RANGE_START;
-	xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+    static uint8_t range_time_cnt = 0;  //*< 1秒调用一次接口
+    static uint16_t distance_time_cnt = 0;
+    fp32_t distance = 1000.0;
+    if(++range_time_cnt < 60)           //*< 1分钟调用一次距离传感器
+    {
+        distance = 1000.0;
+    }
+    else
+    {
+        range_time_cnt = 0;
+        esn_msg_t esn_msg;
+        esn_msg.event = GAIN_RANGE_START;
+        xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
 	
-	vTaskDelay(5);  //*< 延时10ms采样一下数据
-	
-	//*< 获取到距离数据
-	fp32_t distance = range_sensor_get();
+        vTaskDelay(5);  //*< 延时10ms采样一下数据
+        
+        //*< 获取到距离数据
+        fp32_t distance = range_sensor_get();
+    }
 	
 	if (distance < RANGE_MIN_THRESHOLD)
 	{
-		/** 刷新计数器 */
-		distance_time_cnt = 0;
-		//@note: 添加测距异常数据发送接口
-		distance_t info;
-		osel_memset(&info,0,sizeof(distance_t));
-		mac_addr_get(info.bmonitor);
-		info.collect_time = 0;
-		info.val = distance;
-		distance_send((uint8_t *)&info, sizeof(distance_t));
-		
-		//@note 启动摄像头采集数据
-		esn_msg_t esn_msg;
-		esn_msg.event = GAIN_CAM_START;
-		xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+        range_new_tick = xTaskGetTickCount();
+        if (range_new_tick > range_old_tick)
+        {
+            //*< 10分钟以内只触发一次
+            if ((range_new_tick - range_old_tick) > RANGE_DATA_TIME * configTICK_RATE_HZ)
+            {
+                range_old_tick = range_new_tick;
+                range_can_sent = TRUE;
+            }
+        }
+        else
+        {
+            if (((portMAX_DELAY - range_old_tick) + range_new_tick) > RANGE_DATA_TIME * configTICK_RATE_HZ)
+            {
+                range_old_tick = range_new_tick;
+                range_can_sent = TRUE;
+            }
+        }
+        
+        if (range_can_sent)
+        {
+            range_can_sent = FALSE;
+            /** 刷新计数器 */
+            distance_time_cnt = 0;
+            esn_msg_t esn_msg;
+            esn_msg.event = GAIN_RANGE_SEND;
+            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+            
+            //@note 启动摄像头采集数据
+            esn_msg.event = GAIN_CAM_START;
+            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+        }
 	}
 	
 	if (distance_time_cnt++ > RANGE_DATA_TIME)
 	{
 		distance_time_cnt = 0;
-		//@TODO: 添加测距异常数据发送接口
-		distance_t info;
-		osel_memset(&info,0,sizeof(distance_t));
-		mac_addr_get(info.bmonitor);
-		info.collect_time = 0;
-		info.val = distance;
-		distance_send((uint8_t *)&info, sizeof(distance_t));
+        
+        distance_time_cnt = 0;
+        esn_msg_t esn_msg;
+        esn_msg.event = GAIN_RANGE_SEND;
+        xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
 	}
 }
 
 static void angle_app_handle(void)
 {
     static uint16_t angle_time_cnt = 0;
-    int16_t x, y, z;
+    
     if(angle_time_cnt++ >= ANGLE_DATA_TIME)
     {
         angle_time_cnt = 0;
-        adxl_get_triple_angle(&x, &y, &z);
-        //@TODO: 添加角度数据发送接口
-        acceleration_t info;
-        osel_memset(&info, 0, sizeof(acceleration_t));
-        mac_addr_get(info.bmonitor);
-        info.collect_time = 0;
-        info.x = x;
-        info.y = y;
-        info.z = z;
-        acceleration_send((uint8_t *)&info, sizeof(acceleration_t));
+        
+        esn_msg_t esn_msg;
+        esn_msg.event = GAIN_ANGLE_START;
+        xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
     }
 }
 
@@ -85,26 +111,26 @@ static fp32_t temp_sensor_get(void)
 	return 32.0;
 }
 
-static void temp_app_handle(void)
-{
-	
-	static uint16_t temp_time_cnt = 0;
-	fp32_t temp = temp_sensor_get();
-	
-	if (temp > TEMP_MAX_THRESHOLD)
-	{
-		temp_time_cnt = 0;
-		//@TODO: 添加温度异常报警发送接口
-		//
-	}
-	
-	if (temp_time_cnt++ > TEMP_DATA_TIME)
-	{
-		temp_time_cnt = 0;
-		//@TODO: 添加温度异常报警发送接口
-		//
-	}
-}
+//static void temp_app_handle(void)
+//{
+//	
+//	static uint16_t temp_time_cnt = 0;
+//	fp32_t temp = temp_sensor_get();
+//	
+//	if (temp > TEMP_MAX_THRESHOLD)
+//	{
+//		temp_time_cnt = 0;
+//		//@TODO: 添加温度异常报警发送接口
+//		//
+//	}
+//	
+//	if (temp_time_cnt++ > TEMP_DATA_TIME)
+//	{
+//		temp_time_cnt = 0;
+//		//@TODO: 添加温度异常报警发送接口
+//		//
+//	}
+//}
 
 static void atmos_app_handle(void)
 {
@@ -182,13 +208,18 @@ void esn_detect_task(void *param)
 {
 	while (1)
 	{
-		vTaskDelay(1*configTICK_RATE_HZ - 5); //*< 5s采集一次原始数据
+		vTaskDelay(1*configTICK_RATE_HZ - 65); //*< 5s采集一次原始数据
 #if 1
-//        range_app_handle();
-//        angle_app_handle();
-//        camera_app_handle();
-//        temp_app_handle();
-//        atmos_app_handle();
+        
+        angle_app_handle();
+        
+        range_app_handle();
+        vTaskDelay(200 / portTICK_PERIOD_MS);
+        camera_app_handle();
+        vTaskDelay(200 / portTICK_PERIOD_MS);
+
+        atmos_app_handle();
+        vTaskDelay(200 / portTICK_PERIOD_MS);
 #else
 		test_app_handle();
 #endif

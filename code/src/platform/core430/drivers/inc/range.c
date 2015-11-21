@@ -125,10 +125,13 @@ void range_handle(esn_msg_t *msg)
         break;
 
     case RANGE_DATA_END:
-        portENTER_CRITICAL();
+//        portENTER_CRITICAL();
         range_var = range_change();
         range_uart_clear();
-        portEXIT_CRITICAL();
+//        portEXIT_CRITICAL();
+        break;
+        
+    case RANGE_DATA_SEND:
         if (range_data_cb != NULL)
         {
             range_data_cb(range_var);

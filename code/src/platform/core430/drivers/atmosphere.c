@@ -36,9 +36,9 @@ static portBASE_TYPE atmosphere_cmd(void)
     MODBUS_TX();
     osel_delay(1 / portTICK_RATE_MS);
 	
-	portENTER_CRITICAL();
+//	portENTER_CRITICAL();
     uart_send_string(ATMO_PORT, (uint8_t *)atmosphere_cmd_data , strlen((char const*)atmosphere_cmd_data));
-	portEXIT_CRITICAL();
+//	portEXIT_CRITICAL();
 	MODBUS_RX();
     return pdTRUE;
 }

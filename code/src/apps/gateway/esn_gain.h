@@ -16,6 +16,11 @@
 #define GAIN_ATMO_START     ((GAIN_ATMO<<8) | ATMOS_CMD_START)
 
 #define GAIN_RANGE_START	((GAIN_RANGE<<8) | RANGE_CMD_START)
+#define GAIN_RANGE_SEND     ((GAIN_RANGE<<8) | RANGE_DATA_SEND)
+
+#define GAIN_ANGLE_START    ((GAIN_ANGLE<<8) | ANGLE_CMD_START) 
+
+#define GAIN_STOCK_START    ((GAIN_STOCK<<8) | STOCK_CMD_START)
 
 extern QueueHandle_t esn_gain_queue;
 

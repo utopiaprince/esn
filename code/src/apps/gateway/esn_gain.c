@@ -147,7 +147,28 @@ void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 
 static void range_recv_data_handle(fp32_t distance)
 {
-	;
+	//@note: 添加测距异常数据发送接口
+    distance_t info;
+    osel_memset(&info,0,sizeof(distance_t));
+    mac_addr_get(info.bmonitor);
+    info.collect_time = 0;
+    info.val = distance;
+    distance_send((uint8_t *)&info, sizeof(distance_t));
+}
+
+static void angle_handle(esn_msg_t *msg)
+{
+    int16_t x, y, z;
+    adxl_get_triple_angle(&x, &y, &z);
+    //@TODO: 添加角度数据发送接口
+    acceleration_t info;
+    osel_memset(&info, 0, sizeof(acceleration_t));
+    mac_addr_get(info.bmonitor);
+    info.collect_time = 0;
+    info.x = x;
+    info.y = y;
+    info.z = z;
+    acceleration_send((uint8_t *)&info, sizeof(acceleration_t));
 }
 
 static void esn_gain_task(void *param)
@@ -177,14 +198,25 @@ static void esn_gain_task(void *param)
             case GAIN_RANGE:
                 range_handle(&esn_msg);
                 break;
+                
+            case GAIN_ANGLE:
+                angle_handle(&esn_msg);
+                break;
 				
 			case GAIN_STOCK:
             {
-                static bool_t stock_can_sent = TRUE;
+                bool_t stock_can_sent = FALSE;
                 stock_new_tick = xTaskGetTickCount();
+                
+                if(stock_old_tick == 0)
+                {
+                    stock_old_tick = stock_new_tick;
+                    stock_can_sent = TRUE;
+                }
+                
                 if (stock_new_tick > stock_old_tick)
                 {
-                    //*< 10S以内只触发一次
+                    //*< 30S以内只触发一次
                     if ((stock_new_tick - stock_old_tick) > 10 * configTICK_RATE_HZ)
                     {
                         stock_old_tick = stock_new_tick;
@@ -210,6 +242,9 @@ static void esn_gain_task(void *param)
                     osel_memset(&info, 0, sizeof(shock_t));
                     mac_addr_get(info.bmonitor);
                     info.collect_time = 0;
+                    info.thresh_tap = 0x10;     //*< 1个单位是62.5mg
+                    info.dur = 0x10;            //*< 1个单位是625us
+                    
                     shock_send((uint8_t *)&info, sizeof(shock_t));
                     
                     //@note 启动摄像头采集数据
@@ -248,7 +283,7 @@ void esn_gain_init(void)
 		DBG_LOG(DBG_LEVEL_ERROR, "esn gain task init failed\r\n");
 	}
 	
-	esn_gain_queue = xQueueCreate(10, sizeof(esn_msg_t));
+	esn_gain_queue = xQueueCreate(15, sizeof(esn_msg_t));
 	if (esn_gain_queue == NULL)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "esn_gain_queue init failed\r\n");

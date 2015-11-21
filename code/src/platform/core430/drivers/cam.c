@@ -335,7 +335,7 @@ void camera_handle(uint16_t cmd)
         }
         else
         {
-            if (((portMAX_DELAY - cam_old_tick) + cam_new_tick) > 300 * configTICK_RATE_HZ)
+            if (((portMAX_DELAY - cam_old_tick) + cam_new_tick) > 600 * configTICK_RATE_HZ)
             {
                 cam_can_sent = TRUE;
                 cam_old_tick = cam_new_tick;

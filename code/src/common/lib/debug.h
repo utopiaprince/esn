@@ -25,7 +25,7 @@
 #error "include data_type_def.h must appear in source file before include uart.h"
 #endif
 
-#define DEBUG_INFO_PRINT_EN                 (1)
+#define DEBUG_INFO_PRINT_EN                 (0)
 
 #define DBG_LEVEL_NONE		                0x00
 #define DBG_LEVEL_TRACE		                (0x01<<0)

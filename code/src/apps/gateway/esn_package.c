@@ -88,7 +88,7 @@ void atmo_send(uint8_t *pdata, uint16_t len)
 {
 	if(len > sizeof(atmo_t))
 		return;
-	uint8_t data[100];
+	uint8_t data[130];
 	uint8_t length= 0;
 	uint8_t *p = data;
 	p+=4;
@@ -131,7 +131,17 @@ void shock_send(uint8_t *pdata, uint16_t len)
 	package.alarm = TRUE;
 	
 	osel_memcpy(p, &package, sizeof(esn_package_t));
+    p += sizeof(esn_package_t);
 	length += sizeof(esn_package_t);
+    
+    osel_memcpy(p, &(info.thresh_tap), sizeof(info.thresh_tap));
+    p += sizeof(info.thresh_tap);
+    length += sizeof(info.thresh_tap);
+    
+    osel_memcpy(p, &(info.dur), sizeof(info.dur));
+    p += sizeof(info.dur);
+    length += sizeof(info.dur);
+    
 	esn_gprs_send(data, length);
 }
 

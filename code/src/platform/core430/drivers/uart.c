@@ -190,10 +190,10 @@ static void uart_int_cb_handle(uint8_t id, uint8_t ch)
         xTaskWoken = uart_interrupt_cb[id](id, ch);
     }
 
-    if(xTaskWoken)
-    {
-        taskYIELD();
-    }
+//    if(xTaskWoken)
+//    {
+//        taskYIELD();
+//    }
 }
 
 #pragma vector = USCI_A0_VECTOR
@@ -220,7 +220,9 @@ __interrupt void uart2_rx_isr(void)
 #pragma vector = USCI_A3_VECTOR
 __interrupt void uart3_rx_isr(void)
 {
-    uart_int_cb_handle(UART_4, UCA3RXBUF);
+//    uart_int_cb_handle(UART_4, UCA3RXBUF);
+    extern bool_t gprs_uart_inter_recv(uint8_t id, uint8_t ch);
+    gprs_uart_inter_recv(UART_4, UCA3RXBUF);
 //    LPM3_EXIT;
 }
 

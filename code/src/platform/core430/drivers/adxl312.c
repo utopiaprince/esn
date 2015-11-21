@@ -249,9 +249,9 @@ bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
     uint8_t accbuf[6] = {0};
     bool_t ret = FALSE;               // 读写返回值
 
-    portENTER_CRITICAL();
+//    portENTER_CRITICAL();
     ret = adxl312_read_fifo( 0x32 , accbuf , ADXL_DATA_OUT_REG_NUM );
-    portEXIT_CRITICAL();
+//    portEXIT_CRITICAL();
     
     DBG_ASSERT(TRUE == ret __DBG_LINE);
 

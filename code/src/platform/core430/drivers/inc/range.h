@@ -19,6 +19,7 @@
 #define GAIN_RANGE          (0x02)
 #define RANGE_CMD_START     (0x00)
 #define RANGE_DATA_END      (0x01)
+#define RANGE_DATA_SEND     (0x02)
 
 typedef enum
 {
