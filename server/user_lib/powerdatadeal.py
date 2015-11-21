@@ -199,15 +199,19 @@ def shock(power, buf):#震动报警
     index += 4
     power.alarm = buf[index]
     index += 2
+    thresh_tap = buf[index]
+    index+=1
+    dur= buf[index]
+    index+=1
     confirm_id(power)
     rse = find_id(power.monitor)
     rse['shock_state'] = power.alarm
     insert_shock = (("call insert_shock(\"%s\",%d,%d)") % (power.monitor, power.alarm, power.collect_time))
     rs, row = mysql.mdb_call(insert_shock)
     if power.alarm == 1:
-        print("%s 创建震动报警记录%d,id:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor))
+        print("%s 创建震动报警记录%d,id:%s,(%d,%d)" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor, thresh_tap, dur))
     else:
-        print("%s 取消震动报警记录,id:%s" % (GetNowTime(),power.monitor))
+        print("%s 取消震动报警记录,id:%s" % (GetNowTime(),power.monitor,power.monitor, thresh_tap, dur))
     return
 
 
