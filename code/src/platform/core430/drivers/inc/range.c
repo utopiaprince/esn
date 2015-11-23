@@ -11,7 +11,7 @@
 #include <lib.h>
 #include <math.h>
 #include "osel_arch.h"
-
+#include <esn_gain.h>
 #include "drivers.h"
 
 #include "pbuf.h"
@@ -142,7 +142,10 @@ void range_handle(esn_msg_t *msg)
     case RANGE_DATA_SEND:
         if (range_data_cb != NULL)
         {
-            range_data_cb(range_var);
+            if(!range_data_cb(range_var))
+			{
+				cache_alarm(GAIN_RANGE);
+			}
         }
         break;
 

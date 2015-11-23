@@ -111,10 +111,10 @@ void atmo_send(uint8_t *pdata, uint16_t len)
 	esn_gprs_send(data, length);
 }
 
-void shock_send(uint8_t *pdata, uint16_t len)
+bool_t shock_send(uint8_t *pdata, uint16_t len)
 {
 	if(len > sizeof(shock_t))
-		return;
+		return FALSE;
 	uint8_t data[LARGE_PBUF_BUFFER_SIZE];
 	uint8_t length= 0;
 	uint8_t *p = data;
@@ -142,13 +142,13 @@ void shock_send(uint8_t *pdata, uint16_t len)
     p += sizeof(info.dur);
     length += sizeof(info.dur);
     
-	esn_gprs_send(data, length);
+	return esn_gprs_send(data, length);
 }
 
-void distance_send(uint8_t *pdata, uint16_t len)
+bool_t distance_send(uint8_t *pdata, uint16_t len)
 {
 	if(len > sizeof(distance_t))
-		return;
+		return FALSE;
 	uint8_t data[LARGE_PBUF_BUFFER_SIZE];
 	uint8_t length= 0;
 	uint8_t *p = data;
@@ -169,7 +169,7 @@ void distance_send(uint8_t *pdata, uint16_t len)
 	p += sizeof(esn_package_t);
 	osel_memcpy(p, &info.val, sizeof(float));
 	length += sizeof(float);
-	esn_gprs_send(data, length);
+	return esn_gprs_send(data, length);
 }
 
 void temperature_package(uint8_t *pdata, uint16_t len)

@@ -27,7 +27,7 @@ typedef enum
     RANGE_STATUS_END,
 } range_status_enum_t;
 
-typedef void (*range_data_cb_t)(fp32_t distance);
+typedef bool_t (*range_data_cb_t)(fp32_t distance);
 
 void range_sensor_init(uint8_t uart_id, uint32_t baud,
                        QueueHandle_t queue,

@@ -231,7 +231,11 @@ static bool_t cgatt_deal(void)
 
 static bool_t cipstart_deal(void)
 {
-	if (my_strstr((const char*)recv.buf, (const char*)GPRS_CIPSTART[1]) != NULL)
+	if (my_strstr((const char*)recv.buf, (const char*)"STATE") != NULL)
+	    return FALSE;
+	else if (my_strstr((const char*)recv.buf, (const char*)"ALREAY") != NULL)
+		return TRUE;
+	else if (my_strstr((const char*)recv.buf, (const char*)GPRS_CIPSTART[1]) != NULL)
 		return TRUE;
 	else
 		return FALSE;
@@ -239,8 +243,8 @@ static bool_t cipstart_deal(void)
 
 static void cipsend_ok_cb(void)
 {
-    xTimerStop(gprs_daemon_timer, 0);
-    vTaskDelay(300 / portTICK_RATE_MS);
+	xTimerStop(gprs_daemon_timer, 0);
+	vTaskDelay(300 / portTICK_RATE_MS);
 	xSemaphoreGive(gprs_mutex);
 }
 
@@ -276,6 +280,10 @@ static void switch_join(void)
 	
 	gprs_info.gprs_state = WORK_ON;
 	led_set(LEN_GREEN, TRUE);
+	
+	esn_msg_t esn_msg;
+	esn_msg.event = GPRS_CNN_START;
+	xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
 }
 
 static void gprs_switch(void)
@@ -318,6 +326,7 @@ static void gprs_switch(void)
 	else if (e_state == E_IDLE)
 	{
 		static uint8_t idle_num = 0;
+		led_set(LEN_GREEN, FALSE);
 		if (idle_num++ >= 20)
 			DBG_ASSERT(FALSE __DBG_LINE);
 		
@@ -409,22 +418,24 @@ static void gprs_read_register(void *cb)
 static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 {
 	DBG_ASSERT(payload != NULL __DBG_LINE);
-	if(xSemaphoreTake(gprs_mutex, 800) == pdTRUE)
+	if (gprs_info.gprs_state == WORK_ON && len < SEND_SIZE)
 	{
-		if (gprs_info.gprs_state == WORK_ON && len < SEND_SIZE)
+		if(xSemaphoreTake(gprs_mutex, 800) == pdTRUE)
 		{
 			//等待数据发送完成
-            xTimerReset(gprs_daemon_timer, 600);
+			xTimerReset(gprs_daemon_timer, 600);
 			osel_memset(send_data, 0x00, SIZE);
 			tfp_sprintf((char *)send_data, CIPSEND, len);
-
+			
 			osel_memset(send.buf, 0x00, SEND_SIZE);
 			osel_memcpy(send.buf, payload, len);
 			send.len = len;
 			write_fifo(send_data, mystrlen((char *)send_data));
 			return TRUE;
 		}
+		
 	}
+	
 	return FALSE;
 }
 
@@ -468,11 +479,8 @@ static void gprs_maintain(void *p)
 		else
 		{
 			num = 0;
-//			esn_msg.event = GPRS_HEART_START;
-//			xQueueSendFromISR(esn_gain_queue, &esn_msg, NULL);
-//			
-//			uint8_t data[2] = {0xfe,0xff};
-//			gprs_write_fifo(data,2);
+			esn_msg.event = GPRS_HEART_START;
+			xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
 		}
 	}
 }
@@ -545,10 +553,18 @@ static void gprs_task(void *p)
 
 static void gprs_sent_timeout_cb(TimerHandle_t timer)
 {
-    osel_memset(recv.buf, 0 , SIZE);
+	xTimerStop(timer, 0);
+	osel_memset(recv.buf, 0 , SIZE);
 	recv.offset = 0;
-    xTimerStop(timer, 0);
-    xSemaphoreGive(gprs_mutex);
+	if(gprs_info.mode == TRUE && gprs_info.gprs_state == WORK_ON)	//到了这里TCP模式应该是连接失败了
+	{
+		esn_msg_t esn_msg;
+		esn_msg.event = GPRS_EVENT;
+		gprs_info.gprs_state = GPRS_NET_ERROR;
+		e_state = E_IDLE;
+		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+	}
+	xSemaphoreGive(gprs_mutex);
 }
 
 static bool_t gprs_init()
@@ -566,15 +582,16 @@ static bool_t gprs_init()
 	xTaskCreate(gprs_task, "gprs_task", 300, NULL, tskIDLE_PRIORITY+6, NULL);  
 	xTaskCreate(uart_deal_task, "uart_deal_task", 50, NULL, tskIDLE_PRIORITY+7, NULL);  
 	xTaskCreate(gprs_maintain, "gprs_maintain", 50, NULL, tskIDLE_PRIORITY+1, NULL);  
-    
-    gprs_daemon_timer = xTimerCreate("GprsTimer",
-                                   (6 * configTICK_RATE_HZ),
-                                   pdTRUE,
-                                   NULL,
-                                   gprs_sent_timeout_cb);
-    if (gprs_daemon_timer == NULL) {
-        DBG_ASSERT(FALSE __DBG_LINE);
-    }
+	
+	gprs_daemon_timer = xTimerCreate("GprsTimer",
+									 (6 * configTICK_RATE_HZ),
+									 pdTRUE,
+									 NULL,
+									 gprs_sent_timeout_cb);
+		
+	if (gprs_daemon_timer == NULL) {
+		DBG_ASSERT(FALSE __DBG_LINE);
+	}
 	
 	gprs_queue = xQueueCreate(2, sizeof(esn_msg_t));
 	if (gprs_queue == NULL)
@@ -606,7 +623,7 @@ bool_t gprs_uart_inter_recv(uint8_t id, uint8_t ch)
 			xSemaphoreGiveFromISR( guart_Semaphore, &xHigherPriorityTaskWoken );  
 		}  
 	}
-//	portYIELD_FROM_ISR( xHigherPriorityTaskWoken ); 
+	//	portYIELD_FROM_ISR( xHigherPriorityTaskWoken ); 
 	return FALSE;
 }
 

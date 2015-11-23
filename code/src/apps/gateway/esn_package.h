@@ -107,8 +107,8 @@ typedef struct
 } esn_package_t;
 #pragma pack()
 
-void shock_send(uint8_t *pdata, uint16_t len);
-void distance_send(uint8_t *pdata, uint16_t len);
+bool_t shock_send(uint8_t *pdata, uint16_t len);
+bool_t distance_send(uint8_t *pdata, uint16_t len);
 void atmo_send(uint8_t *pdata, uint16_t len);
 void acceleration_send(uint8_t *pdata, uint16_t len);				//加速度:没有调用
 void temperature_send(uint8_t *pdata, uint16_t len);						

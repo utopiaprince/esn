@@ -19,7 +19,7 @@
 DBG_THIS_MODULE("esn_gain")
 
 QueueHandle_t esn_gain_queue = NULL;
-
+uint8_t cache = 0;
 // TickType_t xTaskGetTickCount( void )
 
 typedef struct{
@@ -87,22 +87,22 @@ static void CharToHex(char * dest, char * buffer , int len)
 void toINT(void *des)
 {
 	uint8_t *lb = (uint8_t *)des;
-    uint8_t *hb = (uint8_t *)des + 1;
-    uint8_t temp = *lb;
-    *lb = *hb;
-    *hb = temp;
+	uint8_t *hb = (uint8_t *)des + 1;
+	uint8_t temp = *lb;
+	*lb = *hb;
+	*hb = temp;
 }
 
 void tofloat(void *des)
 {
 	f_t *f = (f_t *)des; 
-    toINT(&(f->a));
-    toINT(&(f->b));
+	toINT(&(f->a));
+	toINT(&(f->b));
 }
 
 /**
- * @note 每次camera接收的数据都是512字节一包，需要按照128字节拆分成4包
- */
+* @note 每次camera接收的数据都是512字节一包，需要按照128字节拆分成4包
+*/
 static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 									uint8_t *pdata, uint16_t len)
 {
@@ -111,13 +111,13 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 	mac_addr_get(info.bmonitor);
 	info.collect_time = 0;
 	info.cnt = cnt*4;
-    uint8_t *datap = NULL;
-    for(uint8_t i=0;i<4;i++)
-    {
-        info.index = 4*(index-1)+1+i;
-        datap = pdata + 128*i;
-        camera_send(&info, datap, 128);
-    }
+	uint8_t *datap = NULL;
+	for(uint8_t i=0;i<4;i++)
+	{
+		info.index = 4*(index-1)+1+i;
+		datap = pdata + 128*i;
+		camera_send(&info, datap, 128);
+	}
 }
 
 void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
@@ -145,30 +145,69 @@ void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 	atmo_send((uint8_t *)&atmo_info, sizeof(atmo_t));
 }
 
-static void range_recv_data_handle(fp32_t distance)
+static bool_t range_recv_data_handle(fp32_t distance)
 {
 	//@note: 添加测距异常数据发送接口
-    distance_t info;
-    osel_memset(&info,0,sizeof(distance_t));
-    mac_addr_get(info.bmonitor);
-    info.collect_time = 0;
-    info.val = distance;
-    distance_send((uint8_t *)&info, sizeof(distance_t));
+	distance_t info;
+	osel_memset(&info,0,sizeof(distance_t));
+	mac_addr_get(info.bmonitor);
+	info.collect_time = 0;
+	info.val = distance;
+	return distance_send((uint8_t *)&info, sizeof(distance_t));
 }
 
 static void angle_handle(esn_msg_t *msg)
 {
-    int16_t x, y, z;
-    adxl_get_triple_angle(&x, &y, &z);
-    //@TODO: 添加角度数据发送接口
-    acceleration_t info;
-    osel_memset(&info, 0, sizeof(acceleration_t));
-    mac_addr_get(info.bmonitor);
-    info.collect_time = 0;
-    info.x = x;
-    info.y = y;
-    info.z = z;
-    acceleration_send((uint8_t *)&info, sizeof(acceleration_t));
+	int16_t x, y, z;
+	adxl_get_triple_angle(&x, &y, &z);
+	//@TODO: 添加角度数据发送接口
+	acceleration_t info;
+	osel_memset(&info, 0, sizeof(acceleration_t));
+	mac_addr_get(info.bmonitor);
+	info.collect_time = 0;
+	info.x = x;
+	info.y = y;
+	info.z = z;
+	acceleration_send((uint8_t *)&info, sizeof(acceleration_t));
+}
+
+static void cache_send(void)
+{
+	if((cache & BIT1) ==  BIT1)	//有距离报警
+	{
+		range_recv_data_handle(range_sensor_get());
+	}
+	if((cache & BIT2) ==  BIT2)	//有震动报警
+	{
+		shock_t info;
+		osel_memset(&info, 0, sizeof(shock_t));
+		mac_addr_get(info.bmonitor);
+		info.collect_time = 0;
+		info.thresh_tap = 0x10;     //*< 1个单位是62.5mg
+		info.dur = 0x10;            //*< 1个单位是625us
+		
+		shock_send((uint8_t *)&info, sizeof(shock_t));
+	}
+	if(cache != 0)
+	{
+		esn_msg_t esn_msg;
+		esn_msg.event = GAIN_CAM_SEND_START;
+		xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+	}
+	cache = 0;
+}
+
+void cache_alarm(uint8_t alarm)
+{
+	switch(alarm)
+	{
+	case GAIN_RANGE:
+		cache |= BIT1;
+		break;
+	case GAIN_STOCK:
+		cache |= BIT2;
+		break;
+	}
 }
 
 static void esn_gain_task(void *param)
@@ -177,7 +216,7 @@ static void esn_gain_task(void *param)
 	esn_msg_t esn_msg;
 	TickType_t stock_old_tick = 0; //*< 4字节
 	TickType_t stock_new_tick = 0;
-    
+	
 	while (1)
 	{
 		if (xQueueReceive(esn_gain_queue,
@@ -189,76 +228,83 @@ static void esn_gain_task(void *param)
 			{
 			case GAIN_CAM:
 				camera_handle(esn_msg.event);
-                break;
+				break;
 				
 			case GAIN_ATMO:
 				atmos_handle(&esn_msg);
 				break;
-                
-            case GAIN_RANGE:
-                range_handle(&esn_msg);
-                break;
-                
-            case GAIN_ANGLE:
-                angle_handle(&esn_msg);
-                break;
+				
+			case GAIN_RANGE:
+				range_handle(&esn_msg);
+				break;
+				
+			case GAIN_ANGLE:
+				angle_handle(&esn_msg);
+				break;
 				
 			case GAIN_STOCK:
-            {
-                bool_t stock_can_sent = FALSE;
-                stock_new_tick = xTaskGetTickCount();
-                
-                if(stock_old_tick == 0)
-                {
-                    stock_old_tick = stock_new_tick;
-                    stock_can_sent = TRUE;
-                }
-                
-                if (stock_new_tick > stock_old_tick)
-                {
-                    //*< 30S以内只触发一次
-                    if ((stock_new_tick - stock_old_tick) > 10 * configTICK_RATE_HZ)
-                    {
-                        stock_old_tick = stock_new_tick;
-                        stock_can_sent = TRUE;
-                    }
-                }
-                else
-                {
-                    if (((portMAX_DELAY - stock_old_tick) + stock_new_tick) > 10 * configTICK_RATE_HZ)
-                    {
-                        stock_old_tick = stock_new_tick;
-                        stock_can_sent = TRUE;
-                    }
-                }
-                
-                if (stock_can_sent)
-                {
-                    stock_can_sent = FALSE;
-                    int16_t x, y, z;
-                    adxl_get_triple_angle(&x, &y, &z);
-                    //@TODO: 添加震动数据发送接口
-                    shock_t info;
-                    osel_memset(&info, 0, sizeof(shock_t));
-                    mac_addr_get(info.bmonitor);
-                    info.collect_time = 0;
-                    info.thresh_tap = 0x10;     //*< 1个单位是62.5mg
-                    info.dur = 0x10;            //*< 1个单位是625us
-                    
-                    shock_send((uint8_t *)&info, sizeof(shock_t));
-                    
-                    //@note 启动摄像头采集数据
-                    esn_msg_t esn_msg;
-                    esn_msg.event = GAIN_CAM_START;
-                    xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-                }
-                break;
-            }
+				{
+					bool_t stock_can_sent = FALSE;
+					stock_new_tick = xTaskGetTickCount();
+					
+					if(stock_old_tick == 0)
+					{
+						stock_old_tick = stock_new_tick;
+						stock_can_sent = TRUE;
+					}
+					
+					if (stock_new_tick > stock_old_tick)
+					{
+						//*< 30S以内只触发一次
+						if ((stock_new_tick - stock_old_tick) > 10 * configTICK_RATE_HZ)
+						{
+							stock_old_tick = stock_new_tick;
+							stock_can_sent = TRUE;
+						}
+					}
+					else
+					{
+						if (((portMAX_DELAY - stock_old_tick) + stock_new_tick) > 10 * configTICK_RATE_HZ)
+						{
+							stock_old_tick = stock_new_tick;
+							stock_can_sent = TRUE;
+						}
+					}
+					
+					if (stock_can_sent)
+					{
+						stock_can_sent = FALSE;
+						int16_t x, y, z;
+						adxl_get_triple_angle(&x, &y, &z);
+						//@TODO: 添加震动数据发送接口
+						shock_t info;
+						osel_memset(&info, 0, sizeof(shock_t));
+						mac_addr_get(info.bmonitor);
+						info.collect_time = 0;
+						info.thresh_tap = 0x10;     //*< 1个单位是62.5mg
+						info.dur = 0x10;            //*< 1个单位是625us
+						
+						if(!shock_send((uint8_t *)&info, sizeof(shock_t)))
+						{
+							cache_alarm(GAIN_STOCK);
+						}
+						
+						//@note 启动摄像头采集数据
+						esn_msg_t esn_msg;
+						esn_msg.event = GAIN_CAM_START;
+						xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+					}
+					break;
+				}
 			case GPRS_HEART:
 				{
 					uint8_t data[1] = {0xfe};
 					gprs_driver.write(data,1);
 					break;
+				}
+			case GPRS_CNN:
+				{	
+					cache_send();
 				}
 			default:
 				break;
