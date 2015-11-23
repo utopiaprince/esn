@@ -87,13 +87,21 @@ static fp32_t range_change(void)
 {
     uint8_t data_len = range_uart_index - 4;    //*< 空格， m， 回车， 换行，4个字节
     fp32_t distance = 0;
-    uint8_t interge_len = data_len - 2;         //*< 小数点、小数 ，2个字节
-
-    distance = ((fp32_t)(range_uart_data_buf[data_len-1]-0x30))/10.0;
-
-    for(uint8_t i=0;i<interge_len;i++)
+    
+    if(data_len <= 2)
     {
-        distance += (range_uart_data_buf[i]-0x30)*pow(10, interge_len-1-i);
+        distance = 1000.0;  //*< 采样到错误的数据，丢弃
+    }
+    else
+    {
+        uint8_t interge_len = data_len - 2;         //*< 小数点、小数 ，2个字节
+
+        distance = ((fp32_t)(range_uart_data_buf[data_len-1]-0x30))/10.0;
+
+        for(uint8_t i=0;i<interge_len;i++)
+        {
+            distance += (range_uart_data_buf[i]-0x30)*pow(10, interge_len-1-i);
+        }
     }
 
     return distance;
