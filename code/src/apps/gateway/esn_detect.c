@@ -41,7 +41,7 @@ static void range_app_handle(void)
         vTaskDelay(5);  //*< 延时10ms采样一下数据
         
         //*< 获取到距离数据
-        fp32_t distance = range_sensor_get();
+        distance = range_sensor_get();
     }
 	
 	if (distance < RANGE_MIN_THRESHOLD)
