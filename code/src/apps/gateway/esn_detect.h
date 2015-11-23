@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @brief       : this
  * @file        : esn_detect.h
  * @version     : v0.0.1
@@ -8,6 +8,22 @@
  * Date       Version     Author        Note
  * 2015-08-05  v0.0.1  gang.cheng    first version
  */
+///**
+// * @brief       : 
+// *
+// * @file        : esn_detect.h
+// * @author      : gang.cheng
+// * @version     : v0.0.1
+// * @date        : 2015/08/05
+// *
+// * Change Logs  :
+// *
+// * Date        Version      Author      Notes
+// * 2015/08/05    v0.0.1      gang.cheng    first version
+// */
+ 
+
+
 #ifndef __ESN_DETECT_H__
 #define __ESN_DETECT_H__
 
