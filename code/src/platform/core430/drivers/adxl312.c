@@ -345,9 +345,10 @@ __interrupt void port2_isr(void)	//这个中断会频繁进入，影响GPRS串�
 {
     if ((P2IFG & BIT7) == BIT7)
     {
+		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 		P2IE &= ~BIT7;
         P2IFG &= ~BIT7;
-		xTimerReset(adxl312_daemon_timer, 200);
+		xTimerResetFromISR(adxl312_daemon_timer, &xHigherPriorityTaskWoken);
     }
     LPM3_EXIT;
 }
