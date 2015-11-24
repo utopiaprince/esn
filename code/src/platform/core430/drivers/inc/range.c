@@ -90,7 +90,7 @@ static fp32_t range_change(void)
     
     if(data_len <= 2)
     {
-        distance = 1000.0;  //*< 采样到错误的数据，丢弃
+        distance = 2.0;  //*< 采样到错误的数据，默认为2米
     }
     else
     {
