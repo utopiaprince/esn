@@ -22,17 +22,13 @@
 #define CIPSTART	("AT+CIPSTART=%s,%s\r")     //*< 连接SOCKET
 #define CIPCLOSE	("AT+CIPCLOSE\r")           //*< 关闭SOCKET
 #define CIPSEND		("AT+CIPSEND=%d\r")         //*< 发送数据长度
+#define CIPSTATUS	("AT+CIPSTATUS\r")			//*< 查询连接状态
+#define ATOK		("OK")
 
 static const uint8_t tcp_mode[] = {"\"TCP\""};
 static const uint8_t udp_mode[] = {"\"UDP\""};
 static uint8_t ipconfig[50];
 static uint8_t send_data[SIZE];
-static uint8_t GPRS_AT[][6] = {AT, "OK"};
-static uint8_t GPRS_ATE0[][6] = {ATE0, "OK"};
-static uint8_t GPRS_CSMINS[][20] = {CSMINS, "OK"};
-static uint8_t GPRS_CGATT[][20] = {CGATT, "OK"};
-static uint8_t GPRS_CIPSTART[][20] = {CIPSTART, "OK"};
-static uint8_t GPRS_CIPCLOSE[][20] = {CIPCLOSE, "OK"};
 static uint8_t GPRS_CIPSEND[][20] = {CIPSEND, "\n>"};
 
 typedef void (*gprs_send_cb)(void);
@@ -155,13 +151,13 @@ static void ipconfig_get(uint8_t *cmd, uint8_t len)
 	if (gprs_info.mode)
 	{
 		tfp_sprintf((char *)cmd,
-					(char *)GPRS_CIPSTART[0],
+					(char *)CIPSTART,
 					(char *)tcp_mode, (char *)ip_config);
 	}
 	else
 	{
 		tfp_sprintf((char *)cmd,
-					(char *)GPRS_CIPSTART[0],
+					(char *)CIPSTART,
 					(char *)udp_mode, (char *)ip_config);
 	}
 }
@@ -181,7 +177,7 @@ static bool_t write_fifo( uint8_t *payload,  uint16_t len)
 
 static bool_t at_deal(void)
 {
-	if (my_strstr((const char*)recv.buf, (const char*)GPRS_AT[1]) != NULL)
+	if (my_strstr((const char*)recv.buf, (const char*)ATOK) != NULL)
 		return TRUE;
 	else
 		return FALSE;
@@ -189,7 +185,7 @@ static bool_t at_deal(void)
 
 static bool_t ate0_deal(void)
 {
-	if (my_strstr((const char*)recv.buf, (const char*)GPRS_ATE0[1]) != NULL)
+	if (my_strstr((const char*)recv.buf, (const char*)ATOK) != NULL)
 		return TRUE;
 	else
 		return FALSE;
@@ -233,9 +229,17 @@ static bool_t cipstart_deal(void)
 {
 	if (my_strstr((const char*)recv.buf, (const char*)"STATE") != NULL)
 	    return FALSE;
-	else if (my_strstr((const char*)recv.buf, (const char*)"ALREAY") != NULL)
+	else if (my_strstr((const char*)recv.buf, (const char*)"ALREADY CONNECT") != NULL)
 		return TRUE;
-	else if (my_strstr((const char*)recv.buf, (const char*)GPRS_CIPSTART[1]) != NULL)
+	else if (my_strstr((const char*)recv.buf, (const char*)ATOK) != NULL)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+static bool_t cipstatus(void)
+{
+	if (my_strstr((const char*)recv.buf, (const char*)"CONNECT OK") != NULL)
 		return TRUE;
 	else
 		return FALSE;
@@ -267,7 +271,12 @@ static void switch_join(void)
 		vTaskDelay(5000 / portTICK_RATE_MS);
 		if (cipstart_deal())
 		{
-			join_mark = TRUE;
+			write_fifo(CIPSTATUS, sizeof(CIPSTATUS)-1);
+			vTaskDelay(300 / portTICK_RATE_MS);
+			if(cipstatus())	//防止误报连接
+				join_mark = TRUE;
+			else
+				join_mark = FALSE;
 			break;
 		}
 	}
@@ -304,7 +313,7 @@ static void gprs_switch(void)
 	{
 		gprs_info.gprs_state = WORK_DOWN;
 		led_set(LEN_GREEN, FALSE);
-		write_fifo(GPRS_CIPCLOSE[0],  sizeof(CIPCLOSE) - 1);
+		write_fifo(CIPCLOSE,  sizeof(CIPCLOSE) - 1);
 		vTaskDelay(2000 / portTICK_RATE_MS);
 		e_state = E_UP;
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
@@ -337,35 +346,35 @@ static void gprs_switch(void)
 			bool_t cgatt_mark = FALSE;
 			
 			gprs_info.gprs_state = READY_IDLE;
-			write_fifo(GPRS_AT[0],  sizeof(AT) - 1);
-			vTaskDelay(500 / portTICK_RATE_MS);
+			write_fifo(AT,  sizeof(AT) - 1);
+			vTaskDelay(300 / portTICK_RATE_MS);
 			
 			if (at_deal())
-				write_fifo(GPRS_ATE0[0], sizeof(ATE0) - 1);
+				write_fifo(ATE0, sizeof(ATE0) - 1);
 			else
 			{
 				switch_rest();
 				return;
 			}
-			vTaskDelay(500 / portTICK_RATE_MS);
+			vTaskDelay(300 / portTICK_RATE_MS);
 			
 			if (ate0_deal())
-				write_fifo(GPRS_CSMINS[0], sizeof(CSMINS) - 1);
+				write_fifo(CSMINS, sizeof(CSMINS) - 1);
 			else
 			{
 				switch_rest();
 				return;
 			}
-			vTaskDelay(500 / portTICK_RATE_MS);
+			vTaskDelay(300 / portTICK_RATE_MS);
 			
 			if (csmins_deal())	//检查SIM卡
-				write_fifo(GPRS_CGATT[0], sizeof(CGATT) - 1);
+				write_fifo(CGATT, sizeof(CGATT) - 1);
 			else
 			{
 				gprs_info.gprs_state = SIM_ERROR;
 				return;
 			}
-			vTaskDelay(500 / portTICK_RATE_MS);
+			vTaskDelay(300 / portTICK_RATE_MS);
 			
 			while (cgatt_num++ < 20)
 			{
@@ -375,7 +384,7 @@ static void gprs_switch(void)
 					break;
 				}
 				else
-					write_fifo(GPRS_CGATT[0], sizeof(CGATT) - 1);
+					write_fifo(CGATT, sizeof(CGATT) - 1);
 				vTaskDelay(2000 / portTICK_RATE_MS);
 			}
 			if (cgatt_mark == FALSE)
@@ -383,7 +392,6 @@ static void gprs_switch(void)
 				switch_rest();
 				return;
 			}
-			
 			switch_join();
 		}
 		else

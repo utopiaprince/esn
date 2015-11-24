@@ -318,6 +318,7 @@ void camera_handle(uint16_t cmd)
 			cam_new_tick = xTaskGetTickCount();
 			cam_old_tick = cam_new_tick;
 			camera_has_start = TRUE;
+			cmd_temp = CAM_CMD_PHONE;
 			camera_cmd(cmd_temp, 0);
 		}
 		break;

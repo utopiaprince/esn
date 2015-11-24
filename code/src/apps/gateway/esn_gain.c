@@ -226,7 +226,7 @@ static void shock_handle(esn_msg_t *msg)
     if (stock_new_tick > stock_old_tick)
     {
         //*< 30S以内只触发一次
-        if ((stock_new_tick - stock_old_tick) > (10 * configTICK_RATE_HZ))
+        if ((stock_new_tick - stock_old_tick) > (30 * configTICK_RATE_HZ))
         {
             stock_old_tick = stock_new_tick;
             stock_can_sent = TRUE;
@@ -234,7 +234,7 @@ static void shock_handle(esn_msg_t *msg)
     }
     else
     {
-        if (((portMAX_DELAY - stock_old_tick) + stock_new_tick) > (10 * configTICK_RATE_HZ))
+        if (((portMAX_DELAY - stock_old_tick) + stock_new_tick) > (30 * configTICK_RATE_HZ))
         {
             stock_old_tick = stock_new_tick;
             stock_can_sent = TRUE;

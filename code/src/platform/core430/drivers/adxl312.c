@@ -31,7 +31,8 @@
 
 #define ADXL_CS_EN()            (P3OUT &= ~BIT0)
 #define ADXL_CS_DIS()           (P3OUT |= BIT0)
-
+static TimerHandle_t adxl312_daemon_timer = NULL;
+static bool_t delay_send = TRUE;
 bool_t adxl312_reg_read(uint8_t addr, uint8_t *pvalue)
 {
     DBG_ASSERT(pvalue != NULL __DBG_LINE);
@@ -234,6 +235,26 @@ static void adxl312_settings(void)
 #endif
 }
 
+static void adxl312_daemon_timer_sent_timeout_cb(TimerHandle_t timer)
+{
+	xTimerStop(timer, 0);
+	uint8_t int_source;
+	adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
+		
+	if (int_source & ADXL_SINGLE_TAP)
+	{
+		esn_msg_t esn_msg;
+		esn_msg.event = GAIN_STOCK_START;
+		xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+	}
+	else if (int_source & ADXL_INACTIVITY)
+	{
+		;
+	}
+	P2IFG &= ~BIT7;
+	//adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
+	P2IE |= BIT7;
+}
 
 void adxl_sensor_init(void)
 {
@@ -242,6 +263,12 @@ void adxl_sensor_init(void)
     adxl312_settings();
 
     adxl312_port_init();
+	
+	adxl312_daemon_timer = xTimerCreate("adxl312_daemon_timer",
+									 (6 * configTICK_RATE_HZ),
+									 pdTRUE,
+									 NULL,
+									 adxl312_daemon_timer_sent_timeout_cb);
 }
 
 bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
@@ -314,34 +341,14 @@ void adxl_get_triple_angle(int16_t *x, int16_t *y, int16_t *z)
 }
 
 #pragma vector = PORT2_VECTOR
-__interrupt void port2_isr(void)
+__interrupt void port2_isr(void)	//这个中断会频繁进入，影响GPRS串口接收
 {
-    BaseType_t xTaskWoken = pdFALSE;
-    uint8_t int_source;
-    esn_msg_t esn_msg;
     if ((P2IFG & BIT7) == BIT7)
     {
+		P2IE &= ~BIT7;
         P2IFG &= ~BIT7;
-        adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
-		
-        if (int_source & ADXL_SINGLE_TAP)
-        {
-            esn_msg.event = GAIN_STOCK_START;
-            xQueueSendFromISR(esn_gain_queue, &esn_msg, &xTaskWoken);
-        }
-        else if (int_source & ADXL_INACTIVITY)
-        {
-            ;
-        }
-		P2IFG &= ~BIT7;
-		adxl312_reg_read(ADXL_REG_INT_SOURCE, &int_source);
+		xTimerReset(adxl312_daemon_timer, 200);
     }
-
-    if (xTaskWoken)
-    {
-        taskYIELD();
-    }
-
     LPM3_EXIT;
 }
 
