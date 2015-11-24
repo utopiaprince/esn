@@ -3,6 +3,8 @@
 
 #define GPRS_HEART	(10u)
 #define GPRS_HEART_START        ((GPRS_HEART<<8) | 0)
+#define GPRS_CNN	(11u)
+#define GPRS_CNN_START        ((GPRS_CNN<<8) | 0)
 typedef enum
 {
 	READY_IDLE,

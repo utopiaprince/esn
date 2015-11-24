@@ -27,6 +27,7 @@
 #define CAM_FRM_CHECK           (0x1B)
 
 #define CAM_CMD_PHONE           (0x00)
+#define CAM_CMD_SEND            (0x01)
 #define CAM_CMD_DATA            (0x02)
 #define CAM_CMD_POWERDOWN       (0x0D)
 

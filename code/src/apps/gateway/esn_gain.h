@@ -12,6 +12,7 @@
 #define __ESN_GAIN_H__
 
 #define GAIN_CAM_START      ((GAIN_CAM<<8) | CAM_CMD_PHONE)
+#define GAIN_CAM_SEND_START ((GAIN_CAM<<8) | CAM_CMD_SEND)
 
 #define GAIN_ATMO_START     ((GAIN_ATMO<<8) | ATMOS_CMD_START)
 
@@ -27,4 +28,6 @@ extern QueueHandle_t esn_gain_queue;
 void esn_gain_init(void);
 
 void atmos_recv_data_handle(uint8_t *pdata, uint16_t len);
+
+void cache_alarm(uint8_t alarm);
 #endif
