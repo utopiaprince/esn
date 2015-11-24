@@ -32,7 +32,7 @@
 #define ADXL_CS_EN()            (P3OUT &= ~BIT0)
 #define ADXL_CS_DIS()           (P3OUT |= BIT0)
 static TimerHandle_t adxl312_daemon_timer = NULL;
-static bool_t delay_send = TRUE;
+
 bool_t adxl312_reg_read(uint8_t addr, uint8_t *pvalue)
 {
     DBG_ASSERT(pvalue != NULL __DBG_LINE);
