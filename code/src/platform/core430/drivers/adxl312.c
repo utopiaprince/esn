@@ -32,6 +32,8 @@
 #define ADXL_CS_EN()            (P3OUT &= ~BIT0)
 #define ADXL_CS_DIS()           (P3OUT |= BIT0)
 
+static TimerHandle_t adxl_delay_timer = NULL;
+
 bool_t adxl312_reg_read(uint8_t addr, uint8_t *pvalue)
 {
     DBG_ASSERT(pvalue != NULL __DBG_LINE);
@@ -170,8 +172,8 @@ static void adxl312_settings(void)
     adxl312_reg_write(ADXL_REG_OFSY, 0x00);
     adxl312_reg_write(ADXL_REG_OFSZ, 0x00);
 
-    adxl312_reg_write(ADXL_REG_THRESH_TAP, 0x10);   //*< 1个单位是62.5mg
-    adxl312_reg_write(ADXL_REG_DUR, 0x10);           //*< 1个单位是625us
+    adxl312_reg_write(ADXL_REG_THRESH_TAP, 0x30);   //*< 1个单位是62.5mg
+    adxl312_reg_write(ADXL_REG_DUR, 0x18);           //*< 1个单位是625us
     adxl312_reg_write(ADXL_REG_TAP_AXES, 0x07);
 
     adxl312_reg_write(ADXL_REG_INT_ENABLE, ADXL_SINGLE_TAP);
@@ -234,6 +236,11 @@ static void adxl312_settings(void)
 #endif
 }
 
+static void adxl_timeout_cb(TimerHandle_t timer)
+{
+	xTimerStop(timer, 0);
+	P2IE |= BIT7;        // Corresponding port interrupt enabled
+}
 
 void adxl_sensor_init(void)
 {
@@ -242,6 +249,12 @@ void adxl_sensor_init(void)
     adxl312_settings();
 
     adxl312_port_init();
+    
+    adxl_delay_timer = xTimerCreate("AdxlTimer",
+									 5,
+									 pdTRUE,
+									 NULL,
+									 adxl_timeout_cb);
 }
 
 bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
@@ -326,8 +339,14 @@ __interrupt void port2_isr(void)
 		
         if (int_source & ADXL_SINGLE_TAP)
         {
+            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+            P2IE &= ~BIT7;        // Corresponding port interrupt disabled
+            xTimerResetFromISR(adxl_delay_timer, &xHigherPriorityTaskWoken);
+            
             esn_msg.event = GAIN_STOCK_START;
             xQueueSendFromISR(esn_gain_queue, &esn_msg, &xTaskWoken);
+            
+            
         }
         else if (int_source & ADXL_INACTIVITY)
         {

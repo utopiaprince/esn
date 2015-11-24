@@ -27,13 +27,13 @@ uint8_t global_debug_level;
 
 static uint16_t dbg_line;
 
-static xSemaphoreHandle debug_mutex = NULL;
+//static xSemaphoreHandle debug_mutex = NULL;
 
 void debug_init(uint8_t debug_lev)
 {  
     global_debug_level = debug_lev;
     
-    debug_mutex = xSemaphoreCreateMutex();
+    //debug_mutex = xSemaphoreCreateMutex();
 }
 
 #if DEBUG_INFO_PRINT_EN > 0
@@ -123,8 +123,11 @@ void DBG_ASSERT(bool_t cond _DBG_LINE_)
 		if((cond) == FALSE)
 		{
             dbg_line = line;
+            while(1)
+            {
 //            @TODO: 设备复位
 //            board_reset();
+            }
 		}
 	} while(__LINE__ == -1);
 }
