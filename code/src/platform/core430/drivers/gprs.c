@@ -424,10 +424,10 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 	DBG_ASSERT(payload != NULL __DBG_LINE);
 	if (gprs_info.gprs_state == WORK_ON && len < SEND_SIZE)
 	{
-		if(xSemaphoreTake(gprs_mutex, 800) == pdTRUE)
+		if(xSemaphoreTake(gprs_mutex, 600) == pdTRUE)
 		{
 			//等待数据发送完成
-			xTimerReset(gprs_daemon_timer, 600);
+			xTimerReset(gprs_daemon_timer, 500);
 			osel_memset(send_data, 0x00, SIZE);
 			tfp_sprintf((char *)send_data, CIPSEND, len);
 			

@@ -118,7 +118,6 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
         info.index = 4 * (index - 1) + 1 + i;
         datap = pdata + 128 * i;
         camera_send(&info, datap, 128);
-		vTaskDelay(20 / portTICK_RATE_MS);
     }
 }
 
