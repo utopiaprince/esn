@@ -588,7 +588,7 @@ static bool_t gprs_init()
 	xTaskCreate(gprs_maintain, "gprs_maintain", 50, NULL, tskIDLE_PRIORITY+1, NULL);  
 	
 	gprs_daemon_timer = xTimerCreate("GprsTimer",
-									 (8 * configTICK_RATE_HZ),
+									 (6 * configTICK_RATE_HZ),
 									 pdTRUE,
 									 NULL,
 									 gprs_sent_timeout_cb);
