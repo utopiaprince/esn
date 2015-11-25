@@ -118,6 +118,7 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
         info.index = 4 * (index - 1) + 1 + i;
         datap = pdata + 128 * i;
         camera_send(&info, datap, 128);
+		vTaskDelay(20 / portTICK_RATE_MS);
     }
 }
 
@@ -302,8 +303,14 @@ static void esn_gain_task(void *param)
 
             case GPRS_HEART:
             {
-                uint8_t data[1] = {0xfe};
-                gprs_driver.write(data, 1);
+				gprs_info_t *gprs_info;
+				gprs_info = gprs_driver.get();
+				if(gprs_info->heart == FALSE)
+				{
+					uint8_t data[1] = {0xfe};
+                	gprs_driver.write(data, 1);
+				}
+                gprs_info->heart = FALSE;
                 break;
             }
             case GPRS_CNN:

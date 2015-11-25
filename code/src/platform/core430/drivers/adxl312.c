@@ -265,7 +265,7 @@ void adxl_sensor_init(void)
     adxl312_port_init();
 	
 	adxl312_daemon_timer = xTimerCreate("adxl312_daemon_timer",
-									 (6 * configTICK_RATE_HZ),
+									 (2 * configTICK_RATE_HZ),
 									 pdTRUE,
 									 NULL,
 									 adxl312_daemon_timer_sent_timeout_cb);

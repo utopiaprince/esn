@@ -22,11 +22,12 @@ typedef struct
 	uint8_t dip[4];
 	uint16_t port;
 	bool_t mode;
+	bool_t heart;
 }gprs_info_t;
 
 struct gprs
 {
-	void (*get)(gprs_info_t *const info);
+	gprs_info_t* (*get)(void);
 	void (*set)(const gprs_info_t *const info);
     bool_t (*init)(void);                               
     bool_t (*deinit)(void);                            

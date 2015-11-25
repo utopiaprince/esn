@@ -37,3 +37,5 @@
 # ignore folders
 /code/src/projects/settings
 /code/src/projects/Debug
+/server/user_lib/__pycache__
+/server/.idea
