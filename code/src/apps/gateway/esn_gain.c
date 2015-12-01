@@ -302,8 +302,14 @@ static void esn_gain_task(void *param)
 
             case GPRS_HEART:
             {
-                uint8_t data[1] = {0xfe};
-                gprs_driver.write(data, 1);
+				gprs_info_t *gprs_info;
+				gprs_info = gprs_driver.get();
+				if(gprs_info->heart == FALSE)
+				{
+					uint8_t data[1] = {0xfe};
+                	gprs_driver.write(data, 1);
+				}
+                gprs_info->heart = FALSE;
                 break;
             }
             case GPRS_CNN:

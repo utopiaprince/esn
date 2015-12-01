@@ -4,9 +4,9 @@
 #include <board.h>
 static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 {
-	gprs_info_t gprs_info;
-	gprs_driver.get(&gprs_info);
-	if(gprs_info.gprs_state == WORK_ON)
+	gprs_info_t *gprs_info;
+	gprs_info = gprs_driver.get();
+	if(gprs_info->gprs_state == WORK_ON)
 	{
 		uint16_t len = length - ID_MAX - 2;
 		data[0] = 0xa5;
@@ -14,6 +14,7 @@ static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 		osel_memcpy(&data[2], &len, sizeof(uint16_t));
 		length += 4+2;
 		gprs_driver.write(data,length);
+		gprs_info->heart = TRUE;
 		return TRUE;
 	}
 	else

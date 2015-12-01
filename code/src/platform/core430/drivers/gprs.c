@@ -5,6 +5,7 @@
 #include <uart.h>
 #include <drivers.h>
 #include <esn_gain.h>
+#include "gprs.h"
 
 #define GPRS_EVENT		(0x0100)
 
@@ -248,14 +249,12 @@ static bool_t cipstatus(void)
 static void cipsend_ok_cb(void)
 {
 	xTimerStop(gprs_daemon_timer, 0);
-	vTaskDelay(300 / portTICK_RATE_MS);
 	xSemaphoreGive(gprs_mutex);
 }
 
 static void switch_rest(void)
 {
 	esn_msg_t esn_msg;
-	osel_memset(&esn_msg, 0, sizeof(esn_msg_t));
 	esn_msg.event = GPRS_EVENT;
 	e_state = E_REST;
 	xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
@@ -298,11 +297,9 @@ static void switch_join(void)
 static void gprs_switch(void)
 {
 	esn_msg_t esn_msg;
-	osel_memset(&esn_msg, 0, sizeof(esn_msg_t));
 	esn_msg.event = GPRS_EVENT;
 	if (e_state == E_SEND)
 	{
-		vTaskDelay(300 / portTICK_RATE_MS);
 		write_fifo(send.buf, send.len);
 	}
 	else if (e_state == E_SEND_OK)
@@ -407,9 +404,9 @@ static void gprs_switch(void)
 	}
 }
 
-static void get(gprs_info_t *const info)
+static gprs_info_t* get(void)
 {
-	osel_memcpy(info, &gprs_info, sizeof(gprs_info_t));
+	return &gprs_info;
 }
 
 static void set(const gprs_info_t *const info)
@@ -428,10 +425,10 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 	DBG_ASSERT(payload != NULL __DBG_LINE);
 	if (gprs_info.gprs_state == WORK_ON && len < SEND_SIZE)
 	{
-		if(xSemaphoreTake(gprs_mutex, 1000) == pdTRUE)
+		if(xSemaphoreTake(gprs_mutex, 600) == pdTRUE)
 		{
 			//等待数据发送完成
-			xTimerReset(gprs_daemon_timer, 800);
+			xTimerReset(gprs_daemon_timer, 500);
 			osel_memset(send_data, 0x00, SIZE);
 			tfp_sprintf((char *)send_data, CIPSEND, len);
 			
@@ -555,7 +552,6 @@ static void gprs_task(void *p)
 		default:
 			break;
 		}
-		osel_memset(&esn_msg, 0, sizeof(esn_msg_t));
 	}
 }
 
@@ -564,19 +560,20 @@ static void gprs_sent_timeout_cb(TimerHandle_t timer)
 	xTimerStop(timer, 0);
 	osel_memset(recv.buf, 0 , SIZE);
 	recv.offset = 0;
-	if(gprs_info.mode == TRUE && gprs_info.gprs_state == WORK_ON)	//到了这里TCP模式应该是连接失败了
-	{
-		esn_msg_t esn_msg;
-		esn_msg.event = GPRS_EVENT;
-		gprs_info.gprs_state = GPRS_NET_ERROR;
-		e_state = E_IDLE;
-		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-	}
+//	if(gprs_info.mode == TRUE && gprs_info.gprs_state == WORK_ON)	//到了这里TCP模式应该是连接失败了
+//	{
+//		esn_msg_t esn_msg;
+//		esn_msg.event = GPRS_EVENT;
+//		gprs_info.gprs_state = GPRS_NET_ERROR;
+//		e_state = E_IDLE;
+//		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+//	}
 	xSemaphoreGive(gprs_mutex);
 }
 
 static bool_t gprs_init()
 {
+	gprs_info.heart = FALSE;
 	port_init();
 	
 	uart_init(gprs_info.uart_port, gprs_info.uart_speed);
