@@ -50,6 +50,15 @@ void vApplicationIdleHook( void )
 	/* Called on each iteration of the idle task.  In this case the idle task
 	just enters a low power mode. */
 //	__bis_SR_register( LPM3_bits + GIE );
+    
+    static uint32_t idle_cnt = 0;
+    if(idle_cnt ++ >= 10000)
+    {
+        idle_cnt = 0;
+        extern void wdt_clear();
+        wdt_clear();
+    }
+    
     __bis_SR_register( GIE );
 }
 /*-----------------------------------------------------------*/

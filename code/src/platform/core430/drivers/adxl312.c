@@ -343,12 +343,18 @@ void adxl_get_triple_angle(int16_t *x, int16_t *y, int16_t *z)
 #pragma vector = PORT2_VECTOR
 __interrupt void port2_isr(void)	//这个中断会频繁进入，影响GPRS串口接收
 {
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    
     if ((P2IFG & BIT7) == BIT7)
     {
-		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 		P2IE &= ~BIT7;
         P2IFG &= ~BIT7;
 		xTimerResetFromISR(adxl312_daemon_timer, &xHigherPriorityTaskWoken);
+    }
+    
+    if(xHigherPriorityTaskWoken)
+    {
+        taskYIELD();
     }
     LPM3_EXIT;
 }
