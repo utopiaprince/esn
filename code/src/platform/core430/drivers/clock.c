@@ -218,4 +218,6 @@ void clk_init(uint8_t system_clock_speed)
     board_start_xt1();
 	set_system_clock(system_clock_speed);   /* Set board to operate Frequncy */
 //    TB0CTL |= TBSSEL_1 + MC_2 + TBCLR;  // 启动TimerB定时器
+    // 启动看门狗
+    soft_wdt_clear();
 }

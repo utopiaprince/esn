@@ -31,4 +31,7 @@ void led_set(uint8_t led, bool_t res);
 void board_init(void);
 
 void mac_addr_get(uint8_t *mac_addr);
+
+
+void soft_wdt_clear(void);
 #endif
