@@ -126,6 +126,7 @@ void DBG_ASSERT(bool_t cond _DBG_LINE_)
             while(1)
             {
                 portDISABLE_INTERRUPTS();
+                WDTCTL = 0xffff;
 //            @TODO: 设备复位
 //            board_reset();
             }

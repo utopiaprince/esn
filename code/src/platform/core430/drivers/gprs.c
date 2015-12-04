@@ -5,6 +5,7 @@
 #include <uart.h>
 #include <drivers.h>
 #include <esn_gain.h>
+#include <clock.h>
 #include "gprs.h"
 
 #define GPRS_EVENT		(0x0100)
@@ -12,8 +13,9 @@
 #define SEND_SIZE		(200)
 #define SIZE			(30)
 #define CMD_CB_NUM		(20u)
-#define	PULL_UP			(P9OUT &= ~BIT7)
-#define	PULL_DOWN		(P9OUT |= BIT7)
+#define	PULL_UP			(P9OUT |= BIT7)
+#define	PULL_DOWN		(P9OUT &= ~BIT7)
+#define IS_HIGTH        ((P9OUT & BIT7))
 #define GPRS_DETECT_STATUS()	(P10IN & BIT0)
 
 #define AT			("AT\r")                    //*< TEST
@@ -53,8 +55,7 @@ typedef struct
 typedef enum
 {
 	E_IDLE,
-	E_UP,
-	E_DOWN,
+    E_OPEN,
 	E_CLOSE,
 	E_REST,
 	E_SEND,
@@ -246,10 +247,13 @@ static bool_t cipstatus(void)
 		return FALSE;
 }
 
+#define SOFT_WDT    (10*60*1000llu)
 static void cipsend_ok_cb(void)
 {
 	xTimerStop(gprs_daemon_timer, 0);
 	xSemaphoreGive(gprs_mutex);
+    
+    wdt_clear(SOFT_WDT);
 }
 
 static void switch_rest(void)
@@ -300,33 +304,48 @@ static void gprs_switch(void)
 	esn_msg.event = GPRS_EVENT;
 	if (e_state == E_SEND)
 	{
+        led_set(LED_RED, FALSE);
 		write_fifo(send.buf, send.len);
 	}
 	else if (e_state == E_SEND_OK)
 	{
 		cipsend_ok_cb();
 	}
+    else if(e_state == E_OPEN)
+    {
+        e_state = E_IDLE;
+        if(IS_HIGTH)
+        {
+            PULL_DOWN;
+            vTaskDelay(2000 / portTICK_RATE_MS);
+            PULL_UP;
+            vTaskDelay(4000 / portTICK_RATE_MS);
+        }
+        else
+        {
+           DBG_ASSERT(FALSE __DBG_LINE);    //不可能进入这里
+        }
+        xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+    }
 	else if (e_state == E_CLOSE)
 	{
 		gprs_info.gprs_state = WORK_DOWN;
 		led_set(LEN_GREEN, FALSE);
-		write_fifo(CIPCLOSE,  sizeof(CIPCLOSE) - 1);
-		vTaskDelay(2000 / portTICK_RATE_MS);
-		e_state = E_UP;
-		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-	}
-	else if (e_state == E_UP)
-	{
-		PULL_UP;
-		e_state = E_DOWN;
-		vTaskDelay(2000 / portTICK_RATE_MS);
-		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-	}
-	else if (e_state == E_DOWN)
-	{
-		PULL_DOWN;
-		e_state = E_IDLE;
-		vTaskDelay(5000 / portTICK_RATE_MS);
+        if(GPRS_DETECT_STATUS())            //判断是否是GPRS开机状态
+        {
+            write_fifo(CIPCLOSE,  sizeof(CIPCLOSE) - 1);
+            vTaskDelay(500 / portTICK_RATE_MS);
+            PULL_DOWN;
+            vTaskDelay(2000 / portTICK_RATE_MS);
+            PULL_UP;
+            vTaskDelay(2000 / portTICK_RATE_MS);
+        }
+        else
+        {
+            PULL_UP;
+            vTaskDelay(2000 / portTICK_RATE_MS);
+        }
+		e_state = E_OPEN;
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 	}
 	else if (e_state == E_IDLE)
@@ -427,6 +446,7 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 	{
 		if(xSemaphoreTake(gprs_mutex, 600) == pdTRUE)
 		{
+            led_set(LED_RED, TRUE);
 			//等待数据发送完成
 			xTimerReset(gprs_daemon_timer, 500);
 			osel_memset(send_data, 0x00, SIZE);
@@ -560,14 +580,6 @@ static void gprs_sent_timeout_cb(TimerHandle_t timer)
 	xTimerStop(timer, 0);
 	osel_memset(recv.buf, 0 , SIZE);
 	recv.offset = 0;
-//	if(gprs_info.mode == TRUE && gprs_info.gprs_state == WORK_ON)	//到了这里TCP模式应该是连接失败了
-//	{
-//		esn_msg_t esn_msg;
-//		esn_msg.event = GPRS_EVENT;
-//		gprs_info.gprs_state = GPRS_NET_ERROR;
-//		e_state = E_IDLE;
-//		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-//	}
 	xSemaphoreGive(gprs_mutex);
 }
 

@@ -54,7 +54,7 @@ class udp_service(socketserver.BaseRequestHandler):
     def handle(self):
         try:
             data = self.request[0].strip()
-            remainlen = power.recv_data(data,self.client_address)
+            power.recv_data(data,self.client_address)
             #self.request.sendall(data)
         except:
             traceback.print_exc()

@@ -239,7 +239,7 @@ def distance(power, buf):#激光测距
     confirm_id(power)
     rse = find_id(power.monitor)
     insert_distance = (
-        "call insert_distance(\"%s\",%d,%f,%d)" % (power.monitor, power.alarm,
+        "call insert_distance(\"%s\",%d,%.2f,%d)" % (power.monitor, power.alarm,
                                                       power.distance, power.collect_time))
     rs, row = mysql.mdb_call(insert_distance)
     if rse['distance_state'] != power.alarm:

@@ -18,8 +18,8 @@ def main():
     mysql.mdb_cnn()
     maintain_online_event()
     power.read_id_manage()
-    mysocket.udp_service_start('',8888)
-    #mysocket.tcp_service_start('',8888)
+    #mysocket.udp_service_start('',8888)
+    mysocket.tcp_service_start('',8888)
     return
 
 if __name__ == '__main__':

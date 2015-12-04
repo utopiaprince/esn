@@ -11,7 +11,7 @@
 #ifndef __BOARD_H__
 #define __BOARD_H__
 #include <data_type_def.h>
-void wdt_clear(void);
+void hard_wdt_clear(void);
 enum led_e
 {
 	LED_RED,
@@ -33,5 +33,5 @@ void board_init(void);
 void mac_addr_get(uint8_t *mac_addr);
 
 
-void soft_wdt_clear(void);
+void sys_wdt_clear(void);
 #endif

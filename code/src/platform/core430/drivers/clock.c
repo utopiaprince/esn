@@ -15,6 +15,14 @@
 #include <lib.h>
 #include <drivers.h>
 
+static volatile uint16_t wdt_cnt = 0;
+
+void wdt_clear(uint32_t time_ms)
+{
+    wdt_cnt = time_ms/1000;
+    TBCCR0 = TB0R + 0x8000;
+    TBCCTL0 |= CCIE;
+}
 
 static void  get_system_clock_settings(uint8_t  system_clock_speed,
                                            uint8_t  *set_dco_range,
@@ -217,7 +225,18 @@ void clk_init(uint8_t system_clock_speed)
 {
     board_start_xt1();
 	set_system_clock(system_clock_speed);   /* Set board to operate Frequncy */
-//    TB0CTL |= TBSSEL_1 + MC_2 + TBCLR;  // 启动TimerB定时器
-    // 启动看门狗
-    soft_wdt_clear();
+    TB0CTL |= TBSSEL_1 + MC_2 + TBCLR;     // 启动TimerB定时器
+    // 启动系统看门狗
+    sys_wdt_clear();
+}
+
+#pragma vector = TIMERB0_VECTOR
+__interrupt void timer_b0_ccrx( void )
+{
+    if (--wdt_cnt == 0)
+    {
+        DBG_ASSERT(FALSE __DBG_LINE);
+    }
+    TBCCR0 += 0x8000; // 1s
+    LPM3_EXIT;
 }

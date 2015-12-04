@@ -219,8 +219,8 @@ __interrupt __raw void vTickISREntry( void )
 	__bic_SR_register_on_exit( SCG1 + SCG0 + OSCOFF + CPUOFF );
 	vPortTickISR();
     
-    extern void soft_wdt_clear(void);
-    soft_wdt_clear();
+    extern void sys_wdt_clear(void);
+    sys_wdt_clear();
 }
 
 	

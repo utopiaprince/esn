@@ -12,12 +12,12 @@
 #include "lib.h"
 #include "drivers.h"
 
-void wdt_clear(void)
+void hard_wdt_clear(void)
 {
     P6OUT ^= BIT0;
 }
 
-void soft_wdt_clear(void)
+void sys_wdt_clear(void)
 {
     WDTCTL = WDTPW + WDTCNTCL + WDTSSEL0 + WDTIS0 + WDTIS1;
 }
