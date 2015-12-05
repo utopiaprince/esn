@@ -319,7 +319,7 @@ static void gprs_switch(void)
             PULL_DOWN;
             vTaskDelay(2000 / portTICK_RATE_MS);
             PULL_UP;
-            vTaskDelay(4000 / portTICK_RATE_MS);
+            vTaskDelay(3000 / portTICK_RATE_MS);
         }
         else
         {
@@ -343,7 +343,7 @@ static void gprs_switch(void)
         else
         {
             PULL_UP;
-            vTaskDelay(2000 / portTICK_RATE_MS);
+            vTaskDelay(5000 / portTICK_RATE_MS);
         }
 		e_state = E_OPEN;
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
