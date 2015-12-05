@@ -523,14 +523,14 @@ void uart_deal_task(void *p)
 				{
 					memset(recv.buf, 0 , SIZE);
 					gprs_info.gprs_state = GPRS_NET_ERROR;
-					e_state = E_IDLE;
+					e_state = E_CLOSE;
 					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 				}
 				else if (my_strstr((const char*)recv.buf, (const char*)"SEND FAIL") != NULL)
 				{
 					memset(recv.buf, 0 , SIZE);
 					gprs_info.gprs_state = GPRS_NET_ERROR;
-					e_state = E_IDLE;
+					e_state = E_CLOSE;
 					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 				}
 			}

@@ -1,7 +1,6 @@
 #coding=utf-8
 import struct
 import os
-import shutil
 from ctypes import *
 import _thread
 import sched, time
@@ -10,8 +9,6 @@ import user_lib.mysql as mysql
 import threading
 
 lock = _thread.allocate_lock()
-
-
 class data_state_e():
     HEAD1 = 1
     HEAD2 = 2
@@ -476,6 +473,15 @@ def frame_deal(buf, length, client_address):
             frame_data_deal(power, b, length)
     return
 
+def forwardSend(buf):   #转发数据
+    if globalval.tcp_client_handle != 0:
+        if globalval.tcp_client_handle.iscnnect == True:
+            data=''
+            head = [0xa5,0x5a,0x00,0x00]
+            head[2] = len(buf)-21
+            format = ("4B%dB" % len(buf))
+            data = struct.pack(format ,*head,*buf)
+            globalval.tcp_client_handle.client.send(data)
 
 def recv_data(buf, client_address):
     length = len(buf)
@@ -510,6 +516,7 @@ def recv_data(buf, client_address):
                 frame = []
                 for i in range(index, index + frame_len):
                     frame.append(buf[i])
+                forwardSend(frame)
                 length -= frame_len
                 index += frame_len
                 t = threading.Thread(target=frame_deal,args=(frame,frame_len,client_address))

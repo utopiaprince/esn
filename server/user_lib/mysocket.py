@@ -1,6 +1,8 @@
 import socketserver
+import socket
 import user_lib.powerdatadeal as power
 import traceback
+import time
 
 def convert2hex(d):
     try:
@@ -59,14 +61,55 @@ class udp_service(socketserver.BaseRequestHandler):
         except:
             traceback.print_exc()
 
-def tcp_service_start(host,port):
-    addr = (host, port)
-    server = socketserver.ThreadingTCPServer(addr, tcp_service)
-    print ('[TCP:%d] waiting for connection...' % port)
-    server.serve_forever()
+class tcp_server:
+    def __init__(self,host,port):
+        self.host = host
+        self.port = port
+    def start(self):
+        addr = (self.host, self.port)
+        server = socketserver.ThreadingTCPServer(addr, tcp_service)
+        print ('[TCPS:%d] waiting for connection...' % self.port)
+        server.serve_forever()
 
-def udp_service_start(host,port):
-    addr = (host, port)
-    server = socketserver.UDPServer(addr, udp_service)
-    print ('[UDP:%d] waiting for connection...' % port)
-    server.serve_forever()
+class udp_server:
+    def __init__(self,host,port):
+        self.host = host
+        self.port = port
+    def start(self):
+        addr = (self.host, self.port)
+        server = socketserver.UDPServer(addr, udp_service)
+        print ('[UDPS:%d] waiting for connection...' % self.port)
+        server.serve_forever()
+
+class tcp_client:
+     def __init__(self,dhost,dport):
+        self.client = 0
+        self.dhost = dhost
+        self.dport = dport
+        self.iscnnect = False
+     def start(self):
+        addr = (self.dhost, self.dport)
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        while True:
+            self.iscnnect = False
+            try:
+                if self.client._closed == True:
+                    self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.client.connect(addr)
+                self.iscnnect = True
+                print("[TCP:%s:%d] connect success" % (self.dhost,self.dport))
+                while True:
+                    try:
+                        data = self.client.recv(1024).strip()
+                        if not data:
+                            print("[TCP:%s:%d] connect closed" % (self.dhost,self.dport))
+                            break
+                    except:
+                        break
+                self.iscnnect = False
+                self.client.close()
+                time.sleep(5)
+            except:
+                print("[TCP:%s:%d] connect fail" % (self.dhost,self.dport))
+            self.iscnnect = False
+            time.sleep(10)
