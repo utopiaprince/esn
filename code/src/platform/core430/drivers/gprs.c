@@ -350,6 +350,7 @@ static void gprs_switch(void)
 	}
 	else if (e_state == E_IDLE)
 	{
+        gprs_info.gprs_state = WORK_DOWN;
 		static uint8_t idle_num = 0;
 		led_set(LEN_GREEN, FALSE);
 		if (idle_num++ >= 5)
@@ -417,7 +418,7 @@ static void gprs_switch(void)
 	}
 	else if (e_state == E_REST)
 	{
-		gprs_info.gprs_state = E_CLOSE;
+		gprs_info.gprs_state = WORK_DOWN;
 		e_state = E_CLOSE;
 		xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
 	}
