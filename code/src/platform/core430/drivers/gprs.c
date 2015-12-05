@@ -247,8 +247,8 @@ static bool_t cipstatus(void)
 		return FALSE;
 }
 
-#define SOFT_WDT    (10*60*1000llu)
-static void cipsend_ok_cb(void)
+#define SOFT_WDT    (3*60*1000llu)
+static void cipsend_ok_cb(void)         //3分钟没有喂狗说明GPRS流程出现了问题
 {
 	xTimerStop(gprs_daemon_timer, 0);
 	xSemaphoreGive(gprs_mutex);
@@ -352,7 +352,7 @@ static void gprs_switch(void)
 	{
 		static uint8_t idle_num = 0;
 		led_set(LEN_GREEN, FALSE);
-		if (idle_num++ >= 20)
+		if (idle_num++ >= 5)
 			DBG_ASSERT(FALSE __DBG_LINE);
 		
 		if ((GPRS_DETECT_STATUS() != FALSE))
@@ -479,34 +479,19 @@ static void port_init(void)
 	P10DIR &= ~BIT0;
 }
 
-#define MAINTAIN_TIME	(1*60*1000llu)
-static void gprs_maintain(void *p)
+#define HEART_TIME	(1*60*1000llu)
+static void gprs_heart(void *p) //定时发送心跳维护TCP连接
 {
-	uint8_t num = 0;
 	esn_msg_t esn_msg;
 	esn_msg.event = GPRS_EVENT;
 	while (1)
 	{
-		vTaskDelay(MAINTAIN_TIME / portTICK_RATE_MS);
-		if (gprs_info.gprs_state != WORK_ON)
-		{
-			num++;
-			if(num%2 == 0)
-			{
-				e_state = E_CLOSE;
-				xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
-			}
-			else if(num >= 5)
-			{
-				DBG_ASSERT(FALSE __DBG_LINE);
-			}
-		}
-		else
-		{
-			num = 0;
-			esn_msg.event = GPRS_HEART_START;
-			xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-		}
+		vTaskDelay(HEART_TIME / portTICK_RATE_MS);
+		esn_msg.event = GPRS_HEART_START;
+        if(gprs_info.mode == TRUE)
+        {
+            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+        }
 	}
 }
 
@@ -598,8 +583,11 @@ static bool_t gprs_init()
 	
 	xTaskCreate(gprs_task, "gprs_task", 300, NULL, tskIDLE_PRIORITY+6, NULL);  
 	xTaskCreate(uart_deal_task, "uart_deal_task", 50, NULL, tskIDLE_PRIORITY+7, NULL);  
-	xTaskCreate(gprs_maintain, "gprs_maintain", 50, NULL, tskIDLE_PRIORITY+1, NULL);  
-	
+    if(gprs_info.mode == TRUE)
+    {
+        xTaskCreate(gprs_heart, "gprs_heart", 50, NULL, tskIDLE_PRIORITY+1, NULL);  
+    }
+    
 	gprs_daemon_timer = xTimerCreate("GprsTimer",
 									 (6 * configTICK_RATE_HZ),
 									 pdTRUE,
