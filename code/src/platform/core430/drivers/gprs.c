@@ -247,7 +247,7 @@ static bool_t cipstatus(void)
 		return FALSE;
 }
 
-#define SOFT_WDT    (3*60*1000llu)
+#define SOFT_WDT    (5*60*1000llu)
 static void cipsend_ok_cb(void)         //3分钟没有喂狗说明GPRS流程出现了问题
 {
 	xTimerStop(gprs_daemon_timer, 0);
@@ -271,11 +271,11 @@ static void switch_join(void)
 	do
 	{
 		write_fifo(ipconfig, mystrlen((char *)ipconfig));
-		vTaskDelay(5000 / portTICK_RATE_MS);
+		vTaskDelay(8000 / portTICK_RATE_MS);
 		if (cipstart_deal())
 		{
 			write_fifo(CIPSTATUS, sizeof(CIPSTATUS)-1);
-			vTaskDelay(300 / portTICK_RATE_MS);
+			vTaskDelay(500 / portTICK_RATE_MS);
 			if(cipstatus())	//防止误报连接
 				join_mark = TRUE;
 			else
@@ -364,7 +364,7 @@ static void gprs_switch(void)
 			
 			gprs_info.gprs_state = READY_IDLE;
 			write_fifo(AT,  sizeof(AT) - 1);
-			vTaskDelay(300 / portTICK_RATE_MS);
+			vTaskDelay(500 / portTICK_RATE_MS);
 			
 			if (at_deal())
 				write_fifo(ATE0, sizeof(ATE0) - 1);
@@ -373,7 +373,7 @@ static void gprs_switch(void)
 				switch_rest();
 				return;
 			}
-			vTaskDelay(300 / portTICK_RATE_MS);
+			vTaskDelay(500 / portTICK_RATE_MS);
 			
 			if (ate0_deal())
 				write_fifo(CSMINS, sizeof(CSMINS) - 1);
@@ -382,7 +382,7 @@ static void gprs_switch(void)
 				switch_rest();
 				return;
 			}
-			vTaskDelay(300 / portTICK_RATE_MS);
+			vTaskDelay(500 / portTICK_RATE_MS);
 			
 			if (csmins_deal())	//检查SIM卡
 				write_fifo(CGATT, sizeof(CGATT) - 1);
@@ -391,7 +391,7 @@ static void gprs_switch(void)
 				gprs_info.gprs_state = SIM_ERROR;
 				return;
 			}
-			vTaskDelay(300 / portTICK_RATE_MS);
+			vTaskDelay(500 / portTICK_RATE_MS);
 			
 			while (cgatt_num++ < 20)
 			{
