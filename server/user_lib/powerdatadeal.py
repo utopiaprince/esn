@@ -1,8 +1,8 @@
 #coding=utf-8
-import struct
 import os
 from ctypes import *
 import _thread
+import struct
 import sched, time
 import user_lib.globalval as globalval
 import user_lib.mysql as mysql
@@ -479,8 +479,9 @@ def forwardSend(buf):   #转发数据
             data=''
             head = [0xa5,0x5a,0x00,0x00]
             head[2] = len(buf)-21
-            format = ("4B%dB" % len(buf))
-            data = struct.pack(format ,*head,*buf)
+            head.extend(buf)
+            format = ("%dB" % len(head))
+            data = struct.pack(format ,*head)
             globalval.tcp_client_handle.client.send(data)
 
 def recv_data(buf, client_address):
