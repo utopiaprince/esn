@@ -520,10 +520,10 @@ def recv_data(buf, client_address):
                 forwardSend(frame)
                 length -= frame_len
                 index += frame_len
-                t = threading.Thread(target=frame_deal,args=(frame,frame_len,client_address))
-                t.setDaemon(True)
-                t.start();
-                #frame_deal(frame, frame_len, client_address)
+                #t = threading.Thread(target=frame_deal,args=(frame,frame_len,client_address))
+                #t.setDaemon(True)
+                #t.start();
+                frame_deal(frame, frame_len, client_address)
             state = data_state_e.HEAD1
         length -= 1
     return 0

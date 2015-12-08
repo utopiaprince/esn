@@ -26,8 +26,8 @@
 #include "prim.h"
 
 uint16_t photo_byte_sum = 0;
-uint8_t  photo_pack_sum = 0;
-uint8_t  photo_pack_pos = 0;
+uint16_t  photo_pack_sum = 0;
+uint16_t  photo_pack_pos = 0;
 
 bool_t   camera_last_byte = FALSE;
 uint16_t camera_uart_index = 0;
@@ -370,6 +370,7 @@ void camera_handle(uint16_t cmd)
 		photo_pack_pos++;
 		if (camer_data_cb != NULL)
 		{
+            cam_old_tick = xTaskGetTickCount()-(30*configTICK_RATE_HZ);
 			camer_data_cb(photo_pack_sum,
 						  photo_pack_pos,
 						  &camera_uart_data_buf[4], CAM_FRM_MAX_LEN);

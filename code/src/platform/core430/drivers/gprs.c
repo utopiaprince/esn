@@ -571,6 +571,7 @@ static void gprs_sent_timeout_cb(TimerHandle_t timer)
 
 static bool_t gprs_init()
 {
+    wdt_clear(SOFT_WDT);
 	gprs_info.heart = FALSE;
 	port_init();
 	
