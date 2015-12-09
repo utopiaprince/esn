@@ -36,6 +36,13 @@ typedef enum
 	SETTING_MODE,
 };
 
+typedef void (*lora_int_reg_t)(uint16_t time);
+
 void lora_init(void);
+
+void lora_setting(lora_int_reg_t txok_cb,
+                  lora_int_reg_t rxok_cb);
+
+void lora_data_sent(void);
 
 #endif

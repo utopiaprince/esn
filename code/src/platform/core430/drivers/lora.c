@@ -45,12 +45,17 @@ static uint8_t lora_port = 0;
 
 static uint8_t lora_recv_data[150] = {0};
 static uint8_t lora_recv_index = 0;
+static bool_t lora_recv_rxok_flag = FALSE;
+
 
 static uint8_t lora_sent_data[150] = {0};
 
 static uint8_t lora_mode = NORMAL_MODE;
 static uint8_t lora_reg = UM_REG_TYPE;
 
+static TimerHandle_t lora_daemon_timer = NULL;
+
+static lora_int_reg_t lora_int_reg[2];  //*< rxok, txok.
 
 static void lora_gpio_init(void)
 {
@@ -71,7 +76,7 @@ static void lora_gpio_init(void)
  * @param reg  start of read config
  * @param len  how many bytes read
  */
-static void lora_reg_read(uint8_t reg, uint8_t len)
+static bool_t lora_reg_read(uint8_t reg, uint8_t len)
 {
     uint8_t buf[12];
     uint8_t index = 0;
@@ -89,10 +94,30 @@ static void lora_reg_read(uint8_t reg, uint8_t len)
     buf[index++] = reg;
     buf[index++] = len;
 
+    lora_recv_rxok_flag = FALSE;
     uart_send_string(lora_port, buf, index);
+
+    for (uint32_t i = 0; i < 0x80000; i++)
+    {
+        ;
+    }
+    if (lora_recv_rxok_flag)
+    {
+        if ((lora_recv_index == (len + 1)) &&
+                (lora_recv_data[0] == 0x24))
+        {
+            lora_recv_index = 0;
+            osel_memset(lora_recv_data, 0x00, 150);
+            return TRUE;
+        }
+    }
+
+    lora_recv_index = 0;
+    osel_memset(lora_recv_data, 0x00, 150);
+    return FALSE;
 }
 
-static void lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
+static bool_t lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
 {
     uint8_t buf[12];
     uint8_t index = 0;
@@ -112,21 +137,72 @@ static void lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
     osel_memcpy(&buf[index], buf, len);
     index += len;
 
+    lora_recv_rxok_flag = FALSE;
     uart_send_string(lora_port, buf, index);
+
+    for (uint32_t i = 0; i < 0x80000; i++)
+    {
+        ;
+    }
+
+    if (lora_recv_rxok_flag)
+    {
+        if ((lora_recv_index == (len + 1)) &&
+                (lora_recv_data[0] == 0x24))
+        {
+            lora_recv_index = 0;
+            osel_memset(lora_recv_data, 0x00, 150);
+            return TRUE;
+        }
+    }
+
+    lora_recv_index = 0;
+    osel_memset(lora_recv_data, 0x00, 150);
+    return FALSE;
+}
+
+void lora_data_write(uint8_t *buf, uint8_t len)
+{
+    portENTER_CRITICAL();
+
+
+    portEXIT_CRITICAL();
+}
+
+void lora_data_read(uint8_t *buf, uint8_t len)
+{
+
+}
+
+void lora_data_sent(void)
+{
+    if (lora_int_reg[0] != NULL)
+    {
+        (*(lora_int_reg[0]))(0x0000);
+    }
 }
 
 
+static void lora_recv_timeout_cb(TimerHandle_t timer)
+{
+    xTimerStop(timer, 0);
+    //*< rxok event
+    lora_recv_rxok_flag = TRUE;
+
+    if (lora_mode != SETTING_MODE)
+    {
+        if (lora_int_reg[1] != NULL)
+        {
+            (*(lora_int_reg[1]))(0x0000);    //*< rxok
+        }
+    }
+}
 
 static bool_t lora_recv_ch_cb(uint8_t id, uint8_t ch)
 {
-    if (lora_mode == SETTING_MODE)
-    {
-        lora_recv_data[]
-    }
-    else
-    {
+    lora_recv_data[lora_recv_index++] = ch;
 
-    }
+    return FALSE;
 }
 
 /**
@@ -139,13 +215,44 @@ void lora_init(uint8_t uart_id, uint32_t baud)
     lora_gpio_init();
     uart_init(lora_port, baud);
     uart_int_cb_reg(lora_port, lora_recv_ch_cb);
+
+    lora_daemon_timer = xTimerCreate("LoraTimer",
+                                     2,
+                                     pdTRUE,
+                                     NULL,
+                                     lora_recv_timeout_cb);
 }
 
-void lora_setting(void)
+/**
+ * @note call this func after os is running
+ */
+void lora_setting(lora_int_reg_t txok_cb,
+                  lora_int_reg_t rxok_cb)
 {
     MODE_4();
 
+    uint8_t rf_req[] = {0x07, 0x2B, 0xF0};
+    lora_reg_write(UM_REG_FREQ_3, rf_req, 3);
 
+    uint8_t rf_bps = 0x0e;
+    lora_reg_write(UM_REG_RF_BPS, rf_bps, 1);
+
+    uint8_t rf_pow = 0x16;
+    lora_reg_write(UM_REG_POWER, rf_pow, 1);
+
+    uint8_t rf_laddr[] = {0xFF, 0xFF};
+    lora_reg_write(UM_REG_HEAD_H, rf_laddr, 2);
+
+    uint8_t rf_feat = 0x0A;
+    lora_reg_write(UM_REG_FEATURE, rf_feat, 1);
+
+    uint8_t rf_baud = 0x07; //*< 115200
+    lora_reg_write(UM_REG_UART_BPS, rf_baud, 1);
+    uart_init(lora_port, 115200);
+
+    lora_int_reg[0] = txok_cb;
+    lora_int_reg[1] = rxok_cb;
+    MODE_1();
 }
 
 

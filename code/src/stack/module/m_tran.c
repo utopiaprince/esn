@@ -1044,12 +1044,7 @@ void m_tran_init(void)
 //    hal_rf_cfg_int(HAL_RF_RXOK_INT, HAL_INT_ENABLE);
 //    hal_rf_cfg_int(HAL_RF_TXOK_INT, HAL_INT_ENABLE);
 
-#if RF_INT_DEAL_FLOW > 0u
-    hal_rf_reg_int(HAL_RF_TXUND_INT, tx_und_cb);
-    hal_rf_reg_int(HAL_RF_RXOVR_INT, rx_ovr_cb);
-    hal_rf_cfg_int(HAL_RF_TXUND_INT, HAL_INT_ENABLE);
-    hal_rf_cfg_int(HAL_RF_RXOVR_INT, HAL_INT_ENABLE);
-#endif
+    lora_setting(txok_cb, rxok_cb);
 
     phy_set_state(PHY_SLEEP_STATE);
 
