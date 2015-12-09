@@ -21,9 +21,9 @@ class message_type_e():
     M_SHOCK = 0x30
     M_DISTANCE = 0x31
     M_TEMPERATURE = 0x32
-    M_ACCE  = 0x33
-    M_ATMO  = 0x34
-    M_CAME  = 0x35
+    M_ACCE = 0x33
+    M_ATMO = 0x34
+    M_CAME = 0x35
 
 class acce_t: # 加速度
     def __init__(self):
@@ -95,7 +95,7 @@ def find_id(monitor):
             rs = globalval.id_list[i]
             mark = True
             break
-    if mark == False:
+    if mark is False:
         rs = None
     return rs
 
@@ -111,7 +111,7 @@ def update_info_all(power, rs):
 
 def confirm_id(power):  # 验证是否需要往id_manage中插入数据
     rs = find_id(power.monitor)
-    if rs != None:
+    if rs is not None:
         if rs['online_state'] == 0:
             update_info_all(power, rs)
     else:
@@ -249,7 +249,8 @@ def distance(power, buf):#激光测距
     else:
         if power.alarm == 1:
             rse['distance_state'] = 1
-            print("%s 创建距离报警记录%d,id:%s;距离:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], power.monitor,power.distance))
+            print("%s 创建距离报警记录%d,id:%s;距离:%s" % (GetNowTime(),
+                rs[0]['LAST_INSERT_ID()'], power.monitor,power.distance))
     return
 
 
