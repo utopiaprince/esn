@@ -60,6 +60,7 @@
  */
 void clk_init(uint8_t frequency);
 
+void wdt_clear(uint32_t time_ms);
 #endif
 
 /**

@@ -184,8 +184,8 @@ static void cache_send(void)
         osel_memset(&info, 0, sizeof(shock_t));
         mac_addr_get(info.bmonitor);
         info.collect_time = 0;
-        info.thresh_tap = 0x10;     //*< 1个单位是62.5mg
-        info.dur = 0x10;            //*< 1个单位是625us
+        info.thresh_tap = 0x20;     //*< 1个单位是62.5mg
+        info.dur = 0x20;            //*< 1个单位是625us
         shock_send((uint8_t *)&info, sizeof(shock_t));
     }
     if (cache != 0)
@@ -251,8 +251,8 @@ static void shock_handle(esn_msg_t *msg)
         osel_memset(&info, 0, sizeof(shock_t));
         mac_addr_get(info.bmonitor);
         info.collect_time = 0;
-        info.thresh_tap = 0x10;     //*< 1个单位是62.5mg
-        info.dur = 0x10;            //*< 1个单位是625us
+        info.thresh_tap = 0x20;     //*< 1个单位是62.5mg
+        info.dur = 0x20;            //*< 1个单位是625us
 
         if (!shock_send((uint8_t *)&info, sizeof(shock_t)))
         {

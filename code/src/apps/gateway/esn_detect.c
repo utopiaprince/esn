@@ -27,7 +27,7 @@ static void range_app_handle(void)
     static uint8_t range_time_cnt = 0;  //*< 1秒调用一次接口
     static uint16_t distance_time_cnt = 0;
     fp32_t distance = 1000.0;
-    if(++range_time_cnt < 60)           //*< 1分钟调用一次距离传感器
+    if(++range_time_cnt < 120)           //*< 2分钟调用一次距离传感器
     {
         distance = 1000.0;
     }
@@ -49,8 +49,8 @@ static void range_app_handle(void)
         range_new_tick = xTaskGetTickCount();
         if (range_new_tick > range_old_tick)
         {
-            //*< 10分钟以内只触发一次
-            if ((range_new_tick - range_old_tick) > RANGE_DATA_TIME * configTICK_RATE_HZ)
+            //*< 2分钟以内只触发一次
+            if ((range_new_tick - range_old_tick) > (120 * configTICK_RATE_HZ))
             {
                 range_old_tick = range_new_tick;
                 range_can_sent = TRUE;
@@ -58,7 +58,7 @@ static void range_app_handle(void)
         }
         else
         {
-            if (((portMAX_DELAY - range_old_tick) + range_new_tick) > RANGE_DATA_TIME * configTICK_RATE_HZ)
+            if (((portMAX_DELAY - range_old_tick) + range_new_tick) > (120 * configTICK_RATE_HZ))
             {
                 range_old_tick = range_new_tick;
                 range_can_sent = TRUE;

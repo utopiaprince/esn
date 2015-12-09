@@ -171,8 +171,8 @@ static void adxl312_settings(void)
     adxl312_reg_write(ADXL_REG_OFSY, 0x00);
     adxl312_reg_write(ADXL_REG_OFSZ, 0x00);
 
-    adxl312_reg_write(ADXL_REG_THRESH_TAP, 0x10);   //*< 1个单位是62.5mg
-    adxl312_reg_write(ADXL_REG_DUR, 0x10);           //*< 1个单位是625us
+    adxl312_reg_write(ADXL_REG_THRESH_TAP, 0x20);   //*< 1个单位是62.5mg
+    adxl312_reg_write(ADXL_REG_DUR, 0x20);           //*< 1个单位是625us
     adxl312_reg_write(ADXL_REG_TAP_AXES, 0x07);
 
     adxl312_reg_write(ADXL_REG_INT_ENABLE, ADXL_SINGLE_TAP);

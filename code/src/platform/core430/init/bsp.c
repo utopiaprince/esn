@@ -55,8 +55,8 @@ void vApplicationIdleHook( void )
     if(idle_cnt ++ >= 10000)
     {
         idle_cnt = 0;
-        extern void wdt_clear();
-        wdt_clear();
+        extern void hard_wdt_clear();
+        hard_wdt_clear();
     }
     
     __bis_SR_register( GIE );
