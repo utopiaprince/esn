@@ -28,19 +28,19 @@ class message_type_e():
     M_ATMO  = 0x34
     M_CAME  = 0x35
 
-class acce_t:#加速度
+class acce_t: # 加速度
     def __init__(self):
         self.x = 0
         self.y = 0
         self.z = 0
 
-class atmos_t:#气象
+class atmos_t:# 气象
     def __init__(self):
-        self.driver_state_temperature = 0               #温度
-        self.driver_state_wind_direction_speed = 0      #风向风速
-        self.driver_state_pressure = 0                  #气压
-        self.driver_state_compass = 0                   #电子罗盘
-        self.driver_state_hyetometer = 0                #雨量计
+        self.driver_state_temperature = 0               # 温度
+        self.driver_state_wind_direction_speed = 0      # 风向风速
+        self.driver_state_pressure = 0                  # 气压
+        self.driver_state_compass = 0                   # 电子罗盘
+        self.driver_state_hyetometer = 0                # 雨量计
 
         self.wind_direction = 0
         self.wind_speed = 0
