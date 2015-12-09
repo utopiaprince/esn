@@ -331,6 +331,7 @@ static void gprs_switch(void)
 	{
 		gprs_info.gprs_state = WORK_DOWN;
 		led_set(LEN_GREEN, FALSE);
+        led_set(LED_RED, FALSE);
         if(GPRS_DETECT_STATUS())            //判断是否是GPRS开机状态
         {
             write_fifo(CIPCLOSE,  sizeof(CIPCLOSE) - 1);
@@ -449,7 +450,7 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 		{
             led_set(LED_RED, TRUE);
 			//等待数据发送完成
-			xTimerReset(gprs_daemon_timer, 500);
+			xTimerReset(gprs_daemon_timer, 400);
 			osel_memset(send_data, 0x00, SIZE);
 			tfp_sprintf((char *)send_data, CIPSEND, len);
 			

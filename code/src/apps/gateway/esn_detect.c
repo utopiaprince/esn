@@ -49,7 +49,7 @@ static void range_app_handle(void)
         range_new_tick = xTaskGetTickCount();
         if (range_new_tick > range_old_tick)
         {
-            //*< 2分钟以内只触发一次
+            //*< 100s以内只触发一次
             if ((range_new_tick - range_old_tick) > (100 * configTICK_RATE_HZ))
             {
                 range_old_tick = range_new_tick;

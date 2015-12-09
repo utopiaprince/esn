@@ -163,7 +163,7 @@ bool_t distance_send(uint8_t *pdata, uint16_t len)
 	package.message_type = M_DISTANCE;
 	osel_memcpy(package.bmonitor, info.bmonitor, ID_MAX);
 	package.collect_time = info.collect_time;
-    package.alarm = (info.val < 100) ? FALSE : TRUE;    //todo:后期100替换掉
+    package.alarm = (info.val < 100) ? TRUE : FALSE;    //todo:后期100替换掉
 	
 	osel_memcpy(p, &package, sizeof(esn_package_t));
 	length += sizeof(esn_package_t);
