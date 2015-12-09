@@ -34,7 +34,7 @@ typedef enum
 	WAKEUP_MODE,
 	LOWPOW_MODE,
 	SETTING_MODE,
-};
+}lora_state_e;
 
 void lora_init(void);
 

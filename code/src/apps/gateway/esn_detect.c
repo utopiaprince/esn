@@ -50,7 +50,7 @@ static void range_app_handle(void)
         if (range_new_tick > range_old_tick)
         {
             //*< 2分钟以内只触发一次
-            if ((range_new_tick - range_old_tick) > (120 * configTICK_RATE_HZ))
+            if ((range_new_tick - range_old_tick) > (100 * configTICK_RATE_HZ))
             {
                 range_old_tick = range_new_tick;
                 range_can_sent = TRUE;
@@ -58,7 +58,7 @@ static void range_app_handle(void)
         }
         else
         {
-            if (((portMAX_DELAY - range_old_tick) + range_new_tick) > (120 * configTICK_RATE_HZ))
+            if (((portMAX_DELAY - range_old_tick) + range_new_tick) > (100 * configTICK_RATE_HZ))
             {
                 range_old_tick = range_new_tick;
                 range_can_sent = TRUE;

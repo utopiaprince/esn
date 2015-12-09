@@ -30,7 +30,7 @@ static uint8_t range_uart_mode = RANGE_STATUS_RUNNING;
 static range_data_cb_t range_data_cb;
 static QueueHandle_t range_send_queue;
 
-static fp32_t range_var = 100.0;   
+static fp32_t range_var = 0.0;   
 
 static void range_uart_clear(void)
 {
