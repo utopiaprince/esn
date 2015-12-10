@@ -34,7 +34,7 @@ typedef enum
 	WAKEUP_MODE,
 	LOWPOW_MODE,
 	SETTING_MODE,
-};
+}lora_state_e;
 
 typedef void (*lora_int_reg_t)(uint16_t time);
 

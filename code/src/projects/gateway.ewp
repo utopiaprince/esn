@@ -2285,6 +2285,9 @@
           </file>
           <file>
             <name>$PROJ_DIR$\..\platform\core430\drivers\inc\lora.h</name>
+            <excluded>
+              <configuration>Debug</configuration>
+            </excluded>
           </file>
           <file>
             <name>$PROJ_DIR$\..\platform\core430\drivers\inc\range.h</name>
@@ -2319,6 +2322,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\lora.c</name>
+          <excluded>
+            <configuration>Debug</configuration>
+          </excluded>
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\inc\range.c</name>
