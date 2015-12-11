@@ -2,6 +2,7 @@
 #include <osel_arch.h>
 #include <gprs.h>
 #include <board.h>
+#include <crc16.h>
 static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 {
 	gprs_info_t *gprs_info;
@@ -12,7 +13,9 @@ static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 		data[0] = 0xa5;
 		data[1] = 0x5a;
 		osel_memcpy(&data[2], &len, sizeof(uint16_t));
+        uint16_t crc = CRC16(&data[4], length);
 		length += 4+2;
+        osel_memcpy(&data[length-2],&crc,2);
 		gprs_driver.write(data,length);
 		gprs_info->heart = TRUE;
 		return TRUE;

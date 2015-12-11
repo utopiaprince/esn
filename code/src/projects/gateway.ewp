@@ -2216,6 +2216,9 @@
       <group>
         <name>inc</name>
         <file>
+          <name>$PROJ_DIR$\..\common\lib\crc16.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\common\lib\data_type_def.h</name>
         </file>
         <file>
@@ -2237,6 +2240,9 @@
           <name>$PROJ_DIR$\..\common\lib\random.h</name>
         </file>
       </group>
+      <file>
+        <name>$PROJ_DIR$\..\common\lib\crc16.c</name>
+      </file>
       <file>
         <name>$PROJ_DIR$\..\common\lib\debug.c</name>
       </file>

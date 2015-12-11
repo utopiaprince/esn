@@ -7,7 +7,7 @@ import sched, time
 import user_lib.globalval as globalval
 import user_lib.mysql as mysql
 import threading
-
+import user_lib.crc16 as CRC16
 lock = _thread.allocate_lock()
 class data_state_e():
     HEAD1 = 1
@@ -521,9 +521,15 @@ def recv_data(buf, client_address):
                 forwardSend(frame)
                 length -= frame_len
                 index += frame_len
-                t = threading.Thread(target=frame_deal,args=(frame,frame_len,client_address))
-                t.setDaemon(True)
-                t.start();
+                crc_frame = frame[0:frame_len-2]
+                val = (frame[frame_len-1]<<8) + frame[frame_len-2]
+                test = CRC16.crc16()
+                if test.createcrc(crc_frame) ==val:
+                    t = threading.Thread(target=frame_deal,args=(frame,frame_len,client_address))
+                    t.setDaemon(True)
+                    t.start();
+                else:
+                    print("CRC错误")
                 #frame_deal(frame, frame_len, client_address)
             state = data_state_e.HEAD1
         length -= 1
