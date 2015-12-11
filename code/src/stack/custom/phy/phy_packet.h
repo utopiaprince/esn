@@ -20,8 +20,8 @@
 #define PKT_LEN_MAX 		(64)	// 协议中最大帧长，包括物理头
 #define PKT_LEN_MIN         (6u)    // 协议中最小帧长
 
-#define PHY_HEAD_SIZE       3u  //物理帧帧头长度
-#define PHY_LEN_FEILD_SIZE  1u  //物理帧长度域帧头长度
+#define PHY_HEAD_SIZE       2u  //物理帧帧头长度
+#define PHY_LEN_FEILD_SIZE  0u  //物理帧长度域帧头长度
 #define PHY_FCS_SIZE        0u
 
 typedef uint8_t             phy_addr_t;

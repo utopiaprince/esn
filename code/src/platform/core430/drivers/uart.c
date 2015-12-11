@@ -167,7 +167,7 @@ void uart_recv_disable(uint8_t uart_id)
     {
         UCA2IE &= ~UCRXIE;
     }
-    else if (uart_id == UART_3)
+    else if (uart_id == UART_4)
     {
         UCA3IE &= ~UCRXIE;
     }
