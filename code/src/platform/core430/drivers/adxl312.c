@@ -275,7 +275,7 @@ bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
 {
     uint8_t accbuf[6] = {0};
     bool_t ret = FALSE;               // 读写返回值
-
+    static float x,y,z;
 //    portENTER_CRITICAL();
     ret = adxl312_read_fifo( 0x32 , accbuf , ADXL_DATA_OUT_REG_NUM );
 //    portEXIT_CRITICAL();
@@ -285,12 +285,10 @@ bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
     *pacc_x = (accbuf[1] << 8 ) | accbuf[0];
     *pacc_y = (accbuf[3] << 8 ) | accbuf[2];
     *pacc_z = (accbuf[5] << 8 ) | accbuf[4];
-    /*
         // 转换结果调整为mg
-        *pacc_x = (fp32_t)( *pacc_x * 3.9);
-        *pacc_y = (fp32_t)( *pacc_y * 3.9);
-        *pacc_z = (fp32_t)( *pacc_z * 3.9);
-    */
+    x = (fp32_t)( *pacc_x * 3.9);
+    y = (fp32_t)( *pacc_y * 3.9);
+    z = (fp32_t)( *pacc_z * 3.9);
     return TRUE;
 }
 

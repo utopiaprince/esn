@@ -30,7 +30,7 @@ bool_t phy_write_buf(pbuf_t *pbuf, uint8_t stamp_size)
 	if (pbuf != NULL)
 	{
 		pbuf->data_len += PHY_HEAD_SIZE;
-		osel_memcpy(pbuf->head[0], &pbuf->attri.dst_id, PHY_HEAD_SIZE);
+		osel_memcpy(&pbuf->head[0], &pbuf->attri.dst_id, PHY_HEAD_SIZE);
 
 		lora_data_write(pbuf->head, pbuf->data_len + stamp_size);
 	

@@ -166,9 +166,16 @@ static void angle_handle(esn_msg_t *msg)
     osel_memset(&info, 0, sizeof(acceleration_t));
     mac_addr_get(info.bmonitor);
     info.collect_time = 0;
-    info.x = x;
-    info.y = y;
-    info.z = z;
+    uint8_t h,l;
+    h = x/10;
+    l = x%10;
+    info.x = (h<<8) + l;
+    h = y/10;
+    l = y%10;
+    info.y = (h<<8) + l;
+    h = z/10;
+    l = z%10;
+    info.z = (h<<8) + l;
     acceleration_send((uint8_t *)&info, sizeof(acceleration_t));
 }
 
