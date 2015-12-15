@@ -30,6 +30,8 @@ drop procedure if exists user_interface;
 
 drop table if exists acceleration_info;
 
+drop table if exists acceleration_init_info;
+
 drop table if exists atmo_info;
 
 drop table if exists distance_info;
@@ -57,6 +59,18 @@ create table acceleration_info
    z                    float,
    local_time           timestamp,
    primary key (onum)
+);
+
+/*==============================================================*/
+/* Table: acceleration_init_info                                */
+/*==============================================================*/
+create table acceleration_init_info
+(
+   id                   varchar(34) not null,
+   x                    float,
+   y                    float,
+   z                    float,
+   primary key (id)
 );
 
 /*==============================================================*/
@@ -175,7 +189,20 @@ alter table temperater_info comment 'temperater_info';
 
 create procedure insert_acceleration (uid varchar(50),ucollect_time int,ux float,uy float,uz float)
 begin
-insert into acceleration_info (id,collect_time,x,y,z) values (uid,ucollect_time,ux,uy,uz);
+set @s_x = 0;
+set @s_y = 0;
+set @s_z = 0;
+select COUNT(*),x,y,z into @cut,@s_x,@s_y,@s_z from acceleration_init_info where id =uid;
+if @cut=0 then
+	insert into acceleration_init_info (id,x,y,z) values (uid,ux,uy,uz);
+	set @s_x=ux;
+	set @s_y=uy;
+	set @s_z=uz;
+end if;
+set @s_x=@s_x-ux;
+set @s_y=@s_y-uy;
+set @s_z=@s_z-uz;
+insert into acceleration_info (id,collect_time,x,y,z) values (uid,ucollect_time,@s_x,@s_y,@s_z);
 select LAST_INSERT_ID();
 end;
 
