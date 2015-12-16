@@ -199,9 +199,9 @@ if @cut=0 then
 	set @s_y=uy;
 	set @s_z=uz;
 end if;
-set @s_x=@s_x-ux;
-set @s_y=@s_y-uy;
-set @s_z=@s_z-uz;
+set @s_x=ux-@s_x;
+set @s_y=uy-@s_y;
+set @s_z=uz-@s_z;
 insert into acceleration_info (id,collect_time,x,y,z) values (uid,ucollect_time,@s_x,@s_y,@s_z);
 select LAST_INSERT_ID();
 end;
