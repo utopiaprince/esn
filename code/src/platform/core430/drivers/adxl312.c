@@ -285,10 +285,13 @@ bool_t adxl_get_xyz( int16_t *pacc_x , int16_t *pacc_y , int16_t *pacc_z)
     *pacc_x = (accbuf[1] << 8 ) | accbuf[0];
     *pacc_y = (accbuf[3] << 8 ) | accbuf[2];
     *pacc_z = (accbuf[5] << 8 ) | accbuf[4];
-        // 转换结果调整为mg
+    // 转换结果调整为mg
     x = (fp32_t)( *pacc_x * 3.9);
+    *pacc_x = (uint16_t)x;
     y = (fp32_t)( *pacc_y * 3.9);
+    *pacc_y = (uint16_t)y;
     z = (fp32_t)( *pacc_z * 3.9);
+    *pacc_z = (uint16_t)z;
     return TRUE;
 }
 

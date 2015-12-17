@@ -15,6 +15,7 @@
 
 #include "osel_arch.h"
 #include "lib.h"
+#include "drivers.h"
 #include "sbuf.h"
 #include "pbuf.h"
 
@@ -1044,7 +1045,7 @@ void m_tran_init(void)
 //    hal_rf_cfg_int(HAL_RF_RXOK_INT, HAL_INT_ENABLE);
 //    hal_rf_cfg_int(HAL_RF_TXOK_INT, HAL_INT_ENABLE);
 
-    lora_setting(txok_cb, rxok_cb);
+    lora_setting(tx_ok_cb, rx_ok_cb);
 
     phy_set_state(PHY_SLEEP_STATE);
 

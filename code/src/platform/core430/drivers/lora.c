@@ -36,10 +36,10 @@
 #define SETB_H      (P9OUT |= BIT7)
 #define SETB_L      (P9OUT &= ~BIT7)
 
-#define MODE_1()    (lora_mode=NORMAL_MODE;SETA_L;SETB_L;)    //*< normal mode
-#define MODE_2()    (lora_mode=WAKEUP_MODE;SETA_L;SETB_H;)    //*< wakeup mode
-#define MODE_3()    (lora_mode=LOWPOW_MODE;SETA_H;SETB_L;)    //*< low power mode
-#define MODE_4()    (lora_mode=SETTING_MODE;SETA_H;SETB_H;)    //*< set mode
+#define MODE_1()    lora_mode=NORMAL_MODE;SETA_L;SETB_L;    //*< normal mode
+#define MODE_2()    lora_mode=WAKEUP_MODE;SETA_L;SETB_H;    //*< wakeup mode
+#define MODE_3()    lora_mode=LOWPOW_MODE;SETA_H;SETB_L;    //*< low power mode
+#define MODE_4()    lora_mode=SETTING_MODE;SETA_H;SETB_H    //*< set mode
 
 static uint8_t lora_port = 0;
 
@@ -51,7 +51,7 @@ static bool_t lora_recv_rxok_flag = FALSE;
 static uint8_t lora_sent_data[150] = {0};
 
 static uint8_t lora_mode = NORMAL_MODE;
-static uint8_t lora_reg = UM_REG_TYPE;
+//static uint8_t lora_reg = UM_REG_TYPE;
 
 static TimerHandle_t lora_daemon_timer = NULL;
 
@@ -82,7 +82,7 @@ static bool_t lora_reg_read(uint8_t reg, uint8_t len)
     uint8_t index = 0;
 
     lora_mode = SETTING_MODE;
-    lora_reg = reg;
+//    lora_reg = reg;
 
     buf[index++] = 0xFF;
     buf[index++] = 0x56;
@@ -119,22 +119,22 @@ static bool_t lora_reg_read(uint8_t reg, uint8_t len)
 
 static bool_t lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
 {
-    uint8_t buf[12];
+    uint8_t send_buf[12];
     uint8_t index = 0;
 
     lora_mode = SETTING_MODE;
-    lora_reg = reg;
+//    lora_reg = reg;
 
-    buf[index++] = 0xFF;
-    buf[index++] = 0x56;
-    buf[index++] = 0xAE;
-    buf[index++] = 0x35;
-    buf[index++] = 0xA9;
-    buf[index++] = 0x55;
-    buf[index++] = 0x90;
-    buf[index++] = reg;
-    buf[index++] = len;
-    osel_memcpy(&buf[index], buf, len);
+    send_buf[index++] = 0xFF;
+    send_buf[index++] = 0x56;
+    send_buf[index++] = 0xAE;
+    send_buf[index++] = 0x35;
+    send_buf[index++] = 0xA9;
+    send_buf[index++] = 0x55;
+    send_buf[index++] = 0x90;
+    send_buf[index++] = reg;
+    send_buf[index++] = len;
+    osel_memcpy(&send_buf[index], buf, len);
     index += len;
 
     lora_recv_rxok_flag = FALSE;
@@ -164,14 +164,27 @@ static bool_t lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
 void lora_data_write(uint8_t *buf, uint8_t len)
 {
     portENTER_CRITICAL();
-
-
+    uart_send_string(lora_port, buf, len);
     portEXIT_CRITICAL();
 }
 
-void lora_data_read(uint8_t *buf, uint8_t len)
+uint8_t lora_data_read(uint8_t *buf, uint8_t len)
 {
-
+    uint8_t read_len = 0;
+    if(len > lora_recv_index)
+    {
+        read_len = lora_recv_index;
+    }
+    else
+    {
+        read_len = len;
+    }
+    
+    osel_memcpy(buf, lora_recv_data, read_len);
+    
+    osel_memset(lora_recv_data, 0x00, read_len);
+    lora_recv_index = 0;
+    return read_len;
 }
 
 void lora_data_sent(void)
@@ -182,10 +195,15 @@ void lora_data_sent(void)
     }
 }
 
+uint8_t lora_data_len_get(void)
+{
+    return lora_recv_index;
+}
+
 
 static void lora_recv_timeout_cb(TimerHandle_t timer)
 {
-    xTimerStop(timer, 0);
+    xTimerStop(lora_daemon_timer, 0);
     //*< rxok event
     lora_recv_rxok_flag = TRUE;
 
@@ -235,19 +253,19 @@ void lora_setting(lora_int_reg_t txok_cb,
     lora_reg_write(UM_REG_FREQ_3, rf_req, 3);
 
     uint8_t rf_bps = 0x0e;
-    lora_reg_write(UM_REG_RF_BPS, rf_bps, 1);
+    lora_reg_write(UM_REG_RF_BPS, &rf_bps, 1);
 
     uint8_t rf_pow = 0x16;
-    lora_reg_write(UM_REG_POWER, rf_pow, 1);
+    lora_reg_write(UM_REG_POWER, &rf_pow, 1);
 
     uint8_t rf_laddr[] = {0xFF, 0xFF};
     lora_reg_write(UM_REG_HEAD_H, rf_laddr, 2);
 
     uint8_t rf_feat = 0x0A;
-    lora_reg_write(UM_REG_FEATURE, rf_feat, 1);
+    lora_reg_write(UM_REG_FEATURE, &rf_feat, 1);
 
     uint8_t rf_baud = 0x07; //*< 115200
-    lora_reg_write(UM_REG_UART_BPS, rf_baud, 1);
+    lora_reg_write(UM_REG_UART_BPS, &rf_baud, 1);
     uart_init(lora_port, 115200);
 
     lora_int_reg[0] = txok_cb;
