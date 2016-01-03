@@ -523,12 +523,13 @@ def recv_data(buf, self):
                 index += frame_len
                 crc_frame = frame[0:frame_len-2]
                 val = (frame[frame_len-1]<<8) + frame[frame_len-2]
-                test = CRC16.crc16()
-                if test.createcrc(crc_frame) ==val:
-                    frame_deal(frame, frame_len, self)
-                else:
-                    print("CRC错误")
-                #frame_deal(frame, frame_len, client_address)
+                #图片在GPRS传输中错字节所以不校验CRC
+                #test = CRC16.crc16()
+                # if test.createcrc(crc_frame) ==val:
+                #     frame_deal(frame, frame_len, self)
+                # else:
+                #     print("CRC错误")
+                frame_deal(frame, frame_len, self)
             state = data_state_e.HEAD1
         length -= 1
     return 0

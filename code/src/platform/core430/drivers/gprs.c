@@ -245,11 +245,11 @@ static bool_t cipmode_deal(void)
 static bool_t cipstart_deal(void)
 {
 	recv.offset = 0;
-	if (my_strstr((const char*)recv.buf, (const char*)"STATE") != NULL)
+	if (my_strstr((const char*)recv.buf, (const char*)"CLOSED") != NULL)
 		return FALSE;
 	else if (my_strstr((const char*)recv.buf, (const char*)"ALREADY CONNECT") != NULL)
 		return TRUE;
-	else if (my_strstr((const char*)recv.buf, (const char*)ATOK) != NULL)
+	else if (my_strstr((const char*)recv.buf, (const char*)"CONNECT") != NULL)
 		return TRUE;
 	else
 		return FALSE;
@@ -288,7 +288,7 @@ static bool_t switch_join(void)
 	do
 	{
 		write_fifo(ipconfig, mystrlen((char *)ipconfig));
-		vTaskDelay(8000 / portTICK_RATE_MS);
+		vTaskDelay(10000 / portTICK_RATE_MS);
 		recv.offset = 0;
 		join_mark = FALSE;
 		if (cipstart_deal())
@@ -384,7 +384,7 @@ static void gprs_switch(void)
 			
 			gprs_info.gprs_state = READY_IDLE;
 			write_fifo(AT,  sizeof(AT) - 1);
-			vTaskDelay(500 / portTICK_RATE_MS);
+			vTaskDelay(300 / portTICK_RATE_MS);
 			
 			if (at_deal())
 				write_fifo(ATE0, sizeof(ATE0) - 1);
@@ -393,7 +393,7 @@ static void gprs_switch(void)
 				switch_rest();
 				return;
 			}
-			vTaskDelay(500 / portTICK_RATE_MS);
+			vTaskDelay(300 / portTICK_RATE_MS);
 			
 			if (ate0_deal())
 				write_fifo(CSMINS, sizeof(CSMINS) - 1);
@@ -402,7 +402,7 @@ static void gprs_switch(void)
 				switch_rest();
 				return;
 			}
-			vTaskDelay(500 / portTICK_RATE_MS);
+			vTaskDelay(300 / portTICK_RATE_MS);
 			
 			if (csmins_deal())	//检查SIM卡
 				write_fifo(CGATT, sizeof(CGATT) - 1);
@@ -411,7 +411,7 @@ static void gprs_switch(void)
 				gprs_info.gprs_state = SIM_ERROR;
 				return;
 			}
-			vTaskDelay(500 / portTICK_RATE_MS);
+			vTaskDelay(300 / portTICK_RATE_MS);
 			
 			while (cgatt_num++ < 20)
 			{
@@ -489,10 +489,12 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 	{
 		if(gprs_info.data_mode)
 		{
-			osel_memset(send.buf, 0x00, SEND_SIZE);
-			osel_memcpy(send.buf, payload, len);
-			send.len = len;
-			write_fifo(send.buf, send.len);
+            led_set(LED_RED, TRUE);
+            osel_memset(send.buf, 0x00, SEND_SIZE);
+            osel_memcpy(send.buf, payload, len);
+            send.len = len;
+            write_fifo(send.buf, send.len);
+            led_set(LED_RED, FALSE);
 			return TRUE;
 		}
 		else
