@@ -510,7 +510,6 @@ static bool_t gprs_write_fifo(const uint8_t *const payload, const uint16_t len)
 	{
 		if(gprs_info.data_mode)
 		{
-            wdt_clear(SOFT_WDT);
             led_set(LED_RED, TRUE);
             osel_memset(send.buf, 0x00, SEND_SIZE);
             osel_memcpy(send.buf, payload, len);
