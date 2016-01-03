@@ -22,8 +22,8 @@
 #define ATE0		("ATE0\r")                  //*< 关闭回显
 #define CSMINS		("AT+CSMINS?\r")            //*< 检查SIM卡
 #define CGATT		("AT+CGATT?\r")             //*< 附着网络
-#define CIPCCFG     ("AT+CIPCCFG=1,2,1024,1\r") //*< 透传模式
 #define CIPMODE     ("AT+CIPMODE=1\r")          //*< 透传模式
+#define SCIPMODE    ("AT+CIPMODE?\r")          //*< 查询透传模式
 #define CIPSTART	("AT+CIPSTART=%s,%s\r")     //*< 连接SOCKET
 #define CIPCLOSE	("AT+CIPCLOSE\r")           //*< 关闭SOCKET
 #define CIPSEND		("AT+CIPSEND=%d\r")         //*< 发送数据长度
@@ -235,11 +235,26 @@ static bool_t cgatt_deal(void)
 
 static bool_t cipmode_deal(void)
 {
-	recv.offset=0;
-	if (my_strstr((const char*)recv.buf, (const char*)ATOK) != NULL)
-		return TRUE;
-	else
-		return FALSE;
+    recv.offset = 0;
+	uint8_t* ptr = ustrchr(recv.buf, ":");
+	if (ptr != NULL)
+	{
+		ptr += 2;
+		if (*ptr == 0x31)
+		{
+			return TRUE;
+		}
+		else
+		{
+            write_fifo(CIPMODE, sizeof(CIPMODE) - 1);
+			vTaskDelay(300 / portTICK_RATE_MS);
+            if (my_strstr((const char*)recv.buf, (const char*)ATOK) != NULL)
+                return TRUE;
+            else
+                return FALSE;
+		}
+	}
+	return FALSE;
 }
 
 static bool_t cipstart_deal(void)
@@ -288,7 +303,7 @@ static bool_t switch_join(void)
 	do
 	{
 		write_fifo(ipconfig, mystrlen((char *)ipconfig));
-		vTaskDelay(10000 / portTICK_RATE_MS);
+		vTaskDelay(5000 / portTICK_RATE_MS);
 		recv.offset = 0;
 		join_mark = FALSE;
 		if (cipstart_deal())
@@ -353,6 +368,12 @@ static void gprs_switch(void)
 		led_set(LED_RED, FALSE);
 		if(GPRS_DETECT_STATUS())            //判断是否是GPRS开机状态
 		{
+            if(gprs_info.data_mode)
+            {
+                vTaskDelay(1000 / portTICK_RATE_MS);
+                write_fifo("+++",  sizeof("+++") - 1);
+                vTaskDelay(1000 / portTICK_RATE_MS);
+            }
 			write_fifo(CIPCLOSE,  sizeof(CIPCLOSE) - 1);
 			vTaskDelay(500 / portTICK_RATE_MS);
 			PULL_DOWN;
@@ -432,8 +453,8 @@ static void gprs_switch(void)
 			
 			if(gprs_info.data_mode) //判断是否开启数据透传
 			{
-				write_fifo(CIPMODE, sizeof(CIPMODE) - 1);
-				vTaskDelay(500 / portTICK_RATE_MS);
+				write_fifo(SCIPMODE, sizeof(SCIPMODE) - 1);
+				vTaskDelay(300 / portTICK_RATE_MS);
 				if(cipmode_deal() == FALSE)
 				{
 					switch_rest();
@@ -550,6 +571,16 @@ static void gprs_heart(void *p) //定时发送心跳维护TCP连接
 	}
 }
 
+void uart_deal_close(void)
+{
+    esn_msg_t esn_msg;
+	esn_msg.event = GPRS_EVENT;
+    memset(recv.buf, 0 , SIZE);
+    gprs_info.gprs_state = GPRS_NET_ERROR;
+    e_state = E_CLOSE;
+    xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);        
+}
+
 void uart_deal_task(void *p)  
 {  
 	while(TRUE)
@@ -575,24 +606,15 @@ void uart_deal_task(void *p)
 				}
 				else if (my_strstr((const char*)recv.buf, (const char*)"ERROR") != NULL)
 				{
-					memset(recv.buf, 0 , SIZE);
-					gprs_info.gprs_state = GPRS_NET_ERROR;
-					e_state = E_CLOSE;
-					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+					uart_deal_close();
 				}
 				else if (my_strstr((const char*)recv.buf, (const char*)"SEND FAIL") != NULL)
 				{
-					memset(recv.buf, 0 , SIZE);
-					gprs_info.gprs_state = GPRS_NET_ERROR;
-					e_state = E_CLOSE;
-					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+					uart_deal_close();
 				}
 				else if(my_strstr((const char*)recv.buf, (const char*)"CLOSED") != NULL)
 				{
-					memset(recv.buf, 0 , SIZE);
-					gprs_info.gprs_state = GPRS_NET_ERROR;
-					e_state = E_CLOSE;
-					xQueueSend(gprs_queue, &esn_msg, portMAX_DELAY);
+					uart_deal_close();
 				}
 			}
 		}  
