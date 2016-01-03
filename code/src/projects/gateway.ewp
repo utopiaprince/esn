@@ -272,7 +272,7 @@
         </option>
         <option>
           <name>CCDiagRemark</name>
-          <state>pe177,pa082,pa039</state>
+          <state>pe177,pa082,pa039,pe550</state>
         </option>
         <option>
           <name>CCDiagWarning</name>
@@ -2459,6 +2459,9 @@
     </group>
     <group>
       <name>module</name>
+      <excluded>
+        <configuration>Debug</configuration>
+      </excluded>
       <file>
         <name>$PROJ_DIR$\..\stack\module\m_tran.c</name>
       </file>

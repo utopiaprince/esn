@@ -112,8 +112,7 @@ def update_info_all(power, rs):
 def confirm_id(power):  # 验证是否需要往id_manage中插入数据
     rs = find_id(power.monitor)
     if rs is not None:
-        if rs['online_state'] == 0:
-            update_info_all(power, rs)
+        update_info_all(power, rs)
     else:
         sql = 'call insert_id_to_id_manage(\'%s\',\'%s\',\'%s\')' % (power.monitor, power.bmonitor, power.ip)
         mysql.mdb_call(sql)
@@ -144,14 +143,6 @@ def save_pic(pic_name,uid):
     rs, row = mysql.mdb_call(insert_pic)
     print("%s 创建图片记录%d,id:%s" % (GetNowTime(),rs[0]['LAST_INSERT_ID()'], uid))
 
-'''
-    #test
-    select_pic = ("call select_pic(\"%s\",%d)" % (uid,1))
-    rs, row = mysql.mdb_call(select_pic)
-    for i in range(row):
-        a =rs[i]['pic']
-'''
-
 def camera(power, buf):#照片
 
     index = 0
@@ -181,9 +172,9 @@ def camera(power, buf):#照片
                 f.write(struct.pack("B",buf[i]))
     f.close()
 
-    if current == (total - 2):
+    if current == (total):
         s = sched.scheduler(time.time, time.sleep)
-        s.enter(10, 1, save_pic, (pic_temp,power.monitor,))
+        s.enter(5, 1, save_pic, (pic_temp,power.monitor,))
         s.run()
     return
 
@@ -443,23 +434,31 @@ def frame_data_deal(power, buf, length):
     power.message_type = buf[0]
     data = buf[1:]
     if power.message_type == message_type_e.M_SHOCK:
-        shock(power, data)
+        t = threading.Thread(target=shock,args=(power,data))
     elif power.message_type == message_type_e.M_DISTANCE:
-        distance(power, data)
+        t = threading.Thread(target=distance,args=(power,data))
     elif power.message_type == message_type_e.M_TEMPERATURE:
-        temperature(power, data)
+        t = threading.Thread(target=temperature,args=(power,data))
     elif power.message_type == message_type_e.M_ACCE:
-        acceleration(power, data);
+        t = threading.Thread(target=acceleration,args=(power,data))
     elif power.message_type == message_type_e.M_ATMO:
-        atmo(power, data);
+        t = threading.Thread(target=atmo,args=(power,data))
     elif power.message_type == message_type_e.M_CAME:
         camera(power, data);
-    return
+        return;
+
+    t.setDaemon(True)
+    t.start();
 
 
-def frame_deal(buf, length, client_address):
+def frame_ack(self):
+    head = [0xa5,0x5a,0x01,0x00,0x80]
+    ack = struct.pack("5B" ,*head)
+    self.request.send(ack)
+
+def frame_deal(buf, length, self):
     power = power_t()
-    power.ip = (client_address[0] + ':' + str(client_address[1]))
+    power.ip = (self.client_address[0] + ':' + str(self.client_address[1]))
     index = 0
     if length > 17:
         for i in range(0, 17):
@@ -472,6 +471,7 @@ def frame_deal(buf, length, client_address):
         if power.frame_type == 1:  # 收到数据帧
             b = buf[index:]
             frame_data_deal(power, b, length)
+            #frame_ack(self)
     return
 
 def forwardSend(buf):   #转发数据
@@ -485,7 +485,7 @@ def forwardSend(buf):   #转发数据
             data = struct.pack(format ,*head)
             globalval.tcp_client_handle.client.send(data)
 
-def recv_data(buf, client_address):
+def recv_data(buf, self):
     length = len(buf)
     state = data_state_e.HEAD1
     if length < 5:
@@ -525,9 +525,7 @@ def recv_data(buf, client_address):
                 val = (frame[frame_len-1]<<8) + frame[frame_len-2]
                 test = CRC16.crc16()
                 if test.createcrc(crc_frame) ==val:
-                    t = threading.Thread(target=frame_deal,args=(frame,frame_len,client_address))
-                    t.setDaemon(True)
-                    t.start();
+                    frame_deal(frame, frame_len, self)
                 else:
                     print("CRC错误")
                 #frame_deal(frame, frame_len, client_address)

@@ -21,11 +21,16 @@
 void driver_init(void)
 {
 	gprs_info_t gprs_info;
-	gprs_info.dip[0] = 218;
-	gprs_info.dip[1] = 90;
-	gprs_info.dip[2] = 181;
-	gprs_info.dip[3] = 54;
-	gprs_info.port = 8888;
+//	gprs_info.dip[0] = 218;
+//	gprs_info.dip[1] = 90;
+//	gprs_info.dip[2] = 181;
+//	gprs_info.dip[3] = 54;
+    gprs_info.dip[0] = 58;
+	gprs_info.dip[1] = 214;
+	gprs_info.dip[2] = 236;
+	gprs_info.dip[3] = 152;
+	gprs_info.port = 8056;
+    gprs_info.data_mode = TRUE;
 	gprs_info.mode = TRUE;
 	gprs_info.uart_port = UART_4;
 	gprs_info.uart_speed = 9600;

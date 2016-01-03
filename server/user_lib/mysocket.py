@@ -40,7 +40,7 @@ class tcp_service(socketserver.BaseRequestHandler):
                     continue
                 array.extend(temp)
                 array_len = len(array)
-                remainlen = power.recv_data(array,self.client_address)
+                remainlen = power.recv_data(array,self)
                 if remainlen != 0:
                     remain = appand_remain(array,array_len,remainlen)
                 else :

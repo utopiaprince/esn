@@ -7,7 +7,7 @@ import time
 import threading
 import user_lib.globalval as globalval
 
-forwardsend = True
+forwardsend = False
 dip='58.214.236.152'
 dport = 8065
 
