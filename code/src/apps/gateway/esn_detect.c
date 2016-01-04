@@ -41,7 +41,7 @@ static void range_app_handle(void)
         //*< 获取到距离数据
         distance = range_sensor_get();
         
-        if (distance == 0)
+        if (distance <= 2.0)
         {
             //*< 在采集一次数据
             xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
