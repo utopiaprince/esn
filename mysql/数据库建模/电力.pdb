@@ -3772,7 +3772,7 @@ do call maintain_online(); </a:Procedure.Text>
 <a:Code>insert_acceleration</a:Code>
 <a:CreationDate>1447418139</a:CreationDate>
 <a:Creator>all</a:Creator>
-<a:ModificationDate>1450185249</a:ModificationDate>
+<a:ModificationDate>1450267197</a:ModificationDate>
 <a:Modifier>all</a:Modifier>
 <a:Procedure.Text>create procedure %PROC% (uid varchar(50),ucollect_time int,ux float,uy float,uz float)
 begin
@@ -3786,9 +3786,9 @@ if @cut=0 then
 	set @s_y=uy;
 	set @s_z=uz;
 end if;
-set @s_x=@s_x-ux;
-set @s_y=@s_y-uy;
-set @s_z=@s_z-uz;
+set @s_x=ux-@s_x;
+set @s_y=uy-@s_y;
+set @s_z=uz-@s_z;
 insert into acceleration_info (id,collect_time,x,y,z) values (uid,ucollect_time,@s_x,@s_y,@s_z);
 select LAST_INSERT_ID();
 end

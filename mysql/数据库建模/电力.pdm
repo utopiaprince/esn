@@ -3679,14 +3679,14 @@ end
 <a:Code>update_id_manage_infoall</a:Code>
 <a:CreationDate>1439622254</a:CreationDate>
 <a:Creator>all</a:Creator>
-<a:ModificationDate>1439623808</a:ModificationDate>
+<a:ModificationDate>1451786740</a:ModificationDate>
 <a:Modifier>all</a:Modifier>
 <a:Comment>更新所有信息</a:Comment>
 <a:Procedure.Text>create procedure %PROC% (uid varchar(255),uparent_id varchar(255),uonline_state int,
 ushock_state int,utemperature_state int,udistance_state int,uip varchar(50),ugateway_id varchar(255))
 begin
 update id_manage set parent_id=uparent_id,online_state=uonline_state,shock_state=ushock_state,
-temperature_state=utemperature_state,distance_state=udistance_state,ip=uip,gateway_id=ugateway_id 
+temperature_state=utemperature_state,distance_state=udistance_state,ip=uip,gateway_id=ugateway_id,local_time=now()  
 where id = uid;
 end;
 </a:Procedure.Text>

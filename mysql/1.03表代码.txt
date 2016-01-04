@@ -372,7 +372,7 @@ create procedure update_id_manage_infoall (uid varchar(255),uparent_id varchar(2
 ushock_state int,utemperature_state int,udistance_state int,uip varchar(50),ugateway_id varchar(255))
 begin
 update id_manage set parent_id=uparent_id,online_state=uonline_state,shock_state=ushock_state,
-temperature_state=utemperature_state,distance_state=udistance_state,ip=uip,gateway_id=ugateway_id 
+temperature_state=utemperature_state,distance_state=udistance_state,ip=uip,gateway_id=ugateway_id,local_time=now()  
 where id = uid;
 end;
 

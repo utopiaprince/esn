@@ -22,6 +22,8 @@ typedef struct
 	uint8_t dip[4];
 	uint16_t port;
 	bool_t mode;
+    bool_t data_mode;
+	uint8_t lost_cnt;
 	bool_t heart;
 }gprs_info_t;
 
