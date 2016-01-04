@@ -37,11 +37,17 @@ static void range_app_handle(void)
         esn_msg_t esn_msg;
         esn_msg.event = GAIN_RANGE_START;
         xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-	
-        vTaskDelay(5);  //*< 延时10ms采样一下数据
-        
+        vTaskDelay(5);  //*< 延时50ms采样一下数据
         //*< 获取到距离数据
         distance = range_sensor_get();
+        
+        if (distance == 0)
+        {
+            //*< 在采集一次数据
+            xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
+            vTaskDelay(5);  //*< 延时50ms采样一下数据
+            distance = range_sensor_get();
+        }
     }
 	
 	if (distance < RANGE_MIN_THRESHOLD)
