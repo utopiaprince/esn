@@ -37,7 +37,7 @@ static void range_app_handle(void)
         esn_msg_t esn_msg;
         esn_msg.event = GAIN_RANGE_START;
         xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-        vTaskDelay(5);  //*< 延时50ms采样一下数据
+        vTaskDelay(10);  //*< 延时100ms采样一下数据
         //*< 获取到距离数据
         distance = range_sensor_get();
         
@@ -45,7 +45,7 @@ static void range_app_handle(void)
         {
             //*< 在采集一次数据
             xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
-            vTaskDelay(5);  //*< 延时50ms采样一下数据
+            vTaskDelay(50);  //*< 延时500ms采样一下数据
             distance = range_sensor_get();
         }
     }
@@ -214,7 +214,7 @@ void esn_detect_task(void *param)
 {
 	while (1)
 	{
-		vTaskDelay(1*configTICK_RATE_HZ - 65); //*< 5s采集一次原始数据
+		vTaskDelay(1*configTICK_RATE_HZ - 70); //*< 5s采集一次原始数据
 #if 1
         
         angle_app_handle();
