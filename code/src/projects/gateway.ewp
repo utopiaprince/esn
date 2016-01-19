@@ -2327,7 +2327,7 @@
           <name>$PROJ_DIR$\..\platform\core430\drivers\lora.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\inc\range.c</name>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\range.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\uart.c</name>

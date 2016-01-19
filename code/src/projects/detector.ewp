@@ -389,7 +389,7 @@
           <state>$PROJ_DIR$\..\apps</state>
           <state>$PROJ_DIR$\..\platform\core430\port\</state>
           <state>$PROJ_DIR$\..\platform\core430\init\</state>
-          <state>$PROJ_DIR$\..\platform\core430\drivers\</state>
+          <state>$PROJ_DIR$\..\platform\core430\drivers\inc</state>
           <state>$PROJ_DIR$\..\stack\</state>
           <state>$PROJ_DIR$\..\stack\common\</state>
           <state>$PROJ_DIR$\..\stack\custom\mac\</state>
@@ -2178,6 +2178,9 @@
         <name>$PROJ_DIR$\..\apps\detector\esn_detect.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\apps\detector\esn_gain.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\apps\detector\FreeRTOSConfig.h</name>
       </file>
     </group>
@@ -2189,6 +2192,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\apps\esn_frames.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\apps\detector\esn_gain.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\apps\detector\main.c</name>
@@ -2248,29 +2254,62 @@
         <group>
           <name>inc</name>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\board.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\adxl312.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\cam.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\atmosphere.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\drivers.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\board.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\lora.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\cam.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\sht.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\clock.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\uart.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\drivers.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\wts.h</name>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\lora.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\range.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\sht.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\uart.h</name>
+          </file>
+          <file>
+            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\wts.h</name>
           </file>
         </group>
         <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\adxl312.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\atmosphere.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\board.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\cam.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\clock.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\gprs.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\lora.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\drivers\range.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\drivers\uart.c</name>
