@@ -1,5 +1,5 @@
 /**
- * @brief       : if esn get alarm data, start carma
+ * @brief       : this is lora-network application. 
  * @file        : esn_active.h
  * @version     : v0.0.1
  * @author      : gang.cheng

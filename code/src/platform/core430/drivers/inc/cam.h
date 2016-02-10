@@ -58,6 +58,15 @@ typedef enum {
     ENUM_DOWN_ACK  = 0x1D,
 } cmd_ack_enum_t;
 
+/**
+ * @biref camera data callback, when get a new camera frame.
+ * @param[in] frames_cnt the max cnt for the frames of a pig.
+ * @param[in] the index of frames cnt
+ * @param[in] current data pointer of frame
+ * @param[in] current len of frame
+ * 
+ * @return
+ */
 typedef void (*camera_data_cb_t)(uint16_t frames_cnt,
                                  uint16_t index,
                                  uint8_t *pdata, uint16_t len);
