@@ -80,7 +80,7 @@ typedef struct
 
 static gprs_info_t gprs_info;
 static volatile E_SATE_E e_state = E_CLOSE;
-static hal_timer_t *gprs_switch_timer = NULL;
+//static hal_timer_t *gprs_switch_timer = NULL;
 static send_t send;
 static recv_t recv;
 

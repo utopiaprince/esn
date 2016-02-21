@@ -15,9 +15,10 @@
 
 typedef enum
 {
-	ESN_TIMEOUT_EVENT   = 0x00,
-	ESN_UART_EVENT		= 0x01,
-	ESN_SSN_EVENT		= 0x02,
+	ESN_TIMEOUT_EVENT   = 0x00ul,
+	ESN_UART_EVENT		= 0x01ul,
+	ESN_SSN_EVENT		= 0x02ul,
+    ESN_DATA_EVENT      = 0x03ul,
 } esn_event_enum_t;
 
 void esn_active_init(void);

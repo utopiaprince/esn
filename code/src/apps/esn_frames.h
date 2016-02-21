@@ -27,11 +27,10 @@ typedef enum
 typedef enum
 {
     DATATYPE_VIBRATION   = 0,
-    DATATYPE_DISTANCE    = 1,
-    DATATYPE_TEMPERATURE = 2,
-    DATATYPE_PICTURE     = 3,
-    DATATYPE_ANGLE       = 4,
-    DATATYPE_ATMO        = 5,
+    DATATYPE_DISTANCE,
+    DATATYPE_PICTURE ,
+    DATATYPE_ANGLE   ,
+    DATATYPE_ATMO    ,
 } ens_frame_data_enum_t;
 
 typedef enum
@@ -76,10 +75,6 @@ typedef struct
     fp32_t distance;
 } esn_distance_payload_t;
 
-typedef struct
-{
-    int32_t temperature;
-} esn_temp_payload_t;
 
 typedef struct 
 {

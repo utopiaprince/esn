@@ -756,7 +756,7 @@
         </option>
         <option>
           <name>SecondaryOutputFile</name>
-          <state></state>
+          <state>(None for the selected format)</state>
         </option>
         <option>
           <name>XDefines</name>
@@ -808,7 +808,7 @@
         </option>
         <option>
           <name>XclFile</name>
-          <state>lnk0t.xcl</state>
+          <state>$TOOLKIT_DIR$\config\linker\lnk430F5419.xcl</state>
         </option>
         <option>
           <name>XclFileSlave</name>
@@ -896,7 +896,7 @@
         </option>
         <option>
           <name>xcProgramEntryLabel</name>
-          <state></state>
+          <state>__program_start</state>
         </option>
         <option>
           <name>DebugInformation</name>
@@ -936,7 +936,7 @@
         </option>
         <option>
           <name>ExtraOutputFile</name>
-          <state></state>
+          <state>detector.a43</state>
         </option>
         <option>
           <name>ExtraOutputFormat</name>
@@ -2384,6 +2384,9 @@
           <name>$PROJ_DIR$\..\stack\custom\mac\mac_ctrl.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_frames.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\..\stack\custom\mac\mac_frames.h</name>
         </file>
         <file>
@@ -2391,6 +2394,12 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\stack\custom\mac\mac_prim.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_recv.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\stack\custom\mac\mac_recv.h</name>
         </file>
       </group>
       <group>

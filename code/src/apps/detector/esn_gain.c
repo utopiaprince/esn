@@ -32,7 +32,7 @@ static void camera_recv_data_handle(uint16_t cnt,
     pbuf_t *pbuf = pbuf_alloc(sizeof(esn_camera_payload_t) __PLINE1);
     DBG_ASSERT(pbuf != NULL __DBG_LINE);
 
-    esn_camera_payload_t *datap = pbuf->datap;
+    esn_camera_payload_t *datap = (esn_camera_payload_t *)pbuf->data_p;
     datap->cnt = cnt * 4;
     for (uint8_t i = 0; i < 4; i++)
     {
@@ -41,7 +41,7 @@ static void camera_recv_data_handle(uint16_t cnt,
         pbuf->data_len = sizeof(esn_camera_payload_t);
 
         esn_msg_t esn_msg;
-        esn_msg.event = DATATYPE_PICTURE;
+        esn_msg.event = (ESN_DATA_EVENT<<8) | DATATYPE_PICTURE;
         esn_msg.param = pbuf;
         xQueueSend(esn_active_queue, &esn_msg, portMAX_DELAY);
     }
@@ -52,12 +52,12 @@ static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
     pbuf_t *pbuf = pbuf_alloc(len __PLINE1);
     DBG_ASSERT(pbuf != NULL __DBG_LINE);
 
-    osel_memcpy(pbuf->datap, pdata, len);
-    pbuf->datap += len;
+    osel_memcpy(pbuf->data_p, pdata, len);
+    pbuf->data_p += len;
     pbuf->data_len += len;
 
     esn_msg_t esn_msg;
-    esn_msg.event = DATATYPE_ATMO;
+    esn_msg.event = (ESN_DATA_EVENT<<8) | DATATYPE_ATMO;
     esn_msg.param = pbuf;
     xQueueSend(esn_active_queue, &esn_msg, portMAX_DELAY);
 }
@@ -67,11 +67,11 @@ static bool_t range_recv_data_handle(fp32_t distance)
     pbuf_t *pbuf = pbuf_alloc(sizeof(esn_distance_payload_t) __PLINE1);
     DBG_ASSERT(pbuf != NULL __DBG_LINE);
 
-    osel_memcpy(pbuf->datap, (void *)&distance, sizeof(distance));
+    osel_memcpy(pbuf->data_p, (void *)&distance, sizeof(distance));
     pbuf->data_len += sizeof(distance);
 
     esn_msg_t esn_msg;
-    esn_msg.event = DATATYPE_DISTANCE;
+    esn_msg.event = (ESN_DATA_EVENT<<8) | DATATYPE_DISTANCE;
     esn_msg.param = pbuf;
     xQueueSend(esn_active_queue, &esn_msg, portMAX_DELAY);
     return TRUE;
@@ -85,20 +85,20 @@ static void angle_handle(void)
     pbuf_t *pbuf = pbuf_alloc(sizeof(esn_angle_payload_t) __PLINE1);
     DBG_ASSERT(pbuf != NULL __DBG_LINE);
 
-    osel_memcpy(pbuf->datap, (uint8_t *)&x, sizeof(int16_t));
-    pbuf->datap += sizeof(int16_t);
+    osel_memcpy(pbuf->data_p, (uint8_t *)&x, sizeof(int16_t));
+    pbuf->data_p += sizeof(int16_t);
     pbuf->data_len += sizeof(int16_t);
 
-    osel_memcpy(pbuf->datap, (uint8_t *)&y, sizeof(int16_t));
-    pbuf->datap += sizeof(int16_t);
+    osel_memcpy(pbuf->data_p, (uint8_t *)&y, sizeof(int16_t));
+    pbuf->data_p += sizeof(int16_t);
     pbuf->data_len += sizeof(int16_t);
 
-    osel_memcpy(pbuf->datap, (uint8_t *)&z, sizeof(int16_t));
-    pbuf->datap += sizeof(int16_t);
+    osel_memcpy(pbuf->data_p, (uint8_t *)&z, sizeof(int16_t));
+    pbuf->data_p += sizeof(int16_t);
     pbuf->data_len += sizeof(int16_t);
 
     esn_msg_t esn_msg;
-    esn_msg.event = DATATYPE_VIBRATION;
+    esn_msg.event = (ESN_DATA_EVENT<<8) | DATATYPE_ANGLE;
     esn_msg.param = pbuf;
     xQueueSend(esn_active_queue, &esn_msg, portMAX_DELAY);
 }
@@ -139,7 +139,7 @@ static void shock_handle(void)
         stock_can_sent = FALSE;
 
         esn_msg_t shock_msg;
-        shock_msg.event = DATATYPE_VIBRATION;
+        shock_msg.event = (ESN_DATA_EVENT<<8) | DATATYPE_VIBRATION;
         shock_msg.param = NULL;
         xQueueSend(esn_active_queue, &shock_msg, portMAX_DELAY);
 

@@ -176,7 +176,7 @@ static void tx_ok_cb(uint16_t int_time)
 #endif
 }
 
-
+#if RF_INT_DEAL_FLOW != 0
 static void tx_und_cb(uint16_t int_time)
 {
 #if M_TRAN_DGB_EN > 0
@@ -195,8 +195,8 @@ static void tx_und_cb(uint16_t int_time)
         hal_timer_cancel(&ack_timer);
     }
     tran_cb_send_msg(M_TRAN_TXUND_EVENT, MSG_LOW_PRIO);
-
 }
+#endif 
 
 #if TXOK_INT_SIMU_EN > 0
 /*call back for timeout of waiting tx ok*/

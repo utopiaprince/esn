@@ -20,14 +20,9 @@
 
 DBG_THIS_MODULE("esn_active")
 
-static QueueHandle_t esn_active_queue = NULL;
-static TimerHandle_t esn_cycle_timer = NULL;
+QueueHandle_t esn_active_queue = NULL;
 
 static uint8_t data_seq = 0;
-
-static bool_t distance_data_trigger_flag = FALSE;
-static bool_t temp_data_trigger_flag = TRUE;
-static uint8_t carma_data[1028];
 
 static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
                             const void *const payload,
@@ -84,91 +79,20 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
     return FALSE;
 }
 
-static void esn_camra_handle(void)
+static void esn_camera_handle(pbuf_t *pbuf)
 {
-    memset(carma_data, 0x00, sizeof(carma_data));
-
-    uint16_t len = camra_data_get(carma_data);
-    if (len == 0) {
-        return;
-    }
-
-    uint16_t offset = 0;
-    uint8_t nums = (len - 1) / CAMRA_PAYLOAD_SUB_SIZE + 1;
-    uint8_t sub_num = 1;
-
     esn_frames_head_t esn_frames_head;
+
     esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
-    esn_frames_head.frames_ctrl.alarm      = ALARM_N;
+    esn_frames_head.frames_ctrl.alarm      = ALARM_T;
     esn_frames_head.frames_ctrl.data_type  = DATATYPE_PICTURE;
-    esn_frames_head.nums                   = nums;
+    esn_frames_head.seq = data_seq++;
+    esn_frames_head.nums = 1;
+    esn_frames_head.sub_num = 1;
 
-    while (len > CAMRA_PAYLOAD_SUB_SIZE) {
-        esn_frames_head.seq = data_seq++;
-        esn_frames_head.sub_num = sub_num++;
+    esn_camera_payload_t esn_camera_pd;
 
-
-        esn_data_send(&esn_frames_head,
-                      &carma_data[offset],
-                      CAMRA_PAYLOAD_SUB_SIZE);
-
-        offset += CAMRA_PAYLOAD_SUB_SIZE;
-        len -= CAMRA_PAYLOAD_SUB_SIZE;
-    }
-
-    if (len > 0) {
-        esn_frames_head.seq = data_seq++;
-        esn_frames_head.sub_num = sub_num++;
-
-
-        esn_data_send(&esn_frames_head, &carma_data[offset], len);
-    }
-}
-
-/**
- * @brief
- */
-static void esn_timeout_handle(void)
-{
-    esn_frames_head_t esn_frames_head;
-
-    if (distance_data_trigger_flag) {
-        distance_data_trigger_flag = FALSE;
-    } else {
-        //@note send distance_data
-        esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
-        esn_frames_head.frames_ctrl.alarm      = ALARM_N;
-        esn_frames_head.frames_ctrl.data_type  = DATATYPE_DISTANCE;
-        esn_frames_head.seq = data_seq++;
-        esn_frames_head.nums = 1;
-        esn_frames_head.sub_num = 1;
-        //@todo: need get distance sensor data
-        esn_distance_payload_t esn_distance_pd;
-        esn_distance_pd.x = 0;
-        esn_distance_pd.y = 0;
-        esn_distance_pd.z = 0;
-
-        esn_data_send(&esn_frames_head, &esn_distance_pd,
-                      sizeof(esn_distance_payload_t));
-    }
-
-    if (temp_data_trigger_flag) {
-        temp_data_trigger_flag = FALSE;
-    } else {
-        esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
-        esn_frames_head.frames_ctrl.alarm      = ALARM_N;
-        esn_frames_head.frames_ctrl.data_type  = DATATYPE_TEMPERATURE;
-        esn_frames_head.seq = data_seq++;
-        esn_frames_head.nums = 1;
-        esn_frames_head.sub_num = 1;
-
-        esn_temp_payload_t esn_temp_pd;
-        esn_temp_pd.temperature = sensor_temp_get();
-
-        esn_data_send(&esn_frames_head,
-                      &esn_temp_pd,
-                      sizeof(esn_temp_payload_t));
-    }
+    esn_data_send(&esn_frames_head, &esn_camera_pd, sizeof(esn_camera_payload_t));
 }
 
 static void esn_vibration_handle(void)
@@ -188,11 +112,9 @@ static void esn_vibration_handle(void)
     esn_vib_pd.alx       = 0x20;
 
     esn_data_send(&esn_frames_head, &esn_vib_pd, sizeof(esn_vib_pd));
-
-    esn_camra_handle();
 }
 
-static void esn_distance_handle(void)
+static void esn_distance_handle(pbuf_t *pbuf)
 {
     esn_frames_head_t esn_frames_head;
 
@@ -202,42 +124,118 @@ static void esn_distance_handle(void)
     esn_frames_head.seq = data_seq++;
     esn_frames_head.nums = 1;
     esn_frames_head.sub_num = 1;
-
-    distance_data_trigger_flag = TRUE;
-
+    
     esn_distance_payload_t esn_distance_pd;
-    esn_distance_pd = sensor_distance_get();
+    if(pbuf != NULL)
+    {
+        osel_memcpy(&esn_distance_pd, pbuf->head, sizeof(esn_distance_payload_t));
+        pbuf_free(&pbuf __PLINE2);
+    }
+    else
+    {
+        esn_distance_pd.distance = 2.0;
+    }
 
     esn_data_send(&esn_frames_head, &esn_distance_pd,
                   sizeof(esn_distance_payload_t));
-
-    esn_camra_handle();
 }
 
-static void esn_temp_handle(void)
+
+static void esn_angle_handle(pbuf_t *pbuf)
 {
     esn_frames_head_t esn_frames_head;
-
+    
     esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
     esn_frames_head.frames_ctrl.alarm      = ALARM_T;
-    esn_frames_head.frames_ctrl.frame_type = DATATYPE_TEMPERATURE;
+    esn_frames_head.frames_ctrl.data_type  = DATATYPE_ANGLE;
     esn_frames_head.seq = data_seq++;
     esn_frames_head.nums = 1;
     esn_frames_head.sub_num = 1;
+    
+    esn_angle_payload_t esn_angle_pd;
+    
+    if(pbuf != NULL)
+    {
+        osel_memcpy(&esn_angle_pd, pbuf->head, sizeof(esn_angle_payload_t));
+        pbuf_free(&pbuf __PLINE2);
+    }
+    else
+    {
+        return;
+    }
 
-    temp_data_trigger_flag = TRUE;
+    esn_data_send(&esn_frames_head, &esn_angle_pd,
+                  sizeof(esn_angle_payload_t));
+}
 
-    esn_temp_payload_t esn_temp_pd;
-    esn_temp_pd.temperature = sensor_temp_get();
 
-    esn_data_send(&esn_frames_head, &esn_temp_pd,
-                  sizeof(esn_temp_payload_t));
+static void esn_atmo_handle(pbuf_t *pbuf)
+{
+    esn_frames_head_t esn_frames_head;
+    
+    esn_frames_head.frames_ctrl.frame_type = ESN_DATA;
+    esn_frames_head.frames_ctrl.alarm      = ALARM_T;
+    esn_frames_head.frames_ctrl.data_type  = DATATYPE_ATMO;
+    esn_frames_head.seq = data_seq++;
+    esn_frames_head.nums = 1;
+    esn_frames_head.sub_num = 1;
+    
+    uint8_t atmo_buf[100];
+    uint8_t len = 0;
+    if(pbuf != NULL)
+    {
+        len = pbuf->data_len;
+        osel_memcpy(atmo_buf, pbuf->head, len);
+        pbuf_free(&pbuf __PLINE2);
+    }
+    else
+    {
+        return;
+    }
+
+    esn_data_send(&esn_frames_head, atmo_buf, len);
+}
+
+static void esn_data_event_handle(esn_msg_t *esn_msg)
+{
+    uint8_t data_type = esn_msg->event & 0xFF;
+    switch(data_type)
+    {
+    case DATATYPE_VIBRATION:
+        esn_vibration_handle();
+        break;
+
+    case DATATYPE_DISTANCE:
+        esn_distance_handle(esn_msg->param);
+        break;
+    
+    case DATATYPE_PICTURE:
+        esn_camera_handle(esn_msg->param);
+        break;
+
+    case DATATYPE_ANGLE:
+        esn_angle_handle(esn_msg->param);
+        break;
+
+    case DATATYPE_ATMO:
+        esn_atmo_handle(esn_msg->param);
+        break;
+        
+    default:
+        break;
+    }
+}
+
+static void esn_ssn_event_handle(esn_msg_t *esn_msg)
+{
+    //@todo 从无线网络接收到的数据处理函数
+    ;
 }
 
 static void esn_active_task(void *param)
 {
     esn_msg_t esn_msg;
-    sbuf_t *sbuf = NULL;
+
     while (1) {
         xQueueReceive(esn_active_queue,
                       &esn_msg,
@@ -248,33 +246,16 @@ static void esn_active_task(void *param)
             mac_online_start();
         } else {
             DBG_LOG(DBG_LEVEL_WARNING, "mac online, data event\r\n");
-            switch (esn_msg.event) {
-            case ESN_TIMEOUT_EVENT:
-                esn_timeout_handle();
+            uint16_t event_type = esn_msg.event >> 8;
+            switch (event_type) {
+            case ESN_DATA_EVENT:
+                esn_data_event_handle(&esn_msg);
                 break;
-
-            case ESN_VIBRATION_EVENT:
-                esn_vibration_handle();
+                
+            case ESN_SSN_EVENT:
+                esn_ssn_event_handle(&esn_msg);
                 break;
-
-            case ESN_DISTANCE_EVENT:
-                esn_distance_handle();
-                break;
-
-            case ESN_TEMP_EVENT:
-                esn_temp_handle();
-                break;
-
-            case ESN_UART_EVENT:
-                //@todo
-                break;
-
-            case ESN_CONFIG_EVENT:
-                sbuf = (sbuf_t *)(esn_msg.param);
-                pbuf_free(&(sbuf->primargs.pbuf) __PLINE2 );
-                sbuf_free(&sbuf __SLINE2 );
-                break;
-
+                
             default:
                 break;
             }
@@ -295,17 +276,6 @@ bool_t esn_active_queue_send(esn_msg_t *esn_msg)
     return TRUE;
 }
 
-void esn_cycle_timeout_cb( TimerHandle_t pxTimer )
-{
-    configASSERT( pxTimer );
-
-    esn_msg_t esn_msg;
-    esn_msg.event = ESN_TIMEOUT_EVENT;
-    esn_msg.param = NULL;
-    esn_active_queue_send(&esn_msg);
-}
-
-
 bool_t esn_active_init(void)
 {
     portBASE_TYPE res = pdTRUE;
@@ -322,19 +292,6 @@ bool_t esn_active_init(void)
     esn_active_queue = xQueueCreate(10, sizeof(esn_msg_t));
     if (esn_active_queue == NULL) {
         DBG_LOG(DBG_LEVEL_ERROR, "esn_active_queue init failed\r\n");
-    }
-
-    esn_cycle_timer = xTimerCreate("EsnTimer",
-                                   (ESN_TIMER_CYCLE * configTICK_RATE_HZ),
-                                   pdTRUE,
-                                   NULL,
-                                   esn_cycle_timeout_cb);
-    if (esn_cycle_timer == NULL) {
-        DBG_LOG(DBG_LEVEL_ERROR, "esn cycle timer create failed\r\n");
-    } else {
-        if (xTimerStart(esn_cycle_timer , 0) != pdPASS) {
-            DBG_LOG(DBG_LEVEL_ERROR, "esn cycle timer start failed\r\n");
-        }
     }
 
     return TRUE;

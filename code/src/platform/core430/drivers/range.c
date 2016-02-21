@@ -123,7 +123,6 @@ void range_sensor_init(uint8_t uart_id, uint32_t baud,
 void range_handle(esn_msg_t *msg)
 {
     uint8_t cmd = msg->event & 0x00FF;
-    uint32_t index = 0;
 
     switch (cmd)
     {
