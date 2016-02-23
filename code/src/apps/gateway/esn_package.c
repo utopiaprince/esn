@@ -3,7 +3,8 @@
 #include <gprs.h>
 #include <board.h>
 #include <crc16.h>
-static bool_t esn_gprs_send(uint8_t *data, uint16_t length)
+
+bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 {
 	gprs_info_t *gprs_info;
 	gprs_info = gprs_driver.get();

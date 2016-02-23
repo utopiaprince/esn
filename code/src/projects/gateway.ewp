@@ -2453,9 +2453,6 @@
     </group>
     <group>
       <name>module</name>
-      <excluded>
-        <configuration>Debug</configuration>
-      </excluded>
       <file>
         <name>$PROJ_DIR$\..\stack\module\m_tran.c</name>
       </file>
