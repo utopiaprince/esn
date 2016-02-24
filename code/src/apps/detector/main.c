@@ -27,6 +27,7 @@ int main(void)
 
 	esn_detect_init();
 	esn_active_init();
+    esn_gain_init();
 
 	stack_init();
 

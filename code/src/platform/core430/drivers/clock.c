@@ -240,3 +240,36 @@ __interrupt void timer_b0_ccrx( void )
     TBCCR0 += 0x8000; // 1s
     LPM3_EXIT;
 }
+
+
+void htimer_int_handler(void);
+#pragma vector = TIMER0_A1_VECTOR
+__interrupt void timer0_a1_isr(void)
+{
+	switch (__even_in_range(TA0IV, 14))
+	{
+		case TA0IV_TA0CCR1:
+			break;
+            
+		case TA0IV_TA0CCR2:
+			break;
+            
+		case TA0IV_TA0CCR3:
+			break;
+            
+		case TA0IV_TA0CCR4:
+			htimer_int_handler();
+			break;
+            
+		case TA0IV_TA0IFG:
+			break;
+            
+		default:
+			break;
+	}
+
+	LPM3_EXIT;
+}
+
+
+

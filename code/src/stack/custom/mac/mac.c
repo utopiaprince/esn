@@ -15,6 +15,8 @@
 #include "sbuf.h"
 #include "prim.h"
 
+#include "drivers.h"
+
 #include "module.h"
 #include "m_tran.h"
 #include "mac_prim.h"
@@ -116,6 +118,8 @@ bool_t mac_sent_set(void)
 
 void mac_init(void)
 {
+    lora_init(UART_4, 9600);
+    
     portBASE_TYPE res = pdTRUE;
     res = xTaskCreate(mac_task,                   //*< task body
                       "MacTask",                  //*< task name
@@ -140,10 +144,10 @@ void mac_init(void)
         DBG_LOG(DBG_LEVEL_ERROR, "mac_set init failed\r\n");
 
     }
-
-    m_prim_init();
-    m_tran_init();
     
+    hal_timer_init();
+    m_tran_init();
+    m_prim_init();
     m_recv_init();
 }
 

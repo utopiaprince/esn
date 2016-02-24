@@ -21,6 +21,10 @@ DBG_THIS_MODULE("esn_gain")
 
 QueueHandle_t esn_gain_queue = NULL;
 
+void cache_alarm(uint8_t alarm)
+{
+    ;
+}
 /**
 * @note 每次camera接收的数据都是512字节一包，需要按照128字节拆分成4包
 */
@@ -197,7 +201,7 @@ void esn_gain_init(void)
     portBASE_TYPE res;
     res = xTaskCreate(esn_gain_task,
                       "esn_gain_task",
-                      400,
+                      200,
                       NULL,
                       ESN_GAIN_PRIORITY,
                       NULL);

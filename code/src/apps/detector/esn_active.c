@@ -281,7 +281,7 @@ bool_t esn_active_init(void)
     portBASE_TYPE res = pdTRUE;
     res = xTaskCreate(esn_active_task,
                       "EsnActiveTask",
-                      500,
+                      300,
                       NULL,
                       ESN_ACTIVE_PRIORITY,
                       NULL);

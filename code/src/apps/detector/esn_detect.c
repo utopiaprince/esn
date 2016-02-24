@@ -184,7 +184,7 @@ bool_t esn_detect_init(void)
 {
     xTaskCreate(esn_detect_task,
                 "esn detect task",
-                500,
+                300,
                 NULL,
                 ESN_DETECT_PRIORITY,
                 NULL);

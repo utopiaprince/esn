@@ -11,6 +11,8 @@
 #ifndef __MODULE_H__
 #define __MODULE_H__
 
+#define M_SLOT_EN           0
+
 typedef enum
 {
     TRAN_MODULE = 0x0100,

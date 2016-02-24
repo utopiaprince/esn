@@ -59,9 +59,9 @@
 #if DATA_RATE == 5u
 #define  LEN_TO_US(len)         (((len+PRE_SYNC_CODE_LEN)*(1600+2)) + 1000u)
 /* 5K速率，1000*(8*4)=32000 增加160的抖动时间（经验值）*/
-#define  BE_TO_US(be)           ((be)*32160)
-#define  BE_TO_MS(be)           ((be)*32)
-#define  MS_FOR_ACK             (60u)
+#define  BE_TO_US(be)           ((be)*16160ul)
+#define  BE_TO_MS(be)           ((be)*16)
+#define  MS_FOR_ACK             (100u)
 
 #endif
 

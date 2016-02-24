@@ -51,7 +51,7 @@ bool_t phy_write_buf(pbuf_t *pbuf, uint8_t stamp_size)
 	
 		pbuf->data_len -= PHY_HEAD_SIZE;
 	}
-	return FALSE;
+	return TRUE;
 }
 
 

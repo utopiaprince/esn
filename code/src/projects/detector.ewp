@@ -54,11 +54,11 @@
         </option>
         <option>
           <name>RTConfigPath</name>
-          <state>$TOOLKIT_DIR$\lib\dlib\dl430xlmfn.h</state>
+          <state>$TOOLKIT_DIR$\lib\dlib\dl430xllfn.h</state>
         </option>
         <option>
           <name>RTLibraryPath</name>
-          <state>$TOOLKIT_DIR$\lib\dlib\dl430xlmfn.r43</state>
+          <state>$TOOLKIT_DIR$\lib\dlib\dl430xllfn.r43</state>
         </option>
         <option>
           <name>Input variant</name>
@@ -97,7 +97,7 @@
         </option>
         <option>
           <name>OGChipSelectMenu</name>
-          <state>MSP430F5419	MSP430F5419</state>
+          <state>MSP430F5438	MSP430F5438</state>
         </option>
         <option>
           <name>GStackHeapOverride</name>
@@ -105,7 +105,7 @@
         </option>
         <option>
           <name>GStackSize2</name>
-          <state>1000</state>
+          <state>800</state>
         </option>
         <option>
           <name>GHeapSize2</name>
@@ -113,11 +113,11 @@
         </option>
         <option>
           <name>RadioDataModelType</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>GHeap20Size</name>
-          <state>0</state>
+          <state>80</state>
         </option>
         <option>
           <name>GeneralMisraRules98</name>
@@ -583,7 +583,7 @@
         </option>
         <option>
           <name>ADefines</name>
-          <state></state>
+          <state>USE_LARGE_CODE_MODEL</state>
         </option>
         <option>
           <name>AList</name>
@@ -700,7 +700,7 @@
         <option>
           <name>AUserIncludes</name>
           <state>$PROJ_DIR$\..\apps\detector\</state>
-          <state>$PROJ_DIR$\..\platform\msp430f5419\port\</state>
+          <state>$PROJ_DIR$\..\platform\core430\port\</state>
         </option>
         <option>
           <name>ACPUTAG</name>
@@ -776,7 +776,7 @@
         </option>
         <option>
           <name>XList</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>SegmentMap</name>
@@ -808,7 +808,7 @@
         </option>
         <option>
           <name>XclFile</name>
-          <state>$TOOLKIT_DIR$\config\linker\lnk430F5419.xcl</state>
+          <state>$TOOLKIT_DIR$\config\linker\lnk430F5438.xcl</state>
         </option>
         <option>
           <name>XclFileSlave</name>
@@ -2322,6 +2322,9 @@
         </file>
         <file>
           <name>$PROJ_DIR$\..\platform\core430\init\bsp.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\platform\core430\init\cstartup.s43</name>
         </file>
       </group>
       <group>
