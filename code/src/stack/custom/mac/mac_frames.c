@@ -100,7 +100,7 @@ int8_t mac_frm_hd_fill(pbuf_t *pbuf, mac_frames_hd_t *mac_frm_hd)
 	pbuf->data_len += len;
 
 	pbuf->attri.seq 	  = mac_frm_hd->seq;
-	pbuf->attri.send_mode = CSMA_SEND_MODE;
+	pbuf->attri.send_mode = TDMA_SEND_MODE;
 	pbuf->attri.need_ack  = mac_frm_hd->frames_ctrl.ack_request;
 	if(mac_frm_hd->frames_ctrl.frame_type == MAC_FRAMES_TYPE_ACK)
 	{
