@@ -30,11 +30,11 @@
 #include <lib.h>
 #include <drivers.h>
 
-#define SETA_H      (P10OUT |= BIT0)
-#define SETA_L      (P10OUT &= ~BIT0)
+#define SETA_H      (P10OUT |= BIT7)
+#define SETA_L      (P10OUT &= ~BIT7)
 
-#define SETB_H      (P9OUT |= BIT7)
-#define SETB_L      (P9OUT &= ~BIT7)
+#define SETB_H      (P10OUT |= BIT3)
+#define SETB_L      (P10OUT &= ~BIT3)
 
 #define MODE_1()    lora_mode=NORMAL_MODE;SETA_L;SETB_L;    //*< normal mode
 #define MODE_2()    lora_mode=WAKEUP_MODE;SETA_L;SETB_H;    //*< wakeup mode
@@ -63,10 +63,10 @@ static void lora_gpio_init(void)
     // P10.0 -- SETA (Output)
     // P9.6 -- AUX (Input)
     // P9.7 -- SETB (Output)
-    P9DIR &= ~BIT6;
+    P10DIR &= ~BIT6;
 
-    P10DIR |= BIT0; P10OUT |= BIT0;
-    P9DIR  |= BIT7; P9OUT  |= BIT7; //*< set SETA,SETB high
+    P10DIR |= BIT7; P10OUT |= BIT7;
+    P10DIR |= BIT3; P10OUT |= BIT3; //*< set SETA,SETB high
 
     // 使UM402进入配置模式
 }
@@ -78,7 +78,7 @@ static void lora_gpio_init(void)
  */
 static bool_t lora_reg_read(uint8_t reg, uint8_t len)
 {
-    uint8_t buf[12];
+    uint8_t buf[15];
     uint8_t index = 0;
 
     lora_mode = SETTING_MODE;
@@ -97,11 +97,9 @@ static bool_t lora_reg_read(uint8_t reg, uint8_t len)
     lora_recv_rxok_flag = FALSE;
     uart_send_string(lora_port, buf, index);
 
-    for (uint32_t i = 0; i < 0x80000; i++)
-    {
-        ;
-    }
-    if (lora_recv_rxok_flag)
+    vTaskDelay(30 / portTICK_PERIOD_MS);
+    
+    if (lora_recv_index!=0)
     {
         if ((lora_recv_index == (len + 1)) &&
                 (lora_recv_data[0] == 0x24))
@@ -119,7 +117,7 @@ static bool_t lora_reg_read(uint8_t reg, uint8_t len)
 
 static bool_t lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
 {
-    uint8_t send_buf[12];
+    uint8_t send_buf[15];
     uint8_t index = 0;
 
     lora_mode = SETTING_MODE;
@@ -138,14 +136,11 @@ static bool_t lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
     index += len;
 
     lora_recv_rxok_flag = FALSE;
-    uart_send_string(lora_port, buf, index);
+    uart_send_string(lora_port, send_buf, index);
 
-    for (uint32_t i = 0; i < 0x80000; i++)
-    {
-        ;
-    }
+    vTaskDelay(3);
 
-    if (lora_recv_rxok_flag)
+    if (lora_recv_index!=0)
     {
         if ((lora_recv_index == (len + 1)) &&
                 (lora_recv_data[0] == 0x24))
@@ -218,7 +213,10 @@ static void lora_recv_timeout_cb(TimerHandle_t timer)
 
 static bool_t lora_recv_ch_cb(uint8_t id, uint8_t ch)
 {
+//    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    
     lora_recv_data[lora_recv_index++] = ch;
+//    xTimerResetFromISR(lora_daemon_timer, &xHigherPriorityTaskWoken);
 
     return FALSE;
 }
@@ -241,6 +239,8 @@ void lora_init(uint8_t uart_id, uint32_t baud)
                                      lora_recv_timeout_cb);
 }
 
+static uint8_t char_buf[];
+
 /**
  * @note call this func after os is running
  */
@@ -248,12 +248,15 @@ void lora_setting(lora_int_reg_t txok_cb,
                   lora_int_reg_t rxok_cb)
 {
     MODE_4();
+    
+    vTaskDelay(20 / portTICK_PERIOD_MS);
+    lora_reg_read(UM_REG_TYPE, 10);
+    
+    uint8_t rf_bps = 0x0e;
+    lora_reg_write(UM_REG_RF_BPS, &rf_bps, 1);
 
     uint8_t rf_req[] = {0x07, 0x2B, 0xF0};
     lora_reg_write(UM_REG_FREQ_3, rf_req, 3);
-
-    uint8_t rf_bps = 0x0e;
-    lora_reg_write(UM_REG_RF_BPS, &rf_bps, 1);
 
     uint8_t rf_pow = 0x16;
     lora_reg_write(UM_REG_POWER, &rf_pow, 1);
@@ -264,9 +267,9 @@ void lora_setting(lora_int_reg_t txok_cb,
     uint8_t rf_feat = 0x0A;
     lora_reg_write(UM_REG_FEATURE, &rf_feat, 1);
 
-    uint8_t rf_baud = 0x07; //*< 115200
-    lora_reg_write(UM_REG_UART_BPS, &rf_baud, 1);
-    uart_init(lora_port, 115200);
+//    uint8_t rf_baud = 0x07; //*< 115200
+//    lora_reg_write(UM_REG_UART_BPS, &rf_baud, 1);
+//    uart_init(lora_port, 115200);
 
     lora_int_reg[0] = txok_cb;
     lora_int_reg[1] = rxok_cb;

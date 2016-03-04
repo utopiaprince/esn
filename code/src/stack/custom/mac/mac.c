@@ -42,6 +42,12 @@ static xSemaphoreHandle mac_sent = NULL;
 static void mac_task(void *p)
 {
     osel_event_t msg;
+    hal_timer_init();
+    
+    m_recv_init();
+    m_tran_init();
+    m_prim_init();
+    
     while (1)
     {
         xQueueReceive(mac_queue,        //*< the handle of received queue
@@ -144,11 +150,6 @@ void mac_init(void)
         DBG_LOG(DBG_LEVEL_ERROR, "mac_set init failed\r\n");
 
     }
-    
-    hal_timer_init();
-    m_tran_init();
-    m_prim_init();
-    m_recv_init();
 }
 
 

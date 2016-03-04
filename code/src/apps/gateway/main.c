@@ -46,7 +46,7 @@ int main(void)
 	esn_gain_init();
 	
 	driver_init();
-	//stack_init();
+	stack_init();
 	
 	vTaskStartScheduler();
 	
