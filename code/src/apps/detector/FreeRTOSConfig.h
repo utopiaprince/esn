@@ -165,7 +165,7 @@ configTICK_VECTOR must also be set in FreeRTOSConfig.h to the correct
 interrupt vector for the chosen tick interrupt source.  This implementation of
 vApplicationSetupTimerInterrupt() generates the tick from timer A0, so in this
 case configTICK__VECTOR is set to TIMER0_A0_VECTOR. */
-#define configTICK_VECTOR               TIMER0_A0_VECTOR
+#define configTICK_VECTOR               TIMER1_A0_VECTOR
 
 
 #endif /* FREERTOS_CONFIG_H */

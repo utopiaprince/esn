@@ -131,8 +131,17 @@ static void tran_cb_send_msg(osel_signal_t sig, osel_eblock_prio_t prio)
     osel_event_t msg;
     msg.event = sig;
     msg.param = NULL;
+    
+    if(sig == M_TRAN_TXOK_EVENT)
+    {
+        mac_queue_send(&msg);
+    }
+    else
+    {
+        mac_queue_send_from_isr(&msg);
+    }
 
-    mac_queue_send_from_isr(&msg);
+    
 }
 
 /*call back for receiving Successfully*/

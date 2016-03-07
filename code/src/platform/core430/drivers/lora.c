@@ -138,7 +138,7 @@ static bool_t lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
     lora_recv_rxok_flag = FALSE;
     uart_send_string(lora_port, send_buf, index);
 
-    vTaskDelay(3);
+    vTaskDelay(2);
 
     if (lora_recv_index!=0)
     {
@@ -248,7 +248,7 @@ void lora_setting(lora_int_reg_t txok_cb,
                   lora_int_reg_t rxok_cb)
 {
     MODE_4();
-    
+
     vTaskDelay(20 / portTICK_PERIOD_MS);
     lora_reg_read(UM_REG_TYPE, 10);
     
@@ -273,6 +273,7 @@ void lora_setting(lora_int_reg_t txok_cb,
 
     lora_int_reg[0] = txok_cb;
     lora_int_reg[1] = rxok_cb;
+
     MODE_1();
 }
 

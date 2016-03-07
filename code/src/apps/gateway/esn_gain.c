@@ -338,7 +338,7 @@ void esn_gain_init(void)
 
     res = xTaskCreate(esn_gain_task,
                       "esn_gain_task",
-                      400,
+                      300,
                       NULL,
                       ESN_GAIN_PRIORITY,
                       NULL);
