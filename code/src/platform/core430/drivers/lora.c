@@ -41,12 +41,23 @@
 #define MODE_3()    lora_mode=LOWPOW_MODE;SETA_H;SETB_L;    //*< low power mode
 #define MODE_4()    lora_mode=SETTING_MODE;SETA_H;SETB_H    //*< set mode
 
+uint8_t lora_setting_array[] = {
+    0x07,0x2b,0xf0, //*< 470Mhz
+    0x0E,           //*< 空中速率18229
+    0x16,           //*< 发射功率20dbm
+    0x03,           //*< 配置好115200
+    0x00,           //*< 无效校验位
+    0x28,           //*<
+    0x00,0x00,0x00,
+    0xFF,0xFF,      //*< 硬件地址
+    0x00,           //*< 功能位：关闭所有功能
+};
+
 static uint8_t lora_port = 0;
 
 static uint8_t lora_recv_data[150] = {0};
 static uint8_t lora_recv_index = 0;
 static bool_t lora_recv_rxok_flag = FALSE;
-
 
 static uint8_t lora_sent_data[150] = {0};
 
@@ -97,7 +108,7 @@ static bool_t lora_reg_read(uint8_t reg, uint8_t len)
     lora_recv_rxok_flag = FALSE;
     uart_send_string(lora_port, buf, index);
 
-    vTaskDelay(30 / portTICK_PERIOD_MS);
+    vTaskDelay(50 / portTICK_PERIOD_MS);
     
     if (lora_recv_index!=0)
     {
@@ -117,7 +128,7 @@ static bool_t lora_reg_read(uint8_t reg, uint8_t len)
 
 static bool_t lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
 {
-    uint8_t send_buf[15];
+    uint8_t send_buf[30];
     uint8_t index = 0;
 
     lora_mode = SETTING_MODE;
@@ -138,7 +149,7 @@ static bool_t lora_reg_write(uint8_t reg, uint8_t *buf, uint8_t len)
     lora_recv_rxok_flag = FALSE;
     uart_send_string(lora_port, send_buf, index);
 
-    vTaskDelay(2);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
 
     if (lora_recv_index!=0)
     {
@@ -213,10 +224,10 @@ static void lora_recv_timeout_cb(TimerHandle_t timer)
 
 static bool_t lora_recv_ch_cb(uint8_t id, uint8_t ch)
 {
-//    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     
     lora_recv_data[lora_recv_index++] = ch;
-//    xTimerResetFromISR(lora_daemon_timer, &xHigherPriorityTaskWoken);
+    xTimerResetFromISR(lora_daemon_timer, &xHigherPriorityTaskWoken);
 
     return FALSE;
 }
@@ -233,7 +244,7 @@ void lora_init(uint8_t uart_id, uint32_t baud)
     uart_int_cb_reg(lora_port, lora_recv_ch_cb);
 
     lora_daemon_timer = xTimerCreate("LoraTimer",
-                                     2,
+                                     3,
                                      pdTRUE,
                                      NULL,
                                      lora_recv_timeout_cb);
@@ -248,27 +259,13 @@ void lora_setting(lora_int_reg_t txok_cb,
                   lora_int_reg_t rxok_cb)
 {
     MODE_4();
-
-    vTaskDelay(20 / portTICK_PERIOD_MS);
-    lora_reg_read(UM_REG_TYPE, 10);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
     
-    uint8_t rf_bps = 0x0e;
-    lora_reg_write(UM_REG_RF_BPS, &rf_bps, 1);
+    lora_reg_write(UM_REG_FREQ_3, lora_setting_array, 14);
 
-    uint8_t rf_req[] = {0x07, 0x2B, 0xF0};
-    lora_reg_write(UM_REG_FREQ_3, rf_req, 3);
-
-    uint8_t rf_pow = 0x16;
-    lora_reg_write(UM_REG_POWER, &rf_pow, 1);
-
-    uint8_t rf_laddr[] = {0xFF, 0xFF};
-    lora_reg_write(UM_REG_HEAD_H, rf_laddr, 2);
-
-    uint8_t rf_feat = 0x0A;
-    lora_reg_write(UM_REG_FEATURE, &rf_feat, 1);
-
-//    uint8_t rf_baud = 0x07; //*< 115200
-//    lora_reg_write(UM_REG_UART_BPS, &rf_baud, 1);
+    lora_reg_read(UM_REG_TYPE, 16);
+    vTaskDelay(10 / portTICK_PERIOD_MS);   
+    
 //    uart_init(lora_port, 115200);
 
     lora_int_reg[0] = txok_cb;
