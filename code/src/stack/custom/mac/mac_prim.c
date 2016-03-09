@@ -215,4 +215,8 @@ void m_prim_init(void)
 		mac_prim_line_handle();
 	}
 #endif
+    
+#ifdef NODE_TYPE_GATEWAY
+    m_tran_recv();
+#endif
 }

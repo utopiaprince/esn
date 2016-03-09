@@ -224,8 +224,9 @@ void esn_detect_task(void *param)
 		
         camera_app_handle();
         vTaskDelay(200 / portTICK_PERIOD_MS);
-
-        atmos_app_handle();
+    
+        //@note gateway no atmos
+//        atmos_app_handle();
         vTaskDelay(200 / portTICK_PERIOD_MS);
 #else
 		test_app_handle();

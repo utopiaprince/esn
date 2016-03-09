@@ -57,7 +57,7 @@
         </option>
         <option>
           <name>DdfFileName</name>
-          <state>$TOOLKIT_DIR$\config\debugger\MSP430F5438.ddf</state>
+          <state>$TOOLKIT_DIR$\config\debugger\MSP430F5419A.ddf</state>
         </option>
         <option>
           <name>ProcTMS</name>
@@ -231,7 +231,7 @@
         </option>
         <option>
           <name>UsbComPort</name>
-          <state>Automatic</state>
+          <state>COM12</state>
         </option>
         <option>
           <name>FetConnection</name>

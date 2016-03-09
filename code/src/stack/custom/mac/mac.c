@@ -124,7 +124,13 @@ bool_t mac_sent_set(void)
 
 void mac_init(void)
 {
+#ifdef NODE_TYPE_DETECTOR
     lora_init(UART_4, 9600);
+#endif
+    
+#ifdef NODE_TYPE_GATEWAY
+    lora_init(UART_1, 9600);
+#endif
     
     portBASE_TYPE res = pdTRUE;
     res = xTaskCreate(mac_task,                   //*< task body
