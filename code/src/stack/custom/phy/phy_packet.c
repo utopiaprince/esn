@@ -28,12 +28,14 @@ pbuf_t *phy_get_packet(void)
         return NULL;
     }
     
-    *(pbuf->data_p) = len;
-    pbuf->data_p += sizeof(uint8_t);
     lora_data_read(pbuf->data_p, len);
     pbuf->data_p += len;
-    pbuf->data_len = len + sizeof(uint8_t);
-    pbuf->attri.rssi_dbm = *(pbuf->data_p-1);
+    pbuf->data_len = len;
+    uint8_t value = *(pbuf->data_p-1);
+    int16_t rssi_value = value;
+    pbuf->attri.rssi_dbm = rssi_value-137;
+    
+    pbuf->data_len -= 1 ;//*< 去掉RSSI长度
     
 	return pbuf;
 }

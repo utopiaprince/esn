@@ -127,8 +127,7 @@ static void mac_data_frame_parse(pbuf_t *pbuf)
 		       MAC_ADDR_SHORT_SIZE);
 	}
 
-	m2n_data_ind->msdu_length = pbuf->data_len - PHY_HEAD_SIZE - PHY_FCS_SIZE
-	                            - mac_frm_head_info.mhr_size - MAC_FCS_SIZE;
+	m2n_data_ind->msdu_length = pbuf->data_len; //*< 已经经过mac_frame_head_info_parse()处理，去掉了MAC帧长
 	pbuf->data_len      = m2n_data_ind->msdu_length;
 	m2n_data_ind->msdu  = pbuf->data_p;
 	sbuf->primargs.pbuf = pbuf;

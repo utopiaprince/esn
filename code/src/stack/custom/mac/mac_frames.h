@@ -72,11 +72,13 @@ typedef struct
 
 typedef struct
 {
+    uint8_t assoc_type;
 	uint8_t license_info[10];
 } mac_assoc_req_t;
 
 typedef struct
 {
+    uint8_t assoc_type;
 	mac_assoc_status_enum_t status;
 } mac_assoc_resp_t;
 

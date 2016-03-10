@@ -59,7 +59,7 @@ void mac_ctrl_assoc_req_start(uint16_t dst_addr)
 
 	mac_frames_hd_t mac_frm_hd;
 	mac_frm_hd.frames_ctrl.frame_type  = MAC_FRAMES_TYPE_CTRL;
-	mac_frm_hd.frames_ctrl.ack_request = TRUE;
+	mac_frm_hd.frames_ctrl.ack_request = FALSE;
 	mac_frm_hd.frames_ctrl.dst_mode    = MAC_ADDR_MODE_SHORT;
 	mac_frm_hd.frames_ctrl.src_mode    = MAC_ADDR_MODE_LONG;
 	mac_frm_hd.frames_ctrl.reserved    = 0x00;
@@ -70,6 +70,7 @@ void mac_ctrl_assoc_req_start(uint16_t dst_addr)
 	mac_frm_hd_fill(pbuf, &mac_frm_hd);
 
 	mac_assoc_req_t mac_assoc_req;
+    mac_assoc_req.assoc_type = MAC_CTRL_ASSOC_REQ;
 	memset(mac_assoc_req.license_info, 0xa5, 10);
 	mac_frm_assoc_req_fill(pbuf, &mac_assoc_req);
 
@@ -149,6 +150,7 @@ void mac_ctrl_assoc_resp_start(uint16_t dst_addr, mac_assoc_status_enum_t status
 	mac_frm_hd_fill(pbuf, &mac_frm_hd);
 
 	mac_assoc_resp_t mac_assoc_resp;
+    mac_assoc_resp.assoc_type = MAC_CTRL_ASSOC_RESP;
 	mac_assoc_resp.status = status;
 	mac_frm_assoc_resp_fill(pbuf, &mac_assoc_resp);
 
@@ -178,8 +180,8 @@ void mac_ctrl_assoc_resp_handle(pbuf_t *pbuf)
 void mac_ctrl_parse(pbuf_t *pbuf)
 {
 	uint8_t ctrl_frm_type = *(pbuf->data_p);
-	pbuf->data_p += sizeof(uint8_t);
-
+//	pbuf->data_p += sizeof(uint8_t);
+    
 	switch (ctrl_frm_type)
 	{
 	case MAC_CTRL_ASSOC_REQ:

@@ -45,12 +45,12 @@ uint8_t lora_setting_array[] = {
     0x07,0x2b,0xf0, //*< 470Mhz
     0x0E,           //*< 空中速率18229
     0x16,           //*< 发射功率20dbm
-    0x03,           //*< 配置好115200
+    0x03,           //*< 配置好9600
     0x00,           //*< 无效校验位
     0x28,           //*<
     0x00,0x00,0x00,
     0xFF,0xFF,      //*< 硬件地址
-    0x00,           //*< 功能位：关闭所有功能
+    0x02,           //*< 功能位：场强检测
 };
 
 static uint8_t lora_port = 0;
@@ -244,13 +244,11 @@ void lora_init(uint8_t uart_id, uint32_t baud)
     uart_int_cb_reg(lora_port, lora_recv_ch_cb);
 
     lora_daemon_timer = xTimerCreate("LoraTimer",
-                                     3,
+                                     2,
                                      pdTRUE,
                                      NULL,
                                      lora_recv_timeout_cb);
 }
-
-static uint8_t char_buf[];
 
 /**
  * @note call this func after os is running

@@ -136,6 +136,8 @@ static void mac_prim_data_handle(sbuf_t *sbuf)
 	if (new_sbuf == NULL)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "sbuf alloc failed\n");
+        pbuf_free(&(sbuf->primargs.pbuf) __PLINE2);
+        sbuf_free(&sbuf __SLINE2);
 		return;
 	}
 
@@ -147,6 +149,9 @@ static void mac_prim_data_handle(sbuf_t *sbuf)
 	if (new_pbuf == NULL)
 	{
 		DBG_LOG(DBG_LEVEL_ERROR, "pbuf alloc failed\n");
+        pbuf_free(&(sbuf->primargs.pbuf) __PLINE2);
+        sbuf_free(&sbuf __SLINE2);
+    
 		sbuf_free(&new_sbuf __SLINE2);
 		return;
 	}
@@ -168,8 +173,11 @@ static void mac_prim_data_handle(sbuf_t *sbuf)
 	mac_frm_hd_fill(new_pbuf, &mac_frm_hd);
 	mac_frm_data_fill(new_pbuf, sbuf->primargs.pbuf->head, data_len);
 	new_pbuf->attri.need_ack = mac_frm_hd.frames_ctrl.ack_request;
-	
+
 	m_tran_send(new_sbuf, mac_data_txok_cb, 3);
+    
+    pbuf_free(&(sbuf->primargs.pbuf) __PLINE2);
+    sbuf_free(&sbuf __SLINE2);
 }
 
 void m_prim_event_handler(const osel_event_t *const pmsg)

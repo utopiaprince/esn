@@ -152,7 +152,7 @@ int8_t mac_frm_data_fill(pbuf_t *pbuf, void *datap, uint8_t len)
 	}
 
 	uint8_t offset = PHY_HEAD_SIZE + MAC_HEAD_CTRL_SIZE + MAC_HEAD_SEQ_SIZE +
-	                 MAC_ADDR_SHORT_SIZE + MAC_ADDR_LONG_SIZE;
+	                 MAC_ADDR_SHORT_SIZE + MAC_ADDR_SHORT_SIZE;
 	pbuf->data_p = pbuf->head + offset;
 
 	memcpy(pbuf->data_p, datap, len);
@@ -204,7 +204,7 @@ int8_t mac_frm_assoc_resp_get(pbuf_t *pbuf, mac_assoc_resp_t *assoc_resp)
 	}
 
 	uint8_t offset = PHY_HEAD_SIZE + MAC_HEAD_CTRL_SIZE + MAC_HEAD_SEQ_SIZE +
-	                 MAC_ADDR_SHORT_SIZE + MAC_ADDR_LONG_SIZE;
+	                 MAC_ADDR_SHORT_SIZE + MAC_ADDR_SHORT_SIZE;
 	pbuf->data_p = pbuf->head + offset;
 
 	uint8_t len = sizeof(mac_assoc_resp_t);
@@ -223,7 +223,7 @@ int8_t mac_frm_assoc_resp_fill(pbuf_t *pbuf, mac_assoc_resp_t *assoc_resp)
 	}
 
 	uint8_t offset = PHY_HEAD_SIZE + MAC_HEAD_CTRL_SIZE + MAC_HEAD_SEQ_SIZE +
-	                 MAC_ADDR_SHORT_SIZE + MAC_ADDR_LONG_SIZE;
+	                 MAC_ADDR_SHORT_SIZE + MAC_ADDR_SHORT_SIZE;
 	pbuf->data_p = pbuf->head + offset;
 
 	uint8_t len = sizeof(mac_assoc_resp_t);
