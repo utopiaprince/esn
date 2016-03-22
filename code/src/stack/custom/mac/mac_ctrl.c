@@ -13,7 +13,7 @@
 #include "mac_prim.h"
 #include "mac_ctrl.h"
 #include "mac_recv.h"
-
+#include "drivers.h"
 DBG_THIS_MODULE("mac_ctrl")
 
 static void mac_assoc_req_tx(sbuf_t *sbuf, uint8_t res)
@@ -172,6 +172,7 @@ void mac_ctrl_assoc_resp_handle(pbuf_t *pbuf)
 	if (mac_assoc_resp.status == MAC_ASSOC_STATUS_OK)
 	{
 		mac_online_set(ON_LINE);
+        led_set(LEN_GREEN, TRUE);
 		xTimerStop(mac_line_cycle_timer, 0);
 	}
 }

@@ -70,6 +70,7 @@ typedef struct
 }acceleration_t;	//加速度
 typedef struct
 {
+    uint8_t umonitor[ID_MAX];
 	uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
     uint8_t thresh_tap; //*< 震动阈值

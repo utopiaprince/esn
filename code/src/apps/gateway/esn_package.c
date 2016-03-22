@@ -8,9 +8,9 @@ bool_t esn_gprs_send(uint8_t *data, uint16_t length)
 {
 	gprs_info_t *gprs_info;
 	gprs_info = gprs_driver.get();
+    uint16_t len = length - ID_MAX - 2;
 	if(gprs_info->gprs_state == WORK_ON)
 	{
-		uint16_t len = length - ID_MAX - 2;
 		data[0] = 0xa5;
 		data[1] = 0x5a;
 		osel_memcpy(&data[2], &len, sizeof(uint16_t));
@@ -128,6 +128,7 @@ bool_t shock_send(uint8_t *pdata, uint16_t len)
 	osel_memcpy(&info, pdata, len);
 
 	esn_package_t package;
+    osel_memcpy(package.umonitor, info.umonitor, ID_MAX);
 	mac_addr_get(package.umonitor);
 	package.frame_type = DATA;
 	package.message_type = M_SHOCK;

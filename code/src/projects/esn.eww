@@ -2,10 +2,10 @@
 
 <workspace>
   <project>
-    <path>$WS_DIR$\detector.ewp</path>
+    <path>$WS_DIR$\detector\detector.ewp</path>
   </project>
   <project>
-    <path>$WS_DIR$\gateway.ewp</path>
+    <path>$WS_DIR$\gateway\gateway.ewp</path>
   </project>
   <batchBuild/>
 </workspace>

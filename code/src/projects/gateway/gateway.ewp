@@ -381,21 +381,21 @@
         </option>
         <option>
           <name>newCCIncludePaths</name>
-          <state>$PROJ_DIR$\..\</state>
-          <state>$PROJ_DIR$\..\common\lib\</state>
-          <state>$PROJ_DIR$\..\sys_arch\</state>
-          <state>$PROJ_DIR$\..\sys_arch\inc\</state>
-          <state>$PROJ_DIR$\..\apps\gateway\</state>
-          <state>$PROJ_DIR$\..\apps\</state>
-          <state>$PROJ_DIR$\..\platform\core430\port\</state>
-          <state>$PROJ_DIR$\..\platform\core430\init\</state>
-          <state>$PROJ_DIR$\..\platform\core430\drivers\</state>
-          <state>$PROJ_DIR$\..\platform\core430\drivers\inc</state>
-          <state>$PROJ_DIR$\..\stack\</state>
-          <state>$PROJ_DIR$\..\stack\common\</state>
-          <state>$PROJ_DIR$\..\stack\custom\mac\</state>
-          <state>$PROJ_DIR$\..\stack\custom\phy\</state>
-          <state>$PROJ_DIR$\..\stack\module\</state>
+          <state>$PROJ_DIR$\..\..\</state>
+          <state>$PROJ_DIR$\..\..\common\lib\</state>
+          <state>$PROJ_DIR$\..\..\sys_arch\</state>
+          <state>$PROJ_DIR$\..\..\sys_arch\inc\</state>
+          <state>$PROJ_DIR$\..\..\apps\gateway\</state>
+          <state>$PROJ_DIR$\..\..\apps\</state>
+          <state>$PROJ_DIR$\..\..\platform\core430\port\</state>
+          <state>$PROJ_DIR$\..\..\platform\core430\init\</state>
+          <state>$PROJ_DIR$\..\..\platform\core430\drivers\</state>
+          <state>$PROJ_DIR$\..\..\platform\core430\drivers\inc</state>
+          <state>$PROJ_DIR$\..\..\stack\</state>
+          <state>$PROJ_DIR$\..\..\stack\common\</state>
+          <state>$PROJ_DIR$\..\..\stack\custom\mac\</state>
+          <state>$PROJ_DIR$\..\..\stack\custom\phy\</state>
+          <state>$PROJ_DIR$\..\..\stack\module\</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -700,7 +700,7 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state>$PROJ_DIR$\..\apps\gateway\</state>
+          <state>$PROJ_DIR$\..\..\apps\gateway\</state>
         </option>
         <option>
           <name>ACPUTAG</name>
@@ -2169,94 +2169,88 @@
     <group>
       <name>inc</name>
       <file>
-        <name>$PROJ_DIR$\..\apps\gateway\esn.h</name>
+        <name>$PROJ_DIR$\..\..\apps\gateway\esn.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\apps\gateway\esn_active.h</name>
+        <name>$PROJ_DIR$\..\..\apps\gateway\esn_active.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\apps\gateway\esn_detect.h</name>
+        <name>$PROJ_DIR$\..\..\apps\gateway\esn_detect.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\apps\gateway\esn_gain.h</name>
+        <name>$PROJ_DIR$\..\..\apps\gateway\esn_gain.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\apps\gateway\esn_package.h</name>
+        <name>$PROJ_DIR$\..\..\apps\gateway\esn_package.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\apps\gateway\FreeRTOSConfig.h</name>
+        <name>$PROJ_DIR$\..\..\apps\gateway\FreeRTOSConfig.h</name>
       </file>
     </group>
     <file>
-      <name>$PROJ_DIR$\..\apps\gateway\esn_active.c</name>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_active.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\apps\gateway\esn_detect.c</name>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_detect.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\apps\esn_frames.h</name>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_gain.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\apps\gateway\esn_gain.c</name>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_package.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\apps\gateway\esn_package.c</name>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_restruct.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\apps\gateway\esn_restruct.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\apps\gateway\main.c</name>
+      <name>$PROJ_DIR$\..\..\apps\gateway\main.c</name>
     </file>
   </group>
   <group>
     <name>common</name>
     <group>
       <name>lib</name>
-      <group>
-        <name>inc</name>
-        <file>
-          <name>$PROJ_DIR$\..\common\lib\crc16.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\common\lib\data_type_def.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\common\lib\debug.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\common\lib\hal_timer.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\common\lib\lib.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\common\lib\mlist.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\common\lib\printf.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\common\lib\random.h</name>
-        </file>
-      </group>
       <file>
-        <name>$PROJ_DIR$\..\common\lib\crc16.c</name>
+        <name>$PROJ_DIR$\..\..\common\lib\crc16.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\common\lib\debug.c</name>
+        <name>$PROJ_DIR$\..\..\common\lib\crc16.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\common\lib\hal_timer.c</name>
+        <name>$PROJ_DIR$\..\..\common\lib\data_type_def.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\common\lib\mlist.c</name>
+        <name>$PROJ_DIR$\..\..\common\lib\debug.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\common\lib\printf.c</name>
+        <name>$PROJ_DIR$\..\..\common\lib\debug.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\common\lib\random.c</name>
+        <name>$PROJ_DIR$\..\..\common\lib\hal_timer.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\common\lib\hal_timer.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\common\lib\lib.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\common\lib\mlist.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\common\lib\mlist.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\common\lib\printf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\common\lib\printf.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\common\lib\random.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\common\lib\random.h</name>
       </file>
     </group>
   </group>
@@ -2269,98 +2263,98 @@
         <group>
           <name>inc</name>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\adxl312.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\adxl312.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\atmosphere.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\atmosphere.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\board.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\board.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\cam.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\cam.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\clock.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\clock.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\drivers.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\drivers.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\gprs.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\gprs.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\lora.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\lora.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\range.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\range.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\sht.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\sht.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\uart.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\uart.h</name>
           </file>
           <file>
-            <name>$PROJ_DIR$\..\platform\core430\drivers\inc\wts.h</name>
+            <name>$PROJ_DIR$\..\..\platform\core430\drivers\inc\wts.h</name>
           </file>
         </group>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\adxl312.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\adxl312.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\atmosphere.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\atmosphere.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\board.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\board.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\cam.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\cam.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\clock.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\clock.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\gprs.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\gprs.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\lora.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\lora.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\range.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\range.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\drivers\uart.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\drivers\uart.c</name>
         </file>
       </group>
       <group>
         <name>init</name>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\init\bsp.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\init\bsp.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\init\bsp.h</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\init\bsp.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\init\cstartup.s43</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\init\cstartup.s43</name>
         </file>
       </group>
       <group>
         <name>port</name>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\port\data_model.h</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\port\data_model.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\port\heap_1.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\port\heap_1.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\port\port.c</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\port\port.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\port\portext.s43</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\port\portext.s43</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\platform\core430\port\portmacro.h</name>
+          <name>$PROJ_DIR$\..\..\platform\core430\port\portmacro.h</name>
         </file>
       </group>
     </group>
@@ -2369,105 +2363,96 @@
     <name>stack</name>
     <group>
       <name>common</name>
-      <group>
-        <name>inc</name>
-        <file>
-          <name>$PROJ_DIR$\..\stack\common\pbuf.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\stack\common\prim.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\..\stack\common\sbuf.h</name>
-        </file>
-      </group>
       <file>
-        <name>$PROJ_DIR$\..\stack\common\pbuf.c</name>
+        <name>$PROJ_DIR$\..\..\stack\common\pbuf.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\stack\common\sbuf.c</name>
+        <name>$PROJ_DIR$\..\..\stack\common\pbuf.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\stack\common\prim.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\stack\common\sbuf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\stack\common\sbuf.h</name>
       </file>
     </group>
     <group>
       <name>custom</name>
       <group>
         <name>mac</name>
-        <group>
-          <name>inc</name>
-          <file>
-            <name>$PROJ_DIR$\..\stack\custom\mac\mac.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\stack\custom\mac\mac_ctrl.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\stack\custom\mac\mac_frames.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\stack\custom\mac\mac_prim.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\stack\custom\mac\mac_recv.h</name>
-          </file>
-        </group>
         <file>
-          <name>$PROJ_DIR$\..\stack\custom\mac\mac.c</name>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\stack\custom\mac\mac_ctrl.c</name>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\stack\custom\mac\mac_frames.c</name>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_ctrl.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\stack\custom\mac\mac_prim.c</name>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_ctrl.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\stack\custom\mac\mac_recv.c</name>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_frames.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_frames.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_prim.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_prim.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_recv.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_recv.h</name>
         </file>
       </group>
       <group>
         <name>phy</name>
-        <group>
-          <name>inc</name>
-          <file>
-            <name>$PROJ_DIR$\..\stack\custom\phy\phy_cca.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\stack\custom\phy\phy_packet.h</name>
-          </file>
-          <file>
-            <name>$PROJ_DIR$\..\stack\custom\phy\phy_state.h</name>
-          </file>
-        </group>
         <file>
-          <name>$PROJ_DIR$\..\stack\custom\phy\phy_cca.c</name>
+          <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_cca.c</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\stack\custom\phy\phy_packet.c</name>
+          <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_cca.h</name>
         </file>
         <file>
-          <name>$PROJ_DIR$\..\stack\custom\phy\phy_state.c</name>
+          <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_packet.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_packet.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_state.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_state.h</name>
         </file>
       </group>
     </group>
     <group>
       <name>module</name>
       <file>
-        <name>$PROJ_DIR$\..\stack\module\m_tran.c</name>
+        <name>$PROJ_DIR$\..\..\stack\module\m_tran.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\stack\module\m_tran.h</name>
+        <name>$PROJ_DIR$\..\..\stack\module\m_tran.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\stack\module\module.h</name>
+        <name>$PROJ_DIR$\..\..\stack\module\module.h</name>
       </file>
     </group>
     <file>
-      <name>$PROJ_DIR$\..\stack\stack.c</name>
+      <name>$PROJ_DIR$\..\..\stack\stack.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\stack\stack.h</name>
+      <name>$PROJ_DIR$\..\..\stack\stack.h</name>
     </file>
   </group>
   <group>
@@ -2475,65 +2460,65 @@
     <group>
       <name>inc</name>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\croutine.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\croutine.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\event_groups.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\event_groups.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\FreeRTOS.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\FreeRTOS.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\list.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\list.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\mpu_wrappers.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\mpu_wrappers.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\portable.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\portable.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\projdefs.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\projdefs.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\queue.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\queue.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\semphr.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\semphr.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\StackMacros.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\StackMacros.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\task.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\task.h</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\inc\timers.h</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\inc\timers.h</name>
       </file>
     </group>
     <group>
       <name>src</name>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\croutine.c</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\src\croutine.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\event_groups.c</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\src\event_groups.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\list.c</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\src\list.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\queue.c</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\src\queue.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\tasks.c</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\src\tasks.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\sys_arch\src\timers.c</name>
+        <name>$PROJ_DIR$\..\..\sys_arch\src\timers.c</name>
       </file>
     </group>
     <file>
-      <name>$PROJ_DIR$\..\sys_arch\osel_arch.h</name>
+      <name>$PROJ_DIR$\..\..\sys_arch\osel_arch.h</name>
     </file>
   </group>
 </project>

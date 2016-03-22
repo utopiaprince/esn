@@ -19,7 +19,7 @@
 
 #define SBUF_DBG_EN             1u
 
-#define MAX_SBUF_NUM   	        (30u)   // SBUF最大个数
+#define MAX_SBUF_NUM   	        (12u)   // SBUF最大个数
 
 #if SBUF_DBG_EN > 0
 /* 形参 */

@@ -559,6 +559,7 @@ static void tran_send_intra(void)
 /*send data about considering ACK and late send completely*/
 void m_tran_send(sbuf_t *const sbuf, tran_tx_finish_cb_t tx_finish, uint8_t resend_times)
 {
+    led_set(LED_RED, TRUE);
     DBG_ASSERT(sbuf != NULL __DBG_LINE);
     DBG_ASSERT(sbuf->primargs.pbuf != NULL __DBG_LINE);
     DBG_ASSERT(tx_finish != NULL __DBG_LINE);
@@ -997,6 +998,7 @@ void m_tran_event_handler(const osel_event_t *const pmsg)
             break;
 
         case M_TRAN_TXOK_EVENT:
+            led_set(LED_RED, FALSE);
             tran_deal_txok_event();
             break;
 

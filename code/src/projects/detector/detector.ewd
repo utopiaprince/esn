@@ -231,7 +231,7 @@
         </option>
         <option>
           <name>UsbComPort</name>
-          <state>COM12</state>
+          <state>COM3</state>
         </option>
         <option>
           <name>FetConnection</name>
@@ -340,7 +340,7 @@
     <debuggerPlugins>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\Lcd\lcd.ewplugin</file>
-        <loadFlag>1</loadFlag>
+        <loadFlag>0</loadFlag>
       </plugin>
       <plugin>
         <file>$TOOLKIT_DIR$\plugins\rtos\CMX\CmxPlugin.ENU.ewplugin</file>

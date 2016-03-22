@@ -62,68 +62,55 @@ static void esn_recv_send(uint64_t srd_id,
 	uint16_t length = 0;
 	uint8_t *p = data;
 	p += 4;
-
-	esn_package_t package;
-
-	osel_memcpy(package.umonitor, &srd_id, ID_MAX);
-	package.frame_type = DATA;
-	package.message_type = get_message_type(frame_type);
+    uint8_t message_type;
+	message_type = get_message_type(frame_type);
     
-    uint8_t bmonitor[ID_MAX];
-    mac_addr_get(bmonitor);
-	osel_memcpy(package.bmonitor, bmonitor, ID_MAX);
-    //*< 采集时间修改
-	package.collect_time = 0xFFFFFFFF;
-	package.alarm = 0;
-
-	osel_memcpy(p, &package, sizeof(esn_package_t));
-	length += sizeof(esn_package_t);
-	p += sizeof(esn_package_t);
-    
-    uint16_t cnt = 1;
-    uint16_t index = 1;
-    if(frame_type == DATATYPE_PICTURE)
+    switch(message_type)
     {
-        osel_memcpy(&cnt, pdata, sizeof(cnt));
-        pdata = (uint8_t *)pdata + sizeof(cnt);
-        osel_memcpy(&index, pdata, sizeof(index));
-        pdata = (uint8_t *)pdata + sizeof(index);
+    case M_SHOCK:
+        {
+            shock_t info;
+            osel_memset(&info, 0, sizeof(shock_t));
+            osel_memcpy(info.umonitor, &srd_id, sizeof(uint64_t));
+            mac_addr_get(info.bmonitor);
+            info.collect_time = 0;
+            info.thresh_tap = ((uint8_t *)pdata)[0];
+            info.dur = ((uint8_t *)pdata)[1];
+            shock_send((uint8_t *)&info, sizeof(shock_t));
+        }
+        break;
     }
-
-	osel_memcpy(p, &cnt, sizeof(uint16_t));
-	length += 2; p += 2;
-	osel_memcpy(p, &index, sizeof(uint16_t));
-	length += 2; p += 2;
     
-	osel_memcpy(p, pdata, len);
-	length += len;
-	esn_gprs_send(data, length);
+//    uint8_t bmonitor[ID_MAX];
+//    mac_addr_get(bmonitor);
+//	osel_memcpy(package.bmonitor, bmonitor, ID_MAX);
+//    //*< 采集时间修改
+//	package.collect_time = 0xFFFFFFFF;
+//	package.alarm = 0;
+//
+//	osel_memcpy(p, &package, sizeof(esn_package_t));
+//	length += sizeof(esn_package_t);
+//	p += sizeof(esn_package_t);
+//    
+//    uint16_t cnt = 1;
+//    uint16_t index = 1;
+//    if(frame_type == DATATYPE_PICTURE)
+//    {
+//        osel_memcpy(&cnt, pdata, sizeof(cnt));
+//        pdata = (uint8_t *)pdata + sizeof(cnt);
+//        osel_memcpy(&index, pdata, sizeof(index));
+//        pdata = (uint8_t *)pdata + sizeof(index);
+//    }
+//
+//	osel_memcpy(p, &cnt, sizeof(uint16_t));
+//	length += 2; p += 2;
+//	osel_memcpy(p, &index, sizeof(uint16_t));
+//	length += 2; p += 2;
+//    
+//	osel_memcpy(p, pdata, len);
+//	length += len;
+//	esn_gprs_send(data, length);
 }
-
-//static void esn_vibration_handle(pbuf_t *pbuf)
-//{
-//	esn_vibration_payload_t esn_vib_pd;
-//    osel_memcpy((void *)&esn_vib_pd, pbuf->data_p, sizeof(esn_vibration_payload_t));
-//
-//    esn_gprs_send(pbuf->attri.src_id, pbuf->data_p, pbuf->data_len);
-//
-//    pbuf_free(&pbuf __PLINE2);
-//}
-//
-//static void esn_distance_handle(pbuf_t *pbuf)
-//{
-//	//@todo
-//}
-//
-//static void esn_temperature_handle(pbuf_t *pbuf)
-//{
-//	//@todo
-//}
-//
-//static void esn_camra_handle(pbuf_t *pbuf, esn_frames_head_t *esn_frm_hd)
-//{
-//
-//}
 
 static void esn_frames_recv_handle(sbuf_t *sbuf)
 {

@@ -189,6 +189,7 @@ static void cache_send(void)
     {
         shock_t info;
         osel_memset(&info, 0, sizeof(shock_t));
+        mac_addr_get(info.umonitor);
         mac_addr_get(info.bmonitor);
         info.collect_time = 0;
         info.thresh_tap = 0x20;     //*< 1个单位是62.5mg
@@ -256,6 +257,7 @@ static void shock_handle(esn_msg_t *msg)
         //@TODO: 添加震动数据发送接口
         shock_t info;
         osel_memset(&info, 0, sizeof(shock_t));
+        mac_addr_get(info.umonitor);
         mac_addr_get(info.bmonitor);
         info.collect_time = 0;
         info.thresh_tap = 0x20;     //*< 1个单位是62.5mg

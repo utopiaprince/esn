@@ -24,7 +24,7 @@
 #include "mac_frames.h"
 #include "mac_ctrl.h"
 #include "mac_prim.h"
-
+#include "drivers.h"
 DBG_THIS_MODULE("mac_prim")
 
 uint16_t coord_addr = 0;
@@ -46,7 +46,6 @@ bool_t mac_online_set(mac_line_enum_t flag)
 	HAL_ENTER_CRITICAL(s);
 	mac_line_flag = flag;
 	HAL_EXIT_CRITICAL(s);
-
 	return TRUE;
 }
 
@@ -94,7 +93,7 @@ static void mac_prim_line_handle(void)
 		}
 
 		mac_online_set(START_LINE);
-
+        led_set(LEN_GREEN, FALSE);
 		mac_ctrl_assoc_req_start(0xFFFF);
 		break;
 
@@ -207,7 +206,7 @@ void m_prim_init(void)
 {
 #ifdef NODE_TYPE_DETECTOR
 	mac_online_set(OFF_LINE);
-
+    
 	mac_line_cycle_timer =
 	    xTimerCreate("MacLineTimer",
 	                 (MAC_LINE_TIMER_CYCLE * configTICK_RATE_HZ),

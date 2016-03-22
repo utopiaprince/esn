@@ -1,7 +1,23 @@
-::@echo off
+@echo off & setlocal EnableDelayedExpansion
 rem 正在搜索...
-rem 删除文件
-for %%b in ("%cd%") do cd /d %%b&for /r %%c in ("Debug","settings","Release") do if exist %%c rmdir /s/q  "%%c"
-for /f "delims=" %%i in ('dir /b /a-d /s "*.sfr","*.dep","*.tmp","path.txt","*.tmp.c","*.orig","*.h.bak","*.c.bak","*.sfb"') do del /q "%%i"
-rem 删除完毕
-pause
+for /f "delims=" %%i in ('dir /a/s/b/on "*.ewd","*.ewp","*.xcl"') do (
+set file=%%~pi
+set file=!file:/=/!
+set FolderName=!file!
+echo !FolderName!
+for /f "delims=" %%i in ('dir !FolderName! /a-d /b /s') do (
+if not %%~xi==.eww (
+if not %%~xi==.xcl (
+if not %%~xi==.ewp (
+if not %%~xi==.ewd (
+del /s /a /q "%%~si"
+)
+)
+)
+)
+)
+::删除空目录
+for /f "delims=" %%j in ('dir !FolderName! /ad /s /b') do rd "%%~sj"
+)
+for %%b in ("%cd%") do cd /d %%b&for /r %%c in ("settings") do if exist %%c rmdir /s/q  "%%c"
+pause 
