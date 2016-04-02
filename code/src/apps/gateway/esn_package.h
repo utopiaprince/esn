@@ -1,7 +1,7 @@
 #pragma once
 #include <data_type_def.h>
 #include <pbuf.h>
-#define ID_MAX  (17u)
+#define ID_MAX  (4u)
 enum frame_type_e
 {
     FRAME_BEGIN = 0,
@@ -56,12 +56,14 @@ typedef struct
 #pragma pack(1)
 typedef struct
 {
+    uint8_t umonitor[ID_MAX];
 	uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
 	atmo_data_t atmo_data;
 }atmo_t;
 typedef struct
 {
+	uint8_t umonitor[ID_MAX];
 	uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
 	uint16_t x;
@@ -78,6 +80,7 @@ typedef struct
 }shock_t;			//震动
 typedef struct
 {
+    uint8_t umonitor[ID_MAX];
 	uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
 	float val;		
@@ -91,6 +94,7 @@ typedef struct
 
 typedef struct
 {
+    uint8_t umonitor[ID_MAX];
 	uint8_t bmonitor[ID_MAX];
     uint32_t collect_time;
 	uint16_t index;

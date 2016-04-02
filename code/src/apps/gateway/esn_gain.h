@@ -11,6 +11,13 @@
 #ifndef __ESN_GAIN_H__
 #define __ESN_GAIN_H__
 
+typedef struct
+{
+    uint16_t a;
+    uint16_t b;
+} f_t;
+
+
 #define GAIN_CAM_START      ((GAIN_CAM<<8) | CAM_CMD_PHONE)
 #define GAIN_CAM_SEND_START ((GAIN_CAM<<8) | CAM_CMD_SEND)
 
@@ -30,4 +37,10 @@ void esn_gain_init(void);
 void atmos_recv_data_handle(uint8_t *pdata, uint16_t len);
 
 void cache_alarm(uint8_t alarm);
+
+void toINT(void *des);
+
+void tofloat(void *des);
+
+void CharToHex(char * dest, char * buffer , int len);
 #endif

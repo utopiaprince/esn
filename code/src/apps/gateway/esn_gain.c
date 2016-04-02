@@ -22,13 +22,7 @@ QueueHandle_t esn_gain_queue = NULL;
 uint8_t cache = 0;
 // TickType_t xTaskGetTickCount( void )
 
-typedef struct
-{
-    uint16_t a;
-    uint16_t b;
-} f_t;
-
-static void CharToHex(char * dest, char * buffer , int len)
+void CharToHex(char * dest, char * buffer , int len)
 {
     int i = 0;
     int j = 0;
@@ -83,8 +77,6 @@ static void CharToHex(char * dest, char * buffer , int len)
     return;
 }
 
-
-
 void toINT(void *des)
 {
     uint8_t *lb = (uint8_t *)des;
@@ -109,6 +101,7 @@ static void camera_recv_data_handle(uint16_t cnt, uint16_t index,
 {
     camera_t info;
     osel_memset(&info, 0, sizeof(camera_t));
+    mac_addr_get(info.umonitor);
     mac_addr_get(info.bmonitor);
     info.collect_time = 0;
     info.cnt = cnt * 4;
@@ -125,6 +118,7 @@ void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)
 {
     atmo_t atmo_info;
     osel_memset(&atmo_info, 0, sizeof(atmo_t));
+    mac_addr_get(atmo_info.umonitor);
     mac_addr_get(atmo_info.bmonitor);
     atmo_info.collect_time = 0;
 
@@ -151,6 +145,7 @@ static bool_t range_recv_data_handle(fp32_t distance)
     //@note: 添加测距异常数据发送接口
     distance_t info;
     osel_memset(&info, 0, sizeof(distance_t));
+    mac_addr_get(info.umonitor);
     mac_addr_get(info.bmonitor);
     info.collect_time = 0;
     info.val = distance;
@@ -164,6 +159,7 @@ static void angle_handle(esn_msg_t *msg)
     //@TODO: 添加角度数据发送接口
     acceleration_t info;
     osel_memset(&info, 0, sizeof(acceleration_t));
+    mac_addr_get(info.umonitor);
     mac_addr_get(info.bmonitor);
     info.collect_time = 0;
     uint8_t h,l;

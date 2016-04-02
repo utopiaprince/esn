@@ -36,8 +36,9 @@ void led_set(uint8_t led, bool_t res)
 
 void mac_addr_get(uint8_t *mac_addr)
 {
-	uint8_t id[17] = {0xaa};
-	osel_memcpy(mac_addr, id, 17);
+    #define ID_MAX  (4u)
+	uint8_t id[ID_MAX] = {0xaa};
+	osel_memcpy(mac_addr, id, ID_MAX);
 }
 
 void board_init(void)

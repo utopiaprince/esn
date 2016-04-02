@@ -8,6 +8,8 @@ import user_lib.globalval as globalval
 import user_lib.mysql as mysql
 import threading
 import user_lib.crc16 as CRC16
+
+id_max = 4;
 lock = _thread.allocate_lock()
 class data_state_e():
     HEAD1 = 1
@@ -146,9 +148,9 @@ def save_pic(pic_name,uid):
 def camera(power, buf):#照片
 
     index = 0
-    for i in range(0, 17):
+    for i in range(0, id_max):
         power.bmonitor += dec2hex_str(buf[i])
-    index += 17
+    index += id_max
     power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
     index += 4
     power.alarm = buf[index]
@@ -180,9 +182,9 @@ def camera(power, buf):#照片
 
 def shock(power, buf):#震动报警
     index = 0
-    for i in range(0, 17):
+    for i in range(0, id_max):
         power.bmonitor += dec2hex_str(buf[i])
-    index += 17
+    index += id_max
     power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
     index += 4
     power.alarm = buf[index]
@@ -205,9 +207,9 @@ def shock(power, buf):#震动报警
 
 def distance(power, buf):#激光测距
     index = 0
-    for i in range(0, 17):
+    for i in range(0, id_max):
         power.bmonitor += dec2hex_str(buf[i])
-    index += 17
+    index += id_max
     power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
     index += 4
     power.alarm = buf[index]
@@ -247,9 +249,9 @@ def distance(power, buf):#激光测距
 
 def temperature(power, buf):#导线温度
     index = 0
-    for i in range(0, 17):
+    for i in range(0, id_max):
         power.bmonitor += dec2hex_str(buf[i])
-    index += 17
+    index += id_max
     power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
     index += 4
     power.alarm = buf[index]
@@ -286,9 +288,9 @@ def temperature(power, buf):#导线温度
 
 def acceleration(power, buf):#加速度
     index = 0
-    for i in range(0, 17):
+    for i in range(0, id_max):
         power.bmonitor += dec2hex_str(buf[i])
-    index += 17
+    index += id_max
     power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
     index += 4
     power.alarm = buf[index]
@@ -311,9 +313,9 @@ def acceleration(power, buf):#加速度
 
 def atmo(power, buf):#气象
     index = 0
-    for i in range(0, 17):
+    for i in range(0, id_max):
         power.bmonitor += dec2hex_str(buf[i])
-    index += 17
+    index += id_max
     power.collect_time = buf[index] + (buf[index + 1] << 8) + (buf[index + 2] << 16) + (buf[index + 3] << 24)
     index += 4
     power.alarm = buf[index]
@@ -460,11 +462,11 @@ def frame_deal(buf, length, self):
     power = power_t()
     power.ip = (self.client_address[0] + ':' + str(self.client_address[1]))
     index = 0
-    if length > 17:
-        for i in range(0, 17):
+    if length > id_max:
+        for i in range(0, id_max):
             power.monitor += dec2hex_str(buf[i])
-        index += 17;
-        length -= 17
+        index += id_max;
+        length -= id_max
         power.frame_type = buf[index]
         index += 1;
         length -= 1

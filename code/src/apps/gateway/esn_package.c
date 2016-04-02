@@ -37,9 +37,9 @@ void camera_send(camera_t *info, uint8_t *pdata, uint16_t len)
 	p+=4;
 
 	esn_package_t package;
-	mac_addr_get(package.umonitor);
 	package.frame_type = DATA;
 	package.message_type = M_CAME;
+    osel_memcpy(package.umonitor, info->umonitor, ID_MAX);
 	osel_memcpy(package.bmonitor, info->bmonitor, ID_MAX);
 	package.collect_time = info->collect_time;
 	package.alarm = 0;	
@@ -70,9 +70,9 @@ void acceleration_send(uint8_t *pdata, uint16_t len)
 	osel_memcpy(&info, pdata, len);
 	
 	esn_package_t package;
-	mac_addr_get(package.umonitor);
 	package.frame_type = DATA;
 	package.message_type = M_ACCE;
+    osel_memcpy(package.umonitor, info.umonitor, ID_MAX);
 	osel_memcpy(package.bmonitor, info.bmonitor, ID_MAX);
 	package.collect_time = info.collect_time;
 	package.alarm = 0;	
@@ -101,9 +101,9 @@ void atmo_send(uint8_t *pdata, uint16_t len)
 	osel_memcpy(&info, pdata, len);
 	
 	esn_package_t package;
-	mac_addr_get(package.umonitor);
 	package.frame_type = DATA;
 	package.message_type = M_ATMO;
+    osel_memcpy(package.umonitor, info.umonitor, ID_MAX);
 	osel_memcpy(package.bmonitor, info.bmonitor, ID_MAX);
 	package.collect_time = info.collect_time;
 	package.alarm = 0;	
@@ -128,10 +128,9 @@ bool_t shock_send(uint8_t *pdata, uint16_t len)
 	osel_memcpy(&info, pdata, len);
 
 	esn_package_t package;
-    osel_memcpy(package.umonitor, info.umonitor, ID_MAX);
-	mac_addr_get(package.umonitor);
 	package.frame_type = DATA;
 	package.message_type = M_SHOCK;
+    osel_memcpy(package.umonitor, info.umonitor, ID_MAX);
 	osel_memcpy(package.bmonitor, info.bmonitor, ID_MAX);
 	package.collect_time = info.collect_time;
 	package.alarm = TRUE;
@@ -163,12 +162,13 @@ bool_t distance_send(uint8_t *pdata, uint16_t len)
 	osel_memcpy(&info, pdata, len);
 	
 	esn_package_t package;
-	mac_addr_get(package.umonitor);
 	package.frame_type = DATA;
 	package.message_type = M_DISTANCE;
+    
+    osel_memcpy(package.umonitor, info.umonitor, ID_MAX);
 	osel_memcpy(package.bmonitor, info.bmonitor, ID_MAX);
 	package.collect_time = info.collect_time;
-    package.alarm = (info.val < 100) ? TRUE : FALSE;    //todo:ºóÆÚ100Ìæ»»µô
+    package.alarm = (info.val < 100) ? TRUE : FALSE;    //todo:åŽæœŸ100æ›¿æ¢æŽ‰
 	
 	osel_memcpy(p, &package, sizeof(esn_package_t));
 	length += sizeof(esn_package_t);
@@ -180,27 +180,27 @@ bool_t distance_send(uint8_t *pdata, uint16_t len)
 
 void temperature_package(uint8_t *pdata, uint16_t len)
 {
-	if(len > sizeof(temperature_t))
-		return;
-	uint8_t data[LARGE_PBUF_BUFFER_SIZE];
-	uint8_t length= 0;
-	uint8_t *p = data;
-	p+=4;
-	temperature_t info;
-	osel_memcpy(&info, pdata, len);
-	
-	esn_package_t package;
-	mac_addr_get(package.umonitor);
-	package.frame_type = DATA;
-	package.message_type = M_TEMPERATURE;
-	osel_memcpy(package.bmonitor, info.bmonitor, ID_MAX);
-	package.collect_time = info.collect_time;
-	package.alarm = TRUE;
-	
-	osel_memcpy(p, &package, sizeof(esn_package_t));
-	length += sizeof(esn_package_t);
-	p += sizeof(esn_package_t);
-	osel_memcpy(p, &info.val, sizeof(float));
-	length += sizeof(float);
-	esn_gprs_send(data, length);
+//	if(len > sizeof(temperature_t))
+//		return;
+//	uint8_t data[LARGE_PBUF_BUFFER_SIZE];
+//	uint8_t length= 0;
+//	uint8_t *p = data;
+//	p+=4;
+//	temperature_t info;
+//	osel_memcpy(&info, pdata, len);
+//	
+//	esn_package_t package;
+//	mac_addr_get(package.umonitor);
+//	package.frame_type = DATA;
+//	package.message_type = M_TEMPERATURE;
+//	osel_memcpy(package.bmonitor, info.bmonitor, ID_MAX);
+//	package.collect_time = info.collect_time;
+//	package.alarm = TRUE;
+//	
+//	osel_memcpy(p, &package, sizeof(esn_package_t));
+//	length += sizeof(esn_package_t);
+//	p += sizeof(esn_package_t);
+//	osel_memcpy(p, &info.val, sizeof(float));
+//	length += sizeof(float);
+//	esn_gprs_send(data, length);
 }
