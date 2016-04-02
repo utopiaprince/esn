@@ -53,7 +53,7 @@ static uint8_t get_message_type(uint8_t frame_type)
 	return message_type;
 }
 
-static void esn_recv_send(uint64_t srd_id,
+static void esn_recv_send(uint32_t srd_id,
                           uint8_t frame_type,
                           void *pdata,
                           uint16_t len)

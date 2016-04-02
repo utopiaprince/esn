@@ -432,6 +432,8 @@ def atmo(power, buf):#气象
 
     return
 
+
+
 def frame_data_deal(power, buf, length):
     power.message_type = buf[0]
     data = buf[1:]
@@ -448,7 +450,9 @@ def frame_data_deal(power, buf, length):
     elif power.message_type == message_type_e.M_CAME:
         camera(power, data);
         return;
-
+    else:
+        globalval.get_cur_info();
+        return;
     t.setDaemon(True)
     t.start();
 
@@ -473,7 +477,8 @@ def frame_deal(buf, length, self):
         if power.frame_type == 1:  # 收到数据帧
             b = buf[index:]
             frame_data_deal(power, b, length)
-            #frame_ack(self)
+        else:
+            globalval.get_cur_info()
     return
 
 def forwardSend(buf):   #转发数据
@@ -513,7 +518,7 @@ def recv_data(buf, self):
         else:
             frame_len = frame_len + (buf[index] << 8)
             index += 1
-            frame_len += 21  # 额外长度，见协议，状态检测装置ID+帧类型+报文类型+校验位
+            frame_len += 8  # 额外长度，见协议，状态检测装置ID+帧类型+报文类型+校验位
             if (length - 1) < frame_len:
                 return length + 3
             else:
