@@ -21,6 +21,8 @@
      
 #define MAC_BROADCAST_ADDR              0xffff
 
+extern uint16_t phy_addr;
+
 typedef enum
 {
 	MAC_FRAMES_TYPE_DATA = 0x00,
