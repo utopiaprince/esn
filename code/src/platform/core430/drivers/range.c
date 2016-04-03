@@ -88,7 +88,7 @@ static fp32_t range_change(void)
     uint8_t data_len = range_uart_index - 4;    //*< 空格， m， 回车， 换行，4个字节
     fp32_t distance = 0;
     
-    if(data_len <= 3)
+    if(data_len < 3)
     {
         distance = 2.0;  //*< 采样到错误的数据，默认为2米
     }

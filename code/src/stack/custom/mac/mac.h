@@ -11,7 +11,7 @@
 #ifndef __MAC_H__
 #define __MAC_H__
 
-extern uint16_t mac_short_addr;
+extern uint32_t mac_short_addr;
 extern uint64_t mac_long_addr;
 
 extern uint8_t mac_seq;

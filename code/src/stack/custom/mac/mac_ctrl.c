@@ -56,7 +56,7 @@ void mac_ctrl_assoc_req_start(uint16_t dst_addr)
 	sbuf->orig_layer    = MAC_LAYER;
 	sbuf->up_down_link  = UP_LINK;
 	sbuf->primargs.pbuf = pbuf;
-
+    
 	mac_frames_hd_t mac_frm_hd;
 	mac_frm_hd.frames_ctrl.frame_type  = MAC_FRAMES_TYPE_CTRL;
 	mac_frm_hd.frames_ctrl.ack_request = FALSE;
@@ -65,7 +65,7 @@ void mac_ctrl_assoc_req_start(uint16_t dst_addr)
 	mac_frm_hd.frames_ctrl.reserved    = 0x00;
 	mac_frm_hd.seq                     = mac_seq++;
 	mac_frm_hd.dst_addr                = dst_addr;
-	mac_frm_hd.src_addr                = 0x0101;	//@todo get NUI from FLASH
+	mac_frm_hd.src_addr                = mac_short_addr;	//@todo get NUI from FLASH
 
 	mac_frm_hd_fill(pbuf, &mac_frm_hd);
 
@@ -145,7 +145,7 @@ void mac_ctrl_assoc_resp_start(uint16_t dst_addr, mac_assoc_status_enum_t status
 	mac_frm_hd.frames_ctrl.reserved    = 0x00;
 	mac_frm_hd.seq                     = mac_seq++;
 	mac_frm_hd.dst_addr                = dst_addr;
-	mac_frm_hd.src_addr                = 0x0101;	//@todo get NUI from FLASH
+	mac_frm_hd.src_addr                = mac_short_addr;	//@todo get NUI from FLASH
 
 	mac_frm_hd_fill(pbuf, &mac_frm_hd);
 

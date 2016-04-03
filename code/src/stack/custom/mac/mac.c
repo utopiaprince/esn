@@ -32,7 +32,7 @@
 
 DBG_THIS_MODULE("mac")
 
-uint16_t mac_short_addr = 0x0101;
+uint32_t mac_short_addr = 0x0101;
 uint64_t mac_long_addr  = 0xaabbccddeeff0101;
 
 uint8_t mac_seq = 0;
@@ -154,8 +154,9 @@ void mac_init(void)
     if (mac_sent == NULL)
     {
         DBG_LOG(DBG_LEVEL_ERROR, "mac_set init failed\r\n");
-
     }
+    
+    mac_addr_get((uint8_t *)&mac_short_addr);
 }
 
 

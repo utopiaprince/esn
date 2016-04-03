@@ -16,7 +16,7 @@
 #define MAC_FCS_SIZE                    0u      //!< MAC的FCS长度
 #define MAC_HEAD_CTRL_SIZE              2u      //!< MAC的控制头长度
 #define MAC_HEAD_SEQ_SIZE               1u      //!< MAC的序列号长度
-#define MAC_ADDR_SHORT_SIZE             2u      //!< MAC的短地址长度
+#define MAC_ADDR_SHORT_SIZE             4u      //!< MAC的短地址长度
 #define MAC_ADDR_LONG_SIZE              8u      //!< MAC的长地址长度
      
 #define MAC_BROADCAST_ADDR              0xffff

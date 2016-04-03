@@ -167,7 +167,7 @@ static void mac_prim_data_handle(sbuf_t *sbuf)
 	mac_frm_hd.frames_ctrl.reserved    = 0x00;
 	mac_frm_hd.seq                     = mac_seq++;
 	mac_frm_hd.dst_addr                = coord_addr;
-	mac_frm_hd.src_addr                = 0x0101;	//@todo get NUI from FLASH
+	mac_frm_hd.src_addr                = mac_short_addr;	//@todo get NUI from FLASH
 
 	mac_frm_hd_fill(new_pbuf, &mac_frm_hd);
 	mac_frm_data_fill(new_pbuf, sbuf->primargs.pbuf->head, data_len);
