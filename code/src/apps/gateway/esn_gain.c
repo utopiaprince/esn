@@ -188,8 +188,8 @@ static void cache_send(void)
         mac_addr_get(info.umonitor);
         mac_addr_get(info.bmonitor);
         info.collect_time = 0;
-        info.thresh_tap = 0x20;     //*< 1个单位是62.5mg
-        info.dur = 0x20;            //*< 1个单位是625us
+        info.thresh_tap = 0xff;     //*< 1个单位是62.5mg
+        info.dur = 0xff;            //*< 1个单位是625us
         shock_send((uint8_t *)&info, sizeof(shock_t));
     }
     if (cache != 0)
@@ -249,15 +249,15 @@ static void shock_handle(esn_msg_t *msg)
     {
         stock_can_sent = FALSE;
         int16_t x, y, z;
-        adxl_get_triple_angle(&x, &y, &z);
+        adxl_get_triple_angle(&x, &y, &z);	//?
         //@TODO: 添加震动数据发送接口
         shock_t info;
         osel_memset(&info, 0, sizeof(shock_t));
         mac_addr_get(info.umonitor);
         mac_addr_get(info.bmonitor);
         info.collect_time = 0;
-        info.thresh_tap = 0x20;     //*< 1个单位是62.5mg
-        info.dur = 0x20;            //*< 1个单位是625us
+        info.thresh_tap = 0xff;     //*< 1个单位是62.5mg
+        info.dur = 0xff;            //*< 1个单位是625us
 
         if (!shock_send((uint8_t *)&info, sizeof(shock_t)))
         {

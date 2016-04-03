@@ -28,10 +28,10 @@
 
 #define SMALL_PBUF_BUFFER_SIZE          (10u)
 #define MEDIUM_PBUF_BUFFER_SIZE         (64u)
-#define LARGE_PBUF_BUFFER_SIZE          (128u)
+#define LARGE_PBUF_BUFFER_SIZE          (150u)
 
 #define SMALL_PBUF_NUM                  (0u)    // 各种PBUF最大个数
-#define MEDIUM_PBUF_NUM                 (6u)
+#define MEDIUM_PBUF_NUM                 (0u)
 #define LARGE_PBUF_NUM                  (6u)
 
 #if PBUF_DBG_EN > 0
