@@ -33,7 +33,7 @@ static void mac_assoc_req_tx(sbuf_t *sbuf, uint8_t res)
 	m_tran_recv();
 }
 
-void mac_ctrl_assoc_req_start(uint16_t dst_addr)
+void mac_ctrl_assoc_req_start(uint32_t dst_addr)
 {
 	sbuf_t *sbuf = sbuf_alloc(__SLINE1);
 	if (sbuf == NULL)
@@ -91,8 +91,8 @@ void mac_ctrl_assoc_req_handle(pbuf_t *pbuf)
 	mac_frm_assoc_req_get(pbuf, &mac_assoc_req);
 
 	//@todo get assoc resp the check license
-	uint16_t dst_addr = 0x0000;
-	memcpy((void *)&dst_addr, &(mac_frm_head_info.src_addr), sizeof(uint16_t));
+	uint32_t dst_addr = 0x0000;
+	memcpy((void *)&dst_addr, &(mac_frm_head_info.src_addr), sizeof(uint32_t));
 
 	mac_ctrl_assoc_resp_start(dst_addr, MAC_ASSOC_STATUS_OK);
 }
@@ -113,7 +113,7 @@ static void mac_assoc_resp_tx(sbuf_t *sbuf, uint8_t res)
 	m_tran_recv();
 }
 
-void mac_ctrl_assoc_resp_start(uint16_t dst_addr, mac_assoc_status_enum_t status)
+void mac_ctrl_assoc_resp_start(uint32_t dst_addr, mac_assoc_status_enum_t status)
 {
 	sbuf_t *sbuf = sbuf_alloc(__SLINE1);
 	if (sbuf == NULL)

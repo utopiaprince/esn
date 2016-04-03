@@ -12,7 +12,7 @@
 #define __MAC_CTRL_H__
 
 
-void mac_ctrl_assoc_req_start(uint16_t dst_addr);
+void mac_ctrl_assoc_req_start(uint32_t dst_addr);
 
 /**
  * @brief host received request
@@ -27,7 +27,7 @@ void mac_ctrl_parse(pbuf_t *pbuf);
  * @param dst_addr
  * @param status
  */
-void mac_ctrl_assoc_resp_start(uint16_t dst_addr, mac_assoc_status_enum_t status);
+void mac_ctrl_assoc_resp_start(uint32_t dst_addr, mac_assoc_status_enum_t status);
 
 /**
  * @brief detector received response

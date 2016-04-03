@@ -30,7 +30,7 @@ static pbuf_t *mac_frm_get(void)
 static bool_t mac_addr_filter(uint8_t frm_type, void *dst_addr, uint8_t addr_mode)
 {
 	uint64_t dst_long_addr;
-	uint16_t dst_short_addr;
+	uint32_t dst_short_addr;
 
 	if (frm_type != MAC_FRAMES_TYPE_ACK)
 	{

@@ -18,7 +18,7 @@ typedef enum
 	ON_LINE    = 0x02,
 } mac_line_enum_t;
 
-extern uint16_t coord_addr;
+extern uint32_t coord_addr;
 
 extern TimerHandle_t mac_line_cycle_timer;
 

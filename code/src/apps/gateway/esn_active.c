@@ -68,7 +68,7 @@ static void esn_recv_send(uint32_t srd_id,
 		{
 			shock_t info;
 			osel_memset(&info, 0, sizeof(shock_t));
-			mac_addr_get(info.umonitor);
+			osel_memcpy(info.umonitor, &srd_id, sizeof(uint32_t));
 			osel_memcpy(info.bmonitor, &srd_id, sizeof(uint32_t));
 			info.collect_time = 0;
 			info.thresh_tap = p[0];
@@ -80,7 +80,7 @@ static void esn_recv_send(uint32_t srd_id,
 		{
 			distance_t info;
 			osel_memset(&info, 0, sizeof(distance_t));
-			mac_addr_get(info.umonitor);
+			osel_memcpy(info.umonitor, &srd_id, sizeof(uint32_t));
 			osel_memcpy(info.bmonitor, &srd_id, sizeof(uint32_t));
 			info.collect_time = 0;
 			osel_memcpy(&info.val,p,4);
@@ -91,7 +91,7 @@ static void esn_recv_send(uint32_t srd_id,
 		{
 			acceleration_t info;
 			osel_memset(&info, 0, sizeof(acceleration_t));
-			mac_addr_get(info.umonitor);
+			osel_memcpy(info.umonitor, &srd_id, sizeof(uint32_t));
 			osel_memcpy(info.bmonitor, &srd_id, sizeof(uint32_t));
 			info.collect_time = 0;
 			osel_memcpy(&info.x,p,sizeof(uint16_t));
@@ -107,7 +107,7 @@ static void esn_recv_send(uint32_t srd_id,
 		{
 			atmo_t info;
 			osel_memset(&info, 0, sizeof(atmo_t));
-			mac_addr_get(info.umonitor);
+			osel_memcpy(info.umonitor, &srd_id, sizeof(uint32_t));
 			osel_memcpy(info.bmonitor, &srd_id, sizeof(uint32_t));
 			info.collect_time = 0;
 			p += 7;
@@ -132,7 +132,7 @@ static void esn_recv_send(uint32_t srd_id,
 		{
 			camera_t info;
 			osel_memset(&info, 0, sizeof(camera_t));
-			mac_addr_get(info.umonitor);
+			osel_memcpy(info.umonitor, &srd_id, sizeof(uint32_t));
 			osel_memcpy(info.bmonitor, &srd_id, sizeof(uint32_t));
 			info.collect_time = 0;
 			osel_memcpy(&info.cnt,p,sizeof(uint16_t));

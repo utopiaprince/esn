@@ -27,7 +27,7 @@
 #include "drivers.h"
 DBG_THIS_MODULE("mac_prim")
 
-uint16_t coord_addr = 0;
+uint32_t coord_addr = 0;
 
 TimerHandle_t mac_line_cycle_timer;
 

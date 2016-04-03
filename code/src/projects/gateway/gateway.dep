@@ -6,10 +6,8 @@
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\..\..\apps\gateway\esn_active.h</file>
-      <file>$PROJ_DIR$\..\..\apps\gateway\esn.h</file>
-      <file>$PROJ_DIR$\..\..\apps\gateway\esn_detect.h</file>
       <file>$PROJ_DIR$\..\..\apps\gateway\esn_gain.h</file>
+      <file>$PROJ_DIR$\..\..\apps\gateway\esn_detect.h</file>
       <file>$PROJ_DIR$\..\..\apps\gateway\esn_package.h</file>
       <file>$PROJ_DIR$\..\..\apps\gateway\FreeRTOSConfig.h</file>
       <file>$PROJ_DIR$\..\..\apps\gateway\esn_active.c</file>
@@ -32,20 +30,18 @@
       <file>$PROJ_DIR$\..\..\common\lib\printf.h</file>
       <file>$PROJ_DIR$\..\..\common\lib\random.c</file>
       <file>$PROJ_DIR$\..\..\common\lib\random.h</file>
-      <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\atmosphere.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\adxl312.h</file>
+      <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\atmosphere.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\board.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\cam.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\clock.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\drivers.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\gprs.h</file>
-      <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\lora.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\range.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\sht.h</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\uart.h</file>
-      <file>$PROJ_DIR$\..\..\stack\custom\mac\mac_recv.c</file>
-      <file>$PROJ_DIR$\..\..\platform\core430\drivers\adxl312.c</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\wts.h</file>
+      <file>$PROJ_DIR$\..\..\platform\core430\drivers\adxl312.c</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\atmosphere.c</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\board.c</file>
       <file>$PROJ_DIR$\..\..\platform\core430\drivers\cam.c</file>
@@ -62,8 +58,8 @@
       <file>$PROJ_DIR$\..\..\platform\core430\port\port.c</file>
       <file>$PROJ_DIR$\..\..\platform\core430\port\portext.s43</file>
       <file>$PROJ_DIR$\..\..\platform\core430\port\portmacro.h</file>
-      <file>$PROJ_DIR$\..\..\stack\common\pbuf.h</file>
       <file>$PROJ_DIR$\..\..\stack\common\pbuf.c</file>
+      <file>$PROJ_DIR$\..\..\stack\common\pbuf.h</file>
       <file>$PROJ_DIR$\..\..\stack\common\prim.h</file>
       <file>$PROJ_DIR$\..\..\stack\common\sbuf.c</file>
       <file>$PROJ_DIR$\..\..\stack\common\sbuf.h</file>
@@ -75,10 +71,12 @@
       <file>$PROJ_DIR$\..\..\stack\custom\mac\mac_frames.h</file>
       <file>$PROJ_DIR$\..\..\stack\custom\mac\mac_prim.c</file>
       <file>$PROJ_DIR$\..\..\stack\custom\mac\mac_prim.h</file>
+      <file>$PROJ_DIR$\..\..\stack\custom\mac\mac_recv.c</file>
       <file>$PROJ_DIR$\..\..\stack\custom\mac\mac_recv.h</file>
+      <file>$PROJ_DIR$\..\..\sys_arch\src\tasks.c</file>
+      <file>$PROJ_DIR$\..\..\stack\custom\phy\phy_cca.h</file>
       <file>$PROJ_DIR$\..\..\stack\custom\phy\phy_cca.c</file>
       <file>$PROJ_DIR$\..\..\stack\custom\phy\phy_packet.c</file>
-      <file>$PROJ_DIR$\..\..\stack\custom\phy\phy_cca.h</file>
       <file>$PROJ_DIR$\..\..\stack\custom\phy\phy_packet.h</file>
       <file>$PROJ_DIR$\..\..\stack\custom\phy\phy_state.c</file>
       <file>$PROJ_DIR$\..\..\stack\custom\phy\phy_state.h</file>
@@ -103,14 +101,1140 @@
       <file>$PROJ_DIR$\..\..\sys_arch\src\event_groups.c</file>
       <file>$PROJ_DIR$\..\..\sys_arch\src\list.c</file>
       <file>$PROJ_DIR$\..\..\sys_arch\src\queue.c</file>
-      <file>$PROJ_DIR$\..\..\sys_arch\src\tasks.c</file>
       <file>$PROJ_DIR$\..\..\sys_arch\src\timers.c</file>
       <file>$PROJ_DIR$\..\..\sys_arch\osel_arch.h</file>
+      <file>$PROJ_DIR$\..\..\apps\gateway\esn.h</file>
+      <file>$PROJ_DIR$\..\..\platform\core430\drivers\inc\lora.h</file>
+      <file>$PROJ_DIR$\..\..\apps\gateway\esn_active.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_detect.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_active.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\debug.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\mlist.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_gain.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_package.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_restruct.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc16.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\hal_timer.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\printf.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\random.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\atmosphere.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\adxl312.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\board.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\cam.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\clock.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\gprs.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\lora.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\range.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\m_tran.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\heap_1.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\phy_packet.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\port.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\pbuf.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\tasks.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\sbuf.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac_recv.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac_ctrl.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac_frames.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac_prim.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\list.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\phy_cca.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\queue.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\phy_state.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\stack.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\croutine.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_active.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\event_groups.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\portext.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\timers.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\cstartup.r43</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_detect.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_gain.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_package.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\esn_restruct.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\crc16.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\mlist.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\debug.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\hal_timer.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\printf.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\random.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\board.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\adxl312.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\atmosphere.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\cam.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\clock.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\gprs.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\lora.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\range.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\uart.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\bsp.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\heap_1.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\port.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\sbuf.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\pbuf.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac_ctrl.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac_frames.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac_prim.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\mac_recv.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\phy_cca.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\phy_packet.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\stack.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\phy_state.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\m_tran.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\croutine.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\event_groups.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\list.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\queue.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\timers.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\tasks.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\gateway.d43</file>
+      <file>$PROJ_DIR$\Debug\Obj\gateway.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stddef.h</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dl430xllfn.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdint.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ycheck.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\assert.h</file>
+      <file>$TOOLKIT_DIR$\inc\msp430f5419a.h</file>
+      <file>$TOOLKIT_DIR$\inc\in430.h</file>
+      <file>$TOOLKIT_DIR$\inc\msp430.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Product.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ymath.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\xtgmath.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\math.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ystdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdio.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\ysizet.h</file>
+      <file>$PROJ_DIR$\..\..\apps\esn_frames.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\macros.m43</file>
+      <file>$TOOLKIT_DIR$\config\linker\lnk430f5419a.xcl</file>
+      <file>$TOOLKIT_DIR$\inc\cfi.m43</file>
+      <file>$TOOLKIT_DIR$\config\linker\multiplier32_loc2.xcl</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dl430xllfn.r43</file>
+      <file>$PROJ_DIR$\Debug\List\gateway.html</file>
+      <file>$TOOLKIT_DIR$\inc\dlib\c\stdlib.h</file>
     </outputs>
-    <forcedrebuild>
-      <name>[MULTI_TOOL]</name>
-      <tool>XLINK</tool>
-    </forcedrebuild>
+    <file>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_active.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 140</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 102</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 19 56 86 87 84 17 12 189 190 191 76 192 193 24 54 3 188 196 89 194 23 197 26 0 29 58 99 85 199 198 195 82 200 204 21 98 25 96 97 64 207 2 81 90 14 206 208 209 51 83 205 210 16 33 28 27 30 31 53 1</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 17 19 16 23 29 33 98 28 24 27 25 53 56 54 30 26 31 97 99 207 0 1 58 64 76 2</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_detect.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 145</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 101</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 191 190 81 206 208 86 96 12 29 90 193 98 56 2 14 188 196 89 194 21 25 0 53 54 97 87 189 192 3 85 84 199 198 197 195 82 200 204 19 23 17 24 26 99 209 51 83 205 210 16 33 28 27 30 31 207 1</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 53 17 19 16 23 56 54 29 33 98 28 24 27 25 30 26 31 97 99 207 0 1 2</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_gain.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 146</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 105</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 188 29 89 191 3 196 194 21 25 0 53 2 87 189 192 84 190 86 98 96 12 56 54 97 85 199 198 197 195 82 200 204 19 23 17 24 26 99 81 90 14 206 208 209 51 83 205 210 16 33 28 27 30 31 207 1</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 53 17 19 16 23 56 54 29 33 98 28 24 27 25 30 26 31 97 99 207 0 1 2</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_package.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 147</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 106</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 84 14 206 189 208 191 192 196 11 17 21 86 3 82 12 30 16 205 210 81 90 85 96 26 53 199 188 190 198 19 23 194 200 204 89 87 197 195 2 209 51 83</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 2 12 192 193 191 199 190 198 208 188 53 17 19 14 194 21 210 200 206 205 204 16 23 96 81 189 3 197 195 196 209 85 84 51 83 89 82 86 87 90 30 26 11</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\apps\gateway\esn_restruct.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 148</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 107</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\apps\gateway\main.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 149</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 100</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 56 21 192 83 17 12 193 27 97 191 87 189 84 0 96 19 23 208 200 209 33 31 3 58 45 77 14 16 199 188 190 198 194 204 29 28 30 89 85 53 99 54 205 210 206 51 197 195 196 98 24 25 26 81 86 90 82 207 1</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 45 51 197 195 196 209 29 33 98 28 24 27 96 81 189 3 85 84 83 89 82 86 87 90 25 53 56 54 30 26 31 77 58 97 99 207 0 1</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\common\lib\crc16.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 150</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 108</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 198 193 199 192 12 191 188 190 11 208</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 11 12 192 193 191 199 190 198 208 188</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\common\lib\debug.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 152</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 103</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 191 30 193 21 189 51 204 209 87 84 208 206 192 83 12 29 205 210 28 3 56 14 96 199 188 190 198 194 200 33 27 31 89 85 19 23 17 197 98 24 25 26 195 196 81 86 90 82 53 54 16</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 12 192 193 191 199 190 198 208 188 14 194 21 210 200 206 205 204 29 197 195 196 209 33 98 28 24 27 96 81 189 3 85 84 51 83 89 82 86 87 90 25 53 17 19 16 23 56 54 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\common\lib\hal_timer.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 153</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 109</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 90 200 21 81 206 208 192 204 16 86 14 197 82 96 89 87 12 189 3 85 84 191 199 188 190 198 195 196 194 19 23 209 51 83 205 210 17</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 16 17 19 23</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\common\lib\mlist.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 151</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 104</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 199 19 192 191 208 12 188 190 198</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 12 192 193 191 199 190 198 208 188 19</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\common\lib\printf.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 154</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 110</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 21 210 193 191 208 199 188 190 198</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 21 210 193 191 199 190 198 208 188</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\common\lib\random.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 155</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 111</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 208 23 191 193 14 192 200 204 17 206 12 16 194 217 199 188 190 198 19 21 205 210</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 217 193 191 199 190 198 208 188 206 17 12 192 19 14 194 21 210 200 205 204 16 23</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\adxl312.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 157</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 113</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 51 209 193 191 17 90 83 206 14 28 96 12 29 81 208 21 53 86 205 210 16 201 30 203 0 89 87 189 192 3 85 84 199 188 190 198 197 195 196 82 194 200 204 19 23 202 33 27 31 54 98 24 25 26 56</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 17 19 16 23 203 201 202 29 33 98 28 24 27 25 53 56 54 30 26 31 0</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\atmosphere.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 158</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 112</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 190 12 87 84 17 200 193 189 53 56 16 188 191 192 28 96 29 14 199 198 194 3 30 54 19 21 23 208 205 210 206 204 89 85 209 51 83 33 27 31 81 86 90 197 195 196 82 98 24 25 26</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 96 81 189 3 197 195 196 209 85 84 51 83 89 82 86 87 90 29 33 98 28 24 27 25 53 56 54 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\board.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 156</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 114</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 17 90 205 210 12 53 81 206 208 28 96 29 86 14 16 30 89 87 189 192 3 85 84 191 199 188 190 198 197 195 209 51 83 21 33 27 31 54 196 82 194 200 204 19 23 98 24 25 26 56</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 17 19 16 23 29 33 98 28 24 27 25 53 56 54 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\cam.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 159</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 115</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 198 87 84 17 193 194 189 53 29 14 192 199 28 96 12 56 16 188 190 191 200 3 30 54 19 21 23 208 205 210 204 89 85 209 51 83 33 27 31 206 81 86 90 197 195 196 82 98 24 25 26</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 96 81 189 3 197 195 196 209 85 84 51 83 89 82 86 87 90 29 33 98 28 24 27 25 53 56 54 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\clock.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 160</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 116</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 17 86 205 210 12 53 14 28 96 29 81 90 206 208 16 30 89 87 189 192 3 85 84 191 199 188 190 198 209 51 83 21 33 27 31 54 197 195 196 82 194 200 204 19 23 98 24 25 26 56</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 17 19 16 23 29 33 98 28 24 27 25 53 56 54 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\gprs.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 161</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 117</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 89 193 53 12 204 209 23 190 194 17 195 54 33 30 188 191 19 197 28 96 0 192 199 198 21 200 87 206 196 16 29 208 14 205 210 81 86 90 189 3 85 84 51 83 27 31 56 82 98 24 25 26</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 30 12 192 193 191 199 190 198 208 188 54 53 17 19 14 194 21 210 200 206 205 204 16 23 96 81 189 3 197 195 196 209 85 84 51 83 89 82 86 87 90 33 29 98 28 24 27 25 56 26 31 0</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\lora.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 162</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 118</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 98 17 193 12 190 200 197 89 53 16 188 191 196 14 192 199 198 194 25 86 29 19 21 23 208 205 210 206 204 24 26 195 81 90 82 54 96 33 28 27 30 31 209 87 189 3 85 84 51 83 56</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 29 197 195 196 209 33 98 28 24 27 96 81 189 3 85 84 51 83 89 82 86 87 90 25 53 56 54 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\range.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 163</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 119</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 24 208 23 206 12 209 51 29 19 191 205 210 193 201 89 85 83 56 17 96 21 87 189 192 3 84 197 26 203 0 53 54 14 16 199 188 190 198 194 200 204 202 81 86 90 195 196 98 25 82 33 28 27 30 31</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 203 201 202 96 81 189 3 197 195 196 209 85 84 51 83 89 82 86 87 90 0 29 33 98 28 24 27 25 53 56 54 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\drivers\uart.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 164</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 120</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 84 195 87 209 191 208 24 189 193 197 26 192 194 21 12 96 98 25 3 56 29 199 188 190 198 33 28 27 30 31 89 85 51 83 200 204 19 23 17 196 81 86 90 14 206 82 205 210 53 54 16</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 12 192 193 191 199 190 198 208 188 29 197 195 196 209 33 98 28 24 27 96 81 189 206 3 85 84 51 83 89 82 86 87 90 14 194 21 210 200 205 204 25 53 17 19 16 23 56 54 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\init\bsp.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 165</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 123</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 21 27 191 89 85 193 206 96 45 19 23 208 205 210 33 31 12 29 81 14 16 192 199 188 190 198 194 200 28 30 209 87 189 3 84 51 83 56 54 53 17 204 197 98 24 25 26 195 196 86 90 82</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 29 197 195 196 209 33 98 28 24 27 96 81 189 3 85 84 51 83 89 82 86 87 90 25 53 56 54 30 26 31 45</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\init\cstartup.s43</name>
+      <outputs>
+        <tool>
+          <name>A430</name>
+          <file> 144</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>A430</name>
+          <file> 211 213 197 195</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\port\heap_1.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 166</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 122</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 195 191 196 85 81 208 197 193 206 192 217 89 199 188 190 198 189 3 84 209 51 83 82</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 217 193 191 199 190 198 208 188 206 81 189 192 3 197 195 196 209 85 84 51 83 89 82</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\port\port.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 167</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 125</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 191 188 26 3 189 192 84 193 190 89 85 199 198 197 195 196 82 81 206 208 209 51 83 12</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 26 12</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\platform\core430\port\portext.s43</name>
+      <outputs>
+        <tool>
+          <name>A430</name>
+          <file> 142</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>A430</name>
+          <file> 197 195 3 47</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\common\pbuf.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 169</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 126</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 21 84 189 191 14 192 82 17 193 206 86 3 196 96 19 23 208 205 210 12 81 90 85 53 16 199 188 190 198 194 200 204 89 87 197 195 209 51 83</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 53 96 81 189 3 197 195 196 209 85 84 51 83 89 82 86 87 90</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\common\sbuf.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 168</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 128</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 194 198 193 204 14 192 199 191 86 195 17 56 12 16 188 190 200 197 82 96 19 21 23 208 205 210 206 81 90 196 89 87 189 3 85 84 209 51 83 54 53</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 96 81 189 3 197 195 196 209 85 84 51 83 89 82 86 87 90 56 54 53</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\custom\mac\mac.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 170</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 129</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 28 96 209 51 12 66 86 193 191 29 14 83 206 53 56 75 81 90 208 21 16 54 30 76 64 89 87 189 192 3 85 84 199 205 210 17 33 27 31 188 190 198 197 195 196 82 194 200 204 19 23 98 24 25 26 62</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 53 17 19 16 23 56 54 29 33 98 28 24 27 25 30 26 31 76 75 64 66 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_ctrl.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 171</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 131</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 62 14 12 75 29 86 16 25 53 71 60 81 90 206 208 205 210 98 17 56 76 58 64 66 89 87 189 192 3 85 84 191 199 188 190 198 209 51 83 21 54 197 24 26 96 195 196 82 194 200 204 19 23 33 28 27 30 31</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 17 19 16 23 53 56 54 75 76 71 58 62 64 60 66 29 33 98 28 24 27 25 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_frames.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 172</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 132</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 192 191 193 87 189 84 190 205 210 75 3 188 17 53 89 12 85 199 198 197 195 14 56 71 62 81 86 90 206 208 209 51 83 21 16 96 196 82 194 200 204 54 19 23</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 56 54 53 17 19 16 23 71 75 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_prim.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 173</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 133</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 51 188 209 62 3 191 193 53 12 56 87 189 192 84 190 83 206 14 25 76 71 64 89 85 199 198 21 98 17 58 75 60 29 81 86 90 208 205 210 16 197 24 26 54 96 195 196 82 194 200 204 19 23 33 28 27 30 31</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 17 19 16 23 76 58 56 54 53 71 75 62 60 64 29 33 98 28 24 27 25 30 26 31</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\custom\mac\mac_recv.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 174</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 130</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 12 62 199 191 197 71 89 85 198 195 193 16 53 75 60 99 87 189 192 3 84 188 190 205 210 17 56 76 58 66 81 86 90 14 206 208 209 51 83 21 54 96 196 82 194 200 204 19 23</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 17 19 16 23 53 56 54 71 76 75 58 62 66 60 99</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\sys_arch\src\tasks.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 185</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 127</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 51 89 191 193 206 83 88 208 196 197 200 81 90 199 188 190 198 189 192 3 85 84 195 209 217 82</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 217 193 191 199 190 198 208 188 206 200 81 189 192 3 197 195 196 209 85 84 51 83 89 82 90 88</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_cca.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 175</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 135</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 190 30 193 188 191 28 3 56 68 192 199 198 33 27 31 209 87 189 84 194 21 12 29 73 208 197 98 24 25 26 195 96 89 85 51 83 200 204 19 23 17 196 81 86 90 14 206 82 205 210 53 54 16</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 12 192 193 191 199 190 198 208 188 29 197 195 196 209 33 98 28 24 27 96 81 189 206 3 85 84 51 83 89 82 86 87 90 14 194 21 210 200 205 204 25 53 17 19 16 23 56 54 30 26 31 68 73</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_packet.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 176</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 124</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 191 193 195 16 188 96 73 12 190 200 24 81 206 54 53 14 192 199 198 194 204 17 197 26 90 82 29 71 19 21 23 208 205 210 98 25 196 86 89 33 28 27 30 31 209 87 189 3 85 84 51 83 56</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 29 197 195 196 209 33 98 28 24 27 96 81 189 3 85 84 51 83 89 82 86 87 90 25 53 56 54 30 26 31 71 73</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\custom\phy\phy_state.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 178</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 137</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 24 206 12 190 200 81 54 16 188 191 195 96 73 14 192 199 198 194 204 17 197 26 90 82 29 19 21 23 208 205 210 98 25 196 86 89 53 33 28 27 30 31 209 87 189 3 85 84 51 83 56</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 29 197 195 196 209 33 98 28 24 27 96 81 189 3 85 84 51 83 89 82 86 87 90 25 53 56 54 30 26 31 73</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\module\m_tran.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 179</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 121</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 190 192 191 53 87 189 84 86 19 56 17 73 3 193 24 54 29 75 68 89 12 85 188 196 194 23 197 26 96 76 58 16 71 81 90 14 206 199 198 195 82 200 204 21 98 25 208 209 51 83 205 210 33 28 27 30 31</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 96 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 86 87 90 12 14 194 21 210 200 205 204 17 19 16 23 29 33 98 28 24 27 25 53 56 54 30 26 31 76 75 58 68 71 73</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\stack\stack.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 177</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 138</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 196 191 206 19 205 210 193 81 23 208 89 53 77 21 90 86 54 96 12 14 16 192 199 188 190 198 194 200 204 17 197 195 82 58 87 189 3 85 84 209 51 83 56</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 12 192 193 191 199 190 198 208 188 19 14 194 21 210 200 206 205 204 16 23 96 81 189 3 197 195 196 209 85 84 51 83 89 82 86 87 90 77 56 54 53 58</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\sys_arch\src\croutine.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 180</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 139</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 191 188 3 189 192 80 84 193 190 89 85 199 198 197 195 196 82 81 206 208 209 51 83</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 81 189 193 191 199 190 198 208 188 206 192 3 197 195 196 209 85 84 51 83 89 82 80</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\sys_arch\src\event_groups.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 181</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 141</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 209 208 193 191 90 196 81 206 89 199 188 190 198 189 192 3 85 84 197 195 82 217 79 51 83</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 217 193 191 199 190 198 208 188 206 81 189 192 3 197 195 196 209 85 84 51 83 89 82 90 79</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\sys_arch\src\list.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 182</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 134</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 206 196 82 208 81 191 199 188 190 198 189 192 3 85 84 197 195 217 209 51 83</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 217 193 191 199 190 198 208 188 206 81 189 192 3 197 195 196 209 85 84 51 83 82</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\sys_arch\src\queue.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 183</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 136</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 193 208 191 196 89 206 209 200 81 199 188 190 198 189 192 3 85 84 197 195 51 83 217 86 82</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 217 193 191 199 190 198 208 188 206 200 81 189 192 3 197 195 196 209 85 84 51 83 89 82 86</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\sys_arch\src\timers.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 184</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 143</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 209 208 193 191 86 196 81 206 89 199 188 190 198 189 192 3 85 84 197 195 82 217 90 51 83</file>
+        </tool>
+        <tool>
+          <name>ICC430</name>
+          <file> 217 193 191 199 190 198 208 188 206 81 189 192 3 197 195 196 209 85 84 51 83 89 82 86 90</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 186 216</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Debug\Exe\gateway.d43</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 216</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 212 214 113 112 114 123 115 116 108 139 144 103 102 101 105 106 107 141 117 109 122 134 118 121 129 131 132 133 130 100 104 126 135 124 137 125 142 110 136 111 119 128 138 127 143 120 215</file>
+        </tool>
+      </inputs>
+    </file>
   </configuration>
   <configuration>
     <name>Release</name>
