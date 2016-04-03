@@ -31,6 +31,12 @@ static bool_t mac_addr_filter(uint8_t frm_type, void *dst_addr, uint8_t addr_mod
 {
 	uint64_t dst_long_addr;
 	uint32_t dst_short_addr;
+	
+	if((phy_addr != (uint16_t)(mac_frm_head_info.dst_addr))
+		&& (phy_addr != MAC_BROADCAST_ADDR))
+	{
+		return FALSE;
+	}
 
 	if (frm_type != MAC_FRAMES_TYPE_ACK)
 	{
@@ -184,7 +190,8 @@ static void mac_tx_finish_tmp(sbuf_t *sbuf, bool_t result)
 
 static void ack_tx_ok_callback(sbuf_t *sbuf, uint8_t res)
 {
-
+	pbuf_free(&(sbuf->primargs.pbuf) __PLINE2);
+	sbuf_free(&sbuf __SLINE2);
 }
 
 static void mac_send_ack(uint8_t seqno)

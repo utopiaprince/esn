@@ -8,12 +8,16 @@
 #include "m_tran.h"
 #include "mac_frames.h"
 
+uint16_t phy_addr = 0x00;
+
 int8_t mac_frm_hd_get(pbuf_t *pbuf, mac_frames_hd_t *mac_frm_hd)
 {
 	if (pbuf == NULL)
 	{
 		return NULL;
 	}
+
+	memcpy(&phy_addr, pbuf->head, PHY_HEAD_SIZE);
 
 	uint8_t *datap = pbuf->head + PHY_HEAD_SIZE;
 	pbuf->data_p = pbuf->head + PHY_HEAD_SIZE;

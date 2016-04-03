@@ -174,9 +174,6 @@ static void mac_prim_data_handle(sbuf_t *sbuf)
 	new_pbuf->attri.need_ack = mac_frm_hd.frames_ctrl.ack_request;
 
 	m_tran_send(new_sbuf, mac_data_txok_cb, 3);
-    
-    pbuf_free(&(sbuf->primargs.pbuf) __PLINE2);
-    sbuf_free(&sbuf __SLINE2);
 }
 
 void m_prim_event_handler(const osel_event_t *const pmsg)
