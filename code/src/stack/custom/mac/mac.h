@@ -46,7 +46,7 @@ void mac_init(void);
 /**
  * @brief 获取当前发送是否完成
  */
-bool_t mac_sent_get(uint16_t sec);
+bool_t mac_sent_get(uint16_t msec);
 
 bool_t mac_sent_set(void);
 

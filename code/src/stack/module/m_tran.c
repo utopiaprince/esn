@@ -61,7 +61,7 @@
 /* 5K速率，1000*(8*4)=32000 增加160的抖动时间（经验值）*/
 #define  BE_TO_US(be)           ((be)*16160ul)
 #define  BE_TO_MS(be)           ((be)*16)
-#define  MS_FOR_ACK             (200u)
+#define  MS_FOR_ACK             (400u)
 
 #endif
 

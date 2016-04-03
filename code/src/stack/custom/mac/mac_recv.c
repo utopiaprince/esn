@@ -184,7 +184,8 @@ static void mac_tx_finish_tmp(sbuf_t *sbuf, bool_t result)
 
 static void ack_tx_ok_callback(sbuf_t *sbuf, uint8_t res)
 {
-
+    pbuf_free(&(sbuf->primargs.pbuf) __PLINE2);
+    sbuf_free(&sbuf __SLINE2);
 }
 
 static void mac_send_ack(uint8_t seqno)

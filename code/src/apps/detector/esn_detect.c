@@ -40,7 +40,7 @@ static void range_app_handle(void)
     static TickType_t range_new_tick = 0;
 
     fp32_t distance = 1000.0;
-    if(++range_time_cnt < 120)          //*< 2分钟调用一次距离传感器
+    if(++range_time_cnt < RANGE_DETECT_TIME)    //*< 2分钟调用一次距离传感器
     {
         distance = 1000.0;
     }
@@ -69,7 +69,8 @@ static void range_app_handle(void)
         if (range_new_tick > range_old_tick)
         {
             //*< 100s以内只触发一次
-            if ((range_new_tick - range_old_tick) > (100 * configTICK_RATE_HZ))
+            if ((range_new_tick - range_old_tick) > 
+                (RANGE_DETECT_TIME * configTICK_RATE_HZ))
             {
                 range_old_tick = range_new_tick;
                 range_can_sent = TRUE;
@@ -77,7 +78,8 @@ static void range_app_handle(void)
         }
         else
         {
-            if (((portMAX_DELAY - range_old_tick) + range_new_tick) > (100 * configTICK_RATE_HZ))
+            if (((portMAX_DELAY - range_old_tick) + range_new_tick) > 
+                (RANGE_DETECT_TIME * configTICK_RATE_HZ))
             {
                 range_old_tick = range_new_tick;
                 range_can_sent = TRUE;

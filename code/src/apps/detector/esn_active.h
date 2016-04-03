@@ -13,8 +13,8 @@
 
 #define ESN_TIMER_CYCLE			(10*60ul)
 
-#define ESN_SEND_WAIT_TIME		(10)	// the secends wait for data sent ok
-#define ESN_SEND_WAIT_CNT		(3)		// the cnt resend for data sent failed
+#define ESN_SEND_WAIT_TIME		(800)	//  the msecends wait for data sent ok
+#define ESN_SEND_WAIT_CNT		(1)		// the cnt resend for data sent failed
 
 #define ESN_SEND_BACKOFF_MAX    (5u)
 #define ESN_SEND_BACKOFF_MIN    (1u)

@@ -33,13 +33,14 @@ static void camera_recv_data_handle(uint16_t cnt,
                                     uint8_t *pdata,
                                     uint16_t len)
 {
-    pbuf_t *pbuf = pbuf_alloc(sizeof(esn_camera_payload_t) __PLINE1);
-    DBG_ASSERT(pbuf != NULL __DBG_LINE);
-
-    esn_camera_payload_t *datap = (esn_camera_payload_t *)pbuf->data_p;
-    datap->cnt = cnt * 4;
     for (uint8_t i = 0; i < 4; i++)
     {
+        pbuf_t *pbuf = pbuf_alloc(sizeof(esn_camera_payload_t) __PLINE1);
+        DBG_ASSERT(pbuf != NULL __DBG_LINE);
+
+        esn_camera_payload_t *datap = (esn_camera_payload_t *)pbuf->data_p;
+        datap->cnt = cnt * 4;
+    
         datap->index = 4 * (index - 1) + 1 + i;
         osel_memcpy(datap->buf, (pdata + 128 * i), 128);
         pbuf->data_len = sizeof(esn_camera_payload_t);
@@ -48,7 +49,9 @@ static void camera_recv_data_handle(uint16_t cnt,
         esn_msg.event = (ESN_DATA_EVENT<<8) | DATATYPE_PICTURE;
         esn_msg.param = pbuf;
         xQueueSend(esn_active_queue, &esn_msg, portMAX_DELAY);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
+//    vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
 
 static void atmos_recv_data_handle(uint8_t *pdata, uint16_t len)

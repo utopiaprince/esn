@@ -69,10 +69,14 @@ static bool_t esn_data_send(esn_frames_head_t *esn_frm_hd,
         }
 
         if (mac_sent_get(ESN_SEND_WAIT_TIME)) { //@note wait for mac send data ok semphore
+            pbuf_free(&(sbuf->primargs.pbuf) __PLINE2);
+            sbuf_free(&sbuf __SLINE2);
             return TRUE;
         }
-
-        vTaskDelay(configTICK_RATE_HZ * random(ESN_SEND_BACKOFF_MIN, ESN_SEND_BACKOFF_MAX));
+        if(i < data_send_cnt-1)
+        {
+            vTaskDelay(configTICK_RATE_HZ * random(ESN_SEND_BACKOFF_MIN, ESN_SEND_BACKOFF_MAX));
+        }
     }
 
     pbuf_free(&pbuf __PLINE2);
@@ -93,6 +97,8 @@ static void esn_camera_handle(pbuf_t *pbuf)
     esn_frames_head.sub_num = 1;
 
     esn_camera_payload_t esn_camera_pd;
+    osel_memcpy(&esn_camera_pd, pbuf->head, pbuf->data_len);
+    pbuf_free(&pbuf __PLINE2);
 
     esn_data_send(&esn_frames_head, &esn_camera_pd, sizeof(esn_camera_payload_t));
 }

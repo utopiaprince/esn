@@ -100,10 +100,10 @@ bool_t mac_queue_send_from_isr(osel_event_t *msg)
  *  - TRUE has sent ok
  *  - FALSE sent failed
  */
-bool_t mac_sent_get(uint16_t sec)
+bool_t mac_sent_get(uint16_t msec)
 {
     portBASE_TYPE res;
-    res = xSemaphoreTake(mac_sent, (sec * configTICK_RATE_HZ));
+    res = xSemaphoreTake(mac_sent, (msec / portTICK_PERIOD_MS));
 
     if (res == pdPASS)
     {
