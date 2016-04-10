@@ -1,7 +1,7 @@
 #pragma once
 #include <data_type_def.h>
 #include <pbuf.h>
-#define ID_MAX  (4u)
+#define ID_MAX  (17u)
 enum frame_type_e
 {
     FRAME_BEGIN = 0,

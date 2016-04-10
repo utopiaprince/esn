@@ -9,7 +9,7 @@ import user_lib.mysql as mysql
 import threading
 import user_lib.crc16 as CRC16
 
-id_max = 4;
+id_max = 17;
 lock = _thread.allocate_lock()
 class data_state_e():
     HEAD1 = 1
@@ -518,7 +518,7 @@ def recv_data(buf, self):
         else:
             frame_len = frame_len + (buf[index] << 8)
             index += 1
-            frame_len += 8  # 额外长度，见协议，状态检测装置ID+帧类型+报文类型+校验位
+            frame_len += 21  # 额外长度，见协议，状态检测装置ID+帧类型+报文类型+校验位
             if (length - 1) < frame_len:
                 return length + 3
             else:

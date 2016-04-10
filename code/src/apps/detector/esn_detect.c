@@ -148,7 +148,7 @@ static void atmos_app_handle(void)
 		xQueueSend(esn_gain_queue, &esn_msg, portMAX_DELAY);
 	}
 }
-
+#if 1       //0:开启模拟数据
 void esn_detect_task(void *param)
 {
     uint16_t time_ms = 1000;
@@ -177,11 +177,24 @@ void esn_detect_task(void *param)
         vTaskDelay(200 / portTICK_PERIOD_MS);
         time_ms -= 200;
 #endif
-        
         vTaskDelay(time_ms / portTICK_RATE_MS);
     }
 }
-
+#else
+void esn_detect_task(void *param)
+{
+    esn_msg_t shock_msg;
+    while (1)
+    {
+        vTaskDelay(2000 / portTICK_RATE_MS);
+        shock_msg.event = (ESN_DATA_EVENT<<8) | DATATYPE_VIBRATION;
+        shock_msg.param = NULL;
+        xQueueSend(esn_active_queue, &shock_msg, portMAX_DELAY);
+        
+        
+    }
+}
+#endif
 bool_t esn_detect_init(void)
 {
     xTaskCreate(esn_detect_task,
