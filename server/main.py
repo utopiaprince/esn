@@ -1,14 +1,16 @@
 #coding=utf-8
 import os
 import user_lib.mysql as mysql
-from user_lib.mysocket import (tcp_server,tcp_client,udp_server)
 import user_lib.powerdatadeal as power
 import time
 import threading
 import user_lib.globalval as globalval
+import datacom
+import sys
 
+threads = []
 forwardsend = False
-dip='58.214.236.152'
+dip='192.168.1.100'
 dport = 8065
 
 def create_pic_dir():#创建存放临时图片的路径
@@ -20,29 +22,27 @@ def create_pic_dir():#创建存放临时图片的路径
 def maintain_online_event():#维护设备在线状态
     mysql.mdb_call('call maintain_online()')
 
-def socket_start(host,port):
-    globalval.tcp_client_handle = 0
-    if forwardsend == True: #这里启动转发数据连接
-        globalval.tcp_client_handle = tcp_client(dip,dport)
-        t = threading.Thread(target=globalval.tcp_client_handle.start)
-        t.setDaemon(True)
-        t.start();
+def tcp_client(dhost, port):
+    globalval.tcp_client_handle = datacom._socket.tcp_client(dhost, port, None)
+    globalval.tcp_client_handle.connect(sys.maxsize)
 
-    tcp_server('',8888).start()
+def tcp_server(ip, port):
+    o_tcp_server = datacom._socket.tcp_server(ip,port,power.recv_data)
+    o_tcp_server.listen()
 
-def main():
+if __name__ == '__main__':
     create_pic_dir()
     mysql.mdb_cnn()
     maintain_online_event()
     power.read_id_manage()
 
-    t = threading.Thread(target=socket_start,args=('',8888))
-    t.setDaemon(True)
-    t.start();
+    t1 = threading.Thread(target=tcp_server, args=('', 8888))
+    t2 = threading.Thread(target=tcp_client, args=(dip, dport))
+    threads.append(t1)
+    threads.append(t2)
+    for t in threads:
+        t.setDaemon(True)
+        t.start()
 
     while True:
         time.sleep(10)
-    return
-
-if __name__ == '__main__':
-    main()

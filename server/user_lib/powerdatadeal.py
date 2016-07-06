@@ -464,7 +464,7 @@ def frame_ack(self):
 
 def frame_deal(buf, length, self):
     power = power_t()
-    power.ip = (self.client_address[0] + ':' + str(self.client_address[1]))
+    power.ip = (self[0] + ':' + str(self[1]))
     index = 0
     if length > id_max:
         for i in range(0, id_max):
@@ -481,16 +481,16 @@ def frame_deal(buf, length, self):
             globalval.get_cur_info()
     return
 
-def forwardSend(buf):   #转发数据
+def forwardSend(buf,self):   #转发数据
     if globalval.tcp_client_handle != 0:
-        if globalval.tcp_client_handle.iscnnect == True:
+        if globalval.tcp_client_handle.running == True:
             data=''
             head = [0xa5,0x5a,0x00,0x00]
             head[2] = len(buf)-21
             head.extend(buf)
             format = ("%dB" % len(head))
             data = struct.pack(format ,*head)
-            globalval.tcp_client_handle.client.send(data)
+            globalval.tcp_client_handle.send(data, self)
 
 def recv_data(buf, self):
     length = len(buf)
@@ -525,7 +525,7 @@ def recv_data(buf, self):
                 frame = []
                 for i in range(index, index + frame_len):
                     frame.append(buf[i])
-                forwardSend(frame)
+                forwardSend(frame,self)
                 length -= frame_len
                 index += frame_len
                 crc_frame = frame[0:frame_len-2]
