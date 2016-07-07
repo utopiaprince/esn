@@ -20,7 +20,7 @@ class tcp_client:
 
     def send(self, data, addr):
         try:
-            if self.handle.closed:
+            if self.handle._closed is False:
                 return
             self.handle.sendto(data, addr)
         except Exception as e:
