@@ -19,7 +19,12 @@ class tcp_client:
         self.timeout = 10
 
     def send(self, data, addr):
-        self.handle.sendto(data, addr)
+        try:
+            if self.handle.closed:
+                return
+            self.handle.sendto(data, addr)
+        except Exception as e:
+            print(e)
 
     def connect(self, num):
         self.connect_max = num
@@ -27,11 +32,10 @@ class tcp_client:
 
     def __start(self):
         connect_num = 0
+        self.handle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         while self.running and (connect_num < self.connect_max):
             try:
                 connect_num += 1
-                if self.handle == '' or self.handle.closed is True:
-                    self.handle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.handle.connect((self.dhost, self.port))
                 print("[TCP:%s:%d] connect success" % (self.dhost, self.port))
                 while self.running:
@@ -48,7 +52,6 @@ class tcp_client:
                         self.handle.close()
             except Exception as e:
                 print(("[TCP:%s:%d]" % (self.dhost, self.port)), e)
-                self.handle.close()
             time.sleep(self.timeout)
 
         if connect_num >= self.connect_max:

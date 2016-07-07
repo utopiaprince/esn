@@ -1,6 +1,5 @@
 import serial
 
-
 class object:
     def __init__(self, port, speed, callback):
         self.port = port;
